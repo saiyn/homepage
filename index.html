@@ -15,7 +15,7 @@ layout: default
         
         <div class="all-posts" post-cate="All">
           {% for post in site.posts %}
-            <a class="post-list-item" href="{{ post.url | prepend: site.baseurl }}">
+            <a class="post-list-item" href="{{ post.url | prepend: site.baseurl | prepend: "/homepage"}}">
               <h2>
               {{ post.title }}
               </h2>
