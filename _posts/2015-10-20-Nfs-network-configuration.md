@@ -29,6 +29,7 @@ excerpt: 虚拟机:Vmware，系统：Ubuntu14.04。
 
 ##Ubuntu14.04的网络配置
 > 这里主要介绍2个常用配置方法：通过配置文件配置、通过命令行配置。
+>
 > * 主要文件：`/etc/network/interfaces`, 这里是IP、网关、掩码等的一些配置; `/etc/resolv.conf`这个保存DNS有关信息。
 > * 主要命令：`sudo /etc/init.d/networking restart`在14.04版本中已经不起作用了，会出现如下问题：
 <pre><code># tail -f /var/log/upstart/networking.log
@@ -36,10 +37,11 @@ Stopping or restarting the networking job is not supported.
 Use ifdown & ifup to reconfigure desired interface.
 </code></pre>
 > 从以上日志内容可以看出，传统的service 重启和停止网络已经不再支持了，需要通过ifdown 和 ifup 来实现相应操作。
-> * 重启指定网卡
+>
+* 重启指定网卡
 <pre><code># ifdown eth0 && ifup eth0
 </code></pre>
-> * 重启除lo网卡的所有网卡
+* 重启除lo网卡的所有网卡
 <pre><code># ifdown --exclude=lo -a && sudo if up --exclude=lo -a
 </code></pre>
 
