@@ -39,10 +39,12 @@ Use ifdown & ifup to reconfigure desired interface.
 > 从以上日志内容可以看出，传统的service 重启和停止网络已经不再支持了，需要通过ifdown 和 ifup 来实现相应操作。
 >
 * 重启指定网卡
-<pre><code># ifdown eth0 && ifup eth0
+<pre><code># ifdown eth0
+#ifup eth0
 </code></pre>
 * 重启除lo网卡的所有网卡
-<pre><code># ifdown --exclude=lo -a && sudo if up --exclude=lo -a
+<pre><code># ifdown --exclude=lo -a
+#sudo if up --exclude=lo -a
 </code></pre>
 
 ##NFS挂载
