@@ -143,9 +143,89 @@ static int evdev_connect(struct input_handler *handler, struct input_dev *dev,
 	return error;
 }
 </code></pre>
+> 至此，我们的部长evdev就诞生了。这里面的细节非常的多，现在我们一一道来。
+> 像市里面一样，EV部门也有一个大箱子叫`evdev_table[]`， 为什么要这个箱子呢？我们之前说过这个部门的部长是根据具体情况
+> 临时招聘的，所以这个部门在有些时候会出现不止一位部长。这时候就出现一个问题，如果外面的百姓像找这个部门的一位部长办事，
+> 他得指明是哪位部长，所以每个部长会把自己的信息扔进这个`evdev_table[]`箱子。当然是要按位置摆放好，记录这个位置的就是`minor`.
+<pre><code>
+for (minor = 0; minor < EVDEV_MINORS; minor++)
+		if (!evdev_table[minor])
+			break;
+</code></pre>
+> 上面这段代码很简单，就是部长在大箱子里面找空的位置，可能在他之前还有其他部长过来就职过。
+<pre><code>
+evdev->minor = minor;
+</code></pre>
+> 部长自己也记下了自己的位置号，我们可以把他看成这位部长在这个部门的工作编号。
+<pre><code>
+error = evdev_install_chrdev(evdev);
 
-> 这个部门有一个大箱子叫`evdev_table[]`，这个大箱子放的是什么，干什么用的，东西怎么放进去的，如果拿出里面的东西进行使用，这个我们先不管，以后用到时再说。
-> 这个部门还有一个职员叫`evdev_clint`，他的职责是外勤，
+static int evdev_install_chrdev(struct evdev *evdev)
+{
+	/*
+	 * No need to do any locking here as calls to connect and
+	 * disconnect are serialized by the input core
+	 */
+	evdev_table[evdev->minor] = evdev;
+	return 0;
+}
+</code></pre>
+> 上面部长将自己信息放到箱子里，至此，这个箱子中的`minor`位置就是这位部长的了。
+> 下面我们将看到，来访者是怎样通过这个`minor`编号找到部长的，其实也就是用户程序通过`open`系统调用是如何访问到用户想要的资源信息。
+> 好了，让我们来看看重点，新官上任，这位部长有权自己招聘一个自己的小秘，这个小秘叫`handle`, 请记好她的名字，因为后面很多事情都需要她出面解决。
+<pre><code>
+evdev->handle.handler = handler;
+evdev->handle.private = evdev;
+</code></pre>
+> 上面就是小秘需要保管着部长的简历`handler`, 同时记着部长的一切信息。
+<pre><code>
+error = input_register_handle(&evdev->handle);
+</code></pre>
+> 上面这句话的作用是部长得在他个人简历里面写明他招聘来的小秘。让我们回顾一下当时部长写的简历，也就是下面这段代码：
+<pre><code>static struct input_handler evdev_handler = {
+	.event		= evdev_event,
+	.connnect 	= evdev_connect,
+	.disconnect = evdev_disconnect,
+	.fops		= &evdev_fops,
+	.minor		= EVDEV_MINOR_BASE,
+	.name		= "evdev",
+	.id_table	= evdev_ids,
+};
+
+int input_register_handle(struct input_handle *handle)
+{
+	struct input_handler *handler = handle->handler;
+	struct input_dev *dev = handle->dev;
+	int error;
+
+	/*
+	 * We take dev->mutex here to prevent race with
+	 * input_release_device().
+	 */
+	error = mutex_lock_interruptible(&dev->mutex);
+	if (error)
+		return error;
+	list_add_tail_rcu(&handle->d_node, &dev->h_list);
+	mutex_unlock(&dev->mutex);
+
+	/*
+	 * Since we are supposed to be called from ->connect()
+	 * which is mutually exclusive with ->disconnect()
+	 * we can't be racing with input_unregister_handle()
+	 * and so separate lock is not needed here.
+	 */
+	list_add_tail(&handle->h_node, &handler->h_list);
+
+	if (handler->start)
+		handler->start(handle);
+
+	return 0;
+}
+
+</code></pre>
+> 填简历时部长的`h_list`还是空着的，因为那是他还没有被任用，自然没有权利招聘小秘。
+> `list_add_tail_rcu(&handle->d_node, &dev->h_list);`这句话说明，小秘不仅要记录在部长简历里，同时要记录到市里面去。
+> 这个部门还有一个职员叫`evdev_clint`，他的职责是外勤，就是要与“Linux VFS”对接业务。这个职员也只是在这个部门有任务时才招聘的。
 > 
 
 
