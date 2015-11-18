@@ -16,10 +16,11 @@ excerpt: linux makefile
 ##if 函数
 > 之前一直混淆`if`函数和条件语句`ifeq`.
 > if函数的语法是：
-`$(if <condition>, <then-part>)`
+ : `$(if <condition>, <then-part>)`
 > 或者是：
-`$(if <condition>, <then-part>, <else-part>)`
-> 如果\<condition\>为真则返回\<then-part\>否则返回\<else-part\>
+ : `$(if <condition>, <then-part>, <else-part>)`
+>
+> 如果\<condition\>为真则返回\<then-part\>否则返回\<else-part\>.
 
 
 
