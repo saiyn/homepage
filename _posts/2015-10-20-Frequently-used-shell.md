@@ -40,13 +40,20 @@ ls命令默认将结果输出到屏幕，使用“>”重定向符可以将所�
 > * `-z`:用gzip压缩文件(压缩还是解压依赖是否组合了`-c`或者`-x`)
 > * `-j`:用bzip2压缩文件，一般用于`.bz2`结尾的文件。
 > * `-v`(verbose):显示解压过程的具体信息
-> * `-f`(file):指定要解压的文件
+> * `-f`(file):指定要解压的文件,**在f之后要立即接文档名，不能再加其他参数**
 <pre><code>#tar xjvf busybox-1.24.1.tar.bz2 -C /home/work
 </code></pre>
 上面就是一个将以`.bz2`格式的文件解压到指定路径的例子，如果不加`-C`就解压到当前目录中。
 <pre><code>#tar xzvf boa-0.94.13.tar.gz
 </code></pre>
 上面就是将以`.gz`格式的文件解压到当前目录的例子。
+<pre><code>#ls
+u-boot-2015.10 boa-0.94.13
+#tar zcvf u-boot.tar.gz u-boot-2015.10
+#ls
+#u-boot-2015.10 boa-0.94.13 u-boot.tar.gz
+</code></pre>
+上面是一个压缩文件的例子，在参数f之后的文档名是自己取的，我们习惯上都用.tar来作为辨识。
 ---
 
 
