@@ -54,9 +54,10 @@ make -f scripts/Makefile.build obj=arch/arm/boot MACHINE=arch/arm/mach-s3c2410/ 
 make -f scripts/Makefile.build obj=arch/arm/boot/compressed arch/arm/boot/compressed/vmlinux
 </code></pre>
 > 上面其实就是kbuild的工作实例，kbuild使用的典型方式如下：
-<pre><code>$(MAKE) $(build)=<subdir> [target]
+<pre><code>$(MAKE) $(build)=\<subdir\> [target]
 </code></pre>
-> *下面简单地阐述一下make的工作原理。
+
+> * 下面简单地阐述一下make的工作原理。
 > 通过`-f`选项，指定Makefile为scripts目录下的Makefile.build。
 > 而当make解释执行Makefile.build时，再将子目录中的Makefile包含到Makefile.include中来，
 > 这就动态的组成子目录的真正的Makefile。
