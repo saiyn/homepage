@@ -61,9 +61,15 @@ make -f scripts/Makefile.build obj=arch/arm/boot/compressed arch/arm/boot/compre
 > 而当make解释执行Makefile.build时，再将子目录中的Makefile包含到Makefile.include中来，
 > 这就动态的组成子目录的真正的Makefile。
 > make始终工作于顶层目录下，所以需要跟踪编译所在的子目录，为此，kbuild定义了两个变量：src和obj。
-> 
-
-
+> 其中，src始终指向需要构建的目录，obj指向构建的目标存放的目录。所以在Makefile.build的
+> 一开头，变量src的值为$(obj):
+<pre><code>
+/scripts/kbuild.include:
+src := $(obj)
+PHONY := __build
+__build:
+...
+</code></pre>
 
 
 
