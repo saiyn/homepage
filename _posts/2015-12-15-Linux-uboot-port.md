@@ -111,7 +111,38 @@ Makefile的一开始就定义了`MKIMAGE`变量，`MKIMAGE         := $(srctree)
 
 > * 分析`$(LOADADDR)`和`$(STARTADDR)`这两个参数的定义
 
+`$(LOADADDR)`是定义U-Boot该从哪个地址加载Linux内核镜像，
+<pre><code>
+ifeq ($(CONFIG_ZBOOT_ROM),y)
+$(obj)/uImage: LOADADDR=$(CONFIG_ZBOOT_ROM_TEXT)
+else
+$(obj)/uImage: LOADADDR=$(ZRELADDR)
+endif
+</code></pre>
+因为没有定义`CONFIG_ZBOOT_ROM`，所以LOADADDR=$(ZRELADDR)
+<pre><code>ZRELADDR    := $(zreladdr-y)
 
+ifneq ($(MACHINE),)
+include $(srctree)/$(MACHINE)/Makefile.boot
+endif
+</code></pre>
+ZRELADDR依赖zreladdr-y，而zreladdr-y就定义在`$(srctree)/$(MACHINE)/Makefile.boot`中，即~/arch/arm/mach-s3c2410/Makefile.boot
+<pre><code>root@ubuntu:~/work/linux-2.6.32.69#cat arch/arm/mach-s3c2410/Makefile.boot
+   zreladdr-y	:= 0x30008000
+params_phys-y	:= 0x30000100
+</code></pre>
+这样可以清楚的知道`-a $(LOADADDR)`，其实就是`-a 0x30008000`，即在0x30008000处加载内核。
+清楚了$(LOADADDR)，那么$(STARTADDR)就清楚了。
+<pre><code>
+ifeq ($(CONFIG_THUMB2_KERNEL),y)
+# Set bit 0 to 1 so that "mov pc, rx" switches to Thumb-2 mode
+$(obj)/uImage: STARTADDR=$(shell echo $(LOADADDR) | sed -e "s/.$$/1/")
+else
+$(obj)/uImage: STARTADDR=$(LOADADDR)
+endif
+</code></pre>
+因为没有定义CONFIG_THUMB2_KERNEL，所以STARTADDR=$(LOADADDR)，即加载地址等于入口地址，这显然是不对的，因为加载地址后的40个字节放的是
+u-boot传入的参数，至此终于搞清楚为什么会出现`undefined instruction`错误了。
 
 
 
