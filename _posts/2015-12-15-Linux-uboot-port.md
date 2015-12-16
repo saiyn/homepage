@@ -29,16 +29,16 @@ undefined instruction
 Resetting CPU...
 resetting...
 </code></pre>
-> 在解决这个问题前有必要说一下uImage是如何生成的，因为出现这样的问题肯定与uImage的正确性有密切关系。
-> 分析uImage是如何生成的，肯定是去分析Makefile了。
-> 看一下顶层中的Makefile，其中：
+ 在解决这个问题前有必要说一下uImage是如何生成的，因为出现这样的问题肯定与uImage的正确性有密切关系。
+ 分析uImage是如何生成的，肯定是去分析Makefile了。
+> * 看一下顶层中的Makefile，其中：
 <pre><code>zImage Image xipImage bootpImage uImage: vmlinux
 	$(Q)$(MAKE) $(build)=$(boot) MACHINE=$(MACHINE) $(boot)/$@
 </code></pre>
-> 当我们执行`make uImage`时，运行其中的命令行，展开其中的变量，得到：
+ 当我们执行`make uImage`时，运行其中的命令行，展开其中的变量，得到：
 <pre><code>make -f scripts/Makefile.build obj=arch/arm/boot MACHINE=arch/arm/mach-s3c2410/ arch/arm/boot/uImage
 </code></pre>
-> 上面是展开变量得到的结果，还有一种简单的方法就是利用神器`grep`，执行：
+ 上面是展开变量得到的结果，还有一种简单的方法就是利用神器`grep`，执行：
 <pre><code>#make uImage -n | grep "make -f"
 ...
 make -f scripts/Makefile.build obj=net/sunrpc
@@ -53,17 +53,17 @@ echo '  GEN     .version'; set -e; if [ ! -r .version ]; then rm -f .version; ec
 make -f scripts/Makefile.build obj=arch/arm/boot MACHINE=arch/arm/mach-s3c2410/ arch/arm/boot/uImage
 make -f scripts/Makefile.build obj=arch/arm/boot/compressed arch/arm/boot/compressed/vmlinux
 </code></pre>
-> 上面其实就是kbuild的工作实例，kbuild使用的典型方式如下：
+ 上面其实就是kbuild的工作实例，kbuild使用的典型方式如下：
 <pre><code>$(MAKE) $(build)=\<subdir\> [target]
 </code></pre>
 
 > * 下面简单地阐述一下make的工作原理。
-> 通过`-f`选项，指定Makefile为scripts目录下的Makefile.build。
-> 而当make解释执行Makefile.build时，再将子目录中的Makefile包含到Makefile.include中来，
-> 这就动态的组成子目录的真正的Makefile。
-> make始终工作于顶层目录下，所以需要跟踪编译所在的子目录，为此，kbuild定义了两个变量：src和obj。
-> 其中，src始终指向需要构建的目录，obj指向构建的目标存放的目录。所以在Makefile.build的
-> 一开头，变量src的值为$(obj):
+ 通过`-f`选项，指定Makefile为scripts目录下的Makefile.build。
+ 而当make解释执行Makefile.build时，再将子目录中的Makefile包含到Makefile.include中来，
+ 这就动态的组成子目录的真正的Makefile。
+ make始终工作于顶层目录下，所以需要跟踪编译所在的子目录，为此，kbuild定义了两个变量：src和obj。
+ 其中，src始终指向需要构建的目录，obj指向构建的目标存放的目录。所以在Makefile.build的
+ 一开头，变量src的值为$(obj):
 <pre><code>
 /scripts/kbuild.include:
 src := $(obj)
@@ -72,6 +72,36 @@ __build:
 ...
 </code></pre>
 
+---
+
+让我们继续回到uImage如何生成的问题上来
+<pre><code>make -f scripts/Makefile.build obj=arch/arm/boot MACHINE=arch/arm/mach-s3c2410/ arch/arm/boot/uImage
+</code></pre>
+上面这句命令的效果就是去执行`arch/arm/boot`中的Makefile, 目标是`arch/arm/boot/uImage`,
+
+> * 现在分析`arch/arm/boot`中的Makefile：
+<pre><code>
+$(obj)/uImage:	$(obj)/zImage FORCE
+	$(call if_changed,uimage)
+	@echo '  Image $@ is ready'
+</code></pre>
+因为目标是`arch/arm/boot/uImage`，所以首先执行的是上面部分，
+uImage依赖zImage 和 FORCE，其中	FORCE是一个伪目标，作用就是不管zIamge是否最新，都要执行底下的命令行。
+要弄懂`$(call if_changed,uimage)`这句的意思，得清楚`call`函数(见[Makefile 学习笔记](http://saiyn.github.io/homepage/2015/11/17/makefile-learn/))，以及`if_changed`函数。
+`if_changed`定义在scripts/Kbuild.include文件中：
+<pre><code>
+if_changed = $(if $(strip $(any-prereq) $(arg-check)),                       \
+	@set -e;                                                             \
+	$(echo-cmd) $(cmd_$(1));                                             \
+	printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd)
+</code></pre>
+上面的命令比较复杂，不过看到`$(cmd_$(1))`这句我们大概知道就是要执行`cmd_uimage`, 看一下Makefile, 果然有这么一段：
+<pre><code>
+quiet_cmd_uimage = UIMAGE  $@
+      cmd_uimage = $(CONFIG_SHELL) $(MKIMAGE) -A arm -O linux -T kernel \
+		   -C none -a $(LOADADDR) -e $(STARTADDR) \
+		   -n 'Linux-$(KERNELRELEASE)' -d $< $@
+</code></pre>
 
 
 
