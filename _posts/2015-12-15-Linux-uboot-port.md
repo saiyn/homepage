@@ -58,12 +58,13 @@ make -f scripts/Makefile.build obj=arch/arm/boot/compressed arch/arm/boot/compre
 </code></pre>
 
 > * 下面简单地阐述一下make的工作原理。
- 通过`-f`选项，指定Makefile为scripts目录下的Makefile.build。
- 而当make解释执行Makefile.build时，再将子目录中的Makefile包含到Makefile.include中来，
- 这就动态的组成子目录的真正的Makefile。
- make始终工作于顶层目录下，所以需要跟踪编译所在的子目录，为此，kbuild定义了两个变量：src和obj。
- 其中，src始终指向需要构建的目录，obj指向构建的目标存放的目录。所以在Makefile.build的
- 一开头，变量src的值为$(obj):
+
+通过`-f`选项，指定Makefile为scripts目录下的Makefile.build。
+而当make解释执行Makefile.build时，再将子目录中的Makefile包含到Makefile.include中来，
+这就动态的组成子目录的真正的Makefile。
+make始终工作于顶层目录下，所以需要跟踪编译所在的子目录，为此，kbuild定义了两个变量：src和obj。
+其中，src始终指向需要构建的目录，obj指向构建的目标存放的目录。所以在Makefile.build的
+一开头，变量src的值为$(obj):
 <pre><code>
 /scripts/kbuild.include:
 src := $(obj)
@@ -79,7 +80,7 @@ __build:
 </code></pre>
 上面这句命令的效果就是去执行`arch/arm/boot`中的Makefile, 目标是`arch/arm/boot/uImage`,
 
-> * 现在分析`arch/arm/boot`中的Makefile：
+> * 现在分析`arch/arm/boot`中的Makefile(Linux2.6.32)：
 <pre><code>
 $(obj)/uImage:	$(obj)/zImage FORCE
 	$(call if_changed,uimage)
@@ -102,6 +103,14 @@ quiet_cmd_uimage = UIMAGE  $@
 		   -C none -a $(LOADADDR) -e $(STARTADDR) \
 		   -n 'Linux-$(KERNELRELEASE)' -d $< $@
 </code></pre>
+Makefile的一开始就定义了`MKIMAGE`变量，`MKIMAGE         := $(srctree)/scripts/mkuboot.sh`,
+`mkuboot.sh`脚本会去寻找'mkimage'程序，`mkimage`一般在U-Boot的`tools`目录下。所以我们得将其拷贝到我们的`/usr/local/bin`目录下。所以我们得将其拷贝到我们的`/usr/local/bin`目录
+后面的`-A arm -O linux -T kernel -C none -a $(LOADADDR) -e $(STARTADDR) -n 'Linux-$(KERNELRELEASE)' -d $< $@`
+都是传递给`mkimage`的参数，其中最重要的就是`$(LOADADDR)`和`$(STARTADDR)`，可以猜到，出现`undefined instruction`错误
+就是这两个参数定义出了问题。
+
+> * 分析`$(LOADADDR)`和`$(STARTADDR)`这两个参数的定义
+
 
 
 
