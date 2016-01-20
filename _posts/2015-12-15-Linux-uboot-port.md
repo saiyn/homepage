@@ -3,13 +3,13 @@ layout: post
 title:  "Linux u-boot 移植学习笔记"
 date:   2015-12-15 15:15:54
 categories: Linux
-excerpt: linux u-boot port
+excerpt: linux u-boot port mini2440
 ---
 
 * content
 {:toc}
 
-记录移植U-boot，Linux过程中的知识点和技巧。 
+记录移植U-boot，Linux过程中的知识点和技巧。
 
 ---
 
@@ -31,6 +31,7 @@ resetting...
 </code></pre>
  在解决这个问题前有必要说一下uImage是如何生成的，因为出现这样的问题肯定与uImage的正确性有密切关系。
  分析uImage是如何生成的，肯定是去分析Makefile了。
+ 
 > * 看一下顶层中的Makefile，其中：
 <pre><code>zImage Image xipImage bootpImage uImage: vmlinux
 	$(Q)$(MAKE) $(build)=$(boot) MACHINE=$(MACHINE) $(boot)/$@
@@ -142,7 +143,20 @@ $(obj)/uImage: STARTADDR=$(LOADADDR)
 endif
 </code></pre>
 因为没有定义CONFIG_THUMB2_KERNEL，所以STARTADDR=$(LOADADDR)，即加载地址等于入口地址，这显然是不对的，因为加载地址后的40个字节放的是
-u-boot传入的参数，至此终于搞清楚为什么会出现`undefined instruction`错误了。
+u-boot传入的参数，至此终于搞清楚为什么会出现`undefined instruction`错误了。知道问题所在，那么解决起来就不难了，有2中方法：
+
+> * 1.修改Makefile
+> * 2.输入命令之间调用mkimage
+
+---
+
+##利用busybox制作根文件系统
+> * 第一步：制作最新根文件系统，让内核可以正常启动工作
+
+
+> * 第二步：完善根文件系统，添加启动脚本
+
+
 
 
 
