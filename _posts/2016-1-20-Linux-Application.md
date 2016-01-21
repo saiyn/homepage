@@ -21,7 +21,7 @@ excerpt: linux-application
 <pre><code>#include <unistd.h>
 int execl(const char *pathname, const char *arg0, ...)
 int execv(const char *pathname, )
-</code><pre>
+</code></pre>
 
 ---
 
