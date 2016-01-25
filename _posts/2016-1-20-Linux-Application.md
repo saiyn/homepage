@@ -2,8 +2,8 @@
 layout: post
 title:  "Linux 应用编程笔记"
 date:   2016-1-20 15:15:54
-categories: Linux Application
-excerpt: linux-application 
+categories: Linux-Application
+excerpt: linux
 ---
 
 * content
