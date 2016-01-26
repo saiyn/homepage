@@ -56,6 +56,19 @@ u-boot-2015.10 boa-0.94.13
 上面是一个压缩文件的例子，在参数f之后的文档名是自己取的，我们习惯上都用.tar来作为辨识。
 ---
 
+##grep
+grep命令用来搜索文本，或从给定的文件中搜索行内包含了给定字符串或单词的文件。
+一般来说，grep显示匹配到的行。
 
-
+###grep命令的语法
+<pre><code>grep [-option] '搜索字符串' filename
+cat 文件 | grep '搜索字符串'
+</code></pre>
+###搜索一个文件
+搜索/etc/passwd文件下的boo用户：
+<pre><code>$grep boo /etc/passwd
+</code><pre>
+可以使用grep去强制忽略大小写。例如，使用-i选项可以匹配boo,Boo,BOO和其他组合：
+<pre><code>$grep -i "boo" /etc/passwd
+</code></pre>
 ---
