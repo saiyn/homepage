@@ -68,7 +68,7 @@ cat 文件 | grep '搜索字符串'
 ###在一个文件进行搜索
 搜索/etc/passwd文件下的boo用户：
 <pre><code>$grep boo /etc/passwd
-</code><pre>
+</code></pre>
 可以使用grep去强制忽略大小写。例如，使用-i选项可以匹配boo,Boo,BOO和其他组合：
 <pre><code>$grep -i "boo" /etc/passwd
 </code></pre>
