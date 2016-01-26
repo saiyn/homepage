@@ -64,11 +64,39 @@ grep命令用来搜索文本，或从给定的文件中搜索行内包含了给�
 <pre><code>grep [-option] '搜索字符串' filename
 cat 文件 | grep '搜索字符串'
 </code></pre>
-###搜索一个文件
+
+###在一个文件进行搜索
 搜索/etc/passwd文件下的boo用户：
 <pre><code>$grep boo /etc/passwd
 </code><pre>
 可以使用grep去强制忽略大小写。例如，使用-i选项可以匹配boo,Boo,BOO和其他组合：
 <pre><code>$grep -i "boo" /etc/passwd
 </code></pre>
+当你搜索boo时，grep命令将会匹配fooboo,boo123,barfoo35和其他所有包含boo的字符串，可以使用`-w`选项去强制完全匹配搜索
+<pre><code>$grep -w "boo" file
+</code></pre>
+可以通过添加`-c`选项显示匹配到的次数，`-n`选项可以输出匹配到的行号，`-v`选项可以进行反转匹配。
+
+
+###在一个目录中递归搜索
+加上`-r`或者`-R`选项可以在一个目录中递归搜索所有文件。例如，在文件目录下面搜索所有包含字符串“192.168.1.5”的文件
+<pre><code>$grep -r "192.168.1.5" /etc/
+</code></pre>
+
+###管道与grep命令
+grep常常与管道一起使用，在这个例子中，显示硬盘设备的名字：
+<pre><code>#dmesg | egrep '(s|h)d[a-z]'
+</code></pre>
+显示CPU型号：
+<pre><code>#cat /proc/cpuinfo | grep -i 'Model'
+</code></pre>
+
+###仅仅显示匹配到内容的文件名字
+使用`-l`选项去显示那些文件内容中包含main()的文件名：
+<pre><code>$grep -l 'main' *.c
+</code></pre>
+
 ---
+
+
+
