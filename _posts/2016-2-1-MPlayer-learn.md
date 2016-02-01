@@ -15,18 +15,18 @@ excerpt: MPlayer linux
 
 ##启动MPlayer的代码执行流程
 项目中我从TF卡中读取所有被支持的音频文件，创建成一个简单的`playlist.txt`。应用程序中收到播放音乐命令时通过以下代码启动MPlayer。
-<pre><code>
-ret = execlp("mplayer", "mplayer",
-						 "-slave", "-input",
-						 "file=/tmp/my_fifo",
-						 "-playlist",
-						 "/usr/sbin/playlist.txt",
-						 "-loop", "0",
-						 NULL
-						);
+<pre><code>ret = execlp("mplayer", "mplayer",
+			 "-slave", "-input",
+			 "file=/tmp/my_fifo",
+			 "-playlist",
+			 "/usr/sbin/playlist.txt",
+			 "-loop", "0",
+			 NULL
+			);
 </code></pre>
 
 `-slave`选项是将MPlayer设置为slave模式，这样就可以通过向MPlayer进程发送命令来控制其运行状态。通过`-input`选项来指定如何传输命令。
+
 ###`-input`选项详细说明
 
 命令	|描述
