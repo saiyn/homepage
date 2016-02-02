@@ -238,6 +238,8 @@ const stream_info_t stream_info_file = {
   return STREAM_OK;
 }
 </code></pre>
+上面代码实现的功能还是很清晰的，通过系统调用`f=open(filename,m, openmode);`打开我们传入的文件，然后将文件的描述符合文件大小信息注册进`stream`对象。
+另外就是注册`seek()`、`fill_buffer()`、`write_buffer()`和`control()`这4个回调函数。一切顺利的话，函数就返回`STREAM_OK`。
 
 
 
