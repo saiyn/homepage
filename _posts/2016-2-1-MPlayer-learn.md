@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "MPlayer 学习应用笔记"
+title:  "MPlayer 学习应用笔记(一)"
 date:   2016-2-1 15:15:54
 categories: MPlayer
 excerpt: MPlayer linux
@@ -238,9 +238,12 @@ const stream_info_t stream_info_file = {
   return STREAM_OK;
 }
 </code></pre>
-上面代码实现的功能还是很清晰的，通过系统调用`f=open(filename,m, openmode);`打开我们传入的文件，然后将文件的描述符合文件大小信息注册进`stream`对象。
+上面代码实现的功能还是很清晰的，通过系统调用`f=open(filename,m, openmode);`打开我们传入的文件，然后将文件的描述符和文件大小信息注册进`stream`对象。
 另外就是注册`seek()`、`fill_buffer()`、`write_buffer()`和`control()`这4个回调函数。一切顺利的话，函数就返回`STREAM_OK`。
-
+追踪完`parse_playlist_file()`里的`open_stream()`，让我们回过头来继续下面的代码。
+`open_stream()`中打开了文件，接下来的`ret = parse_playtree(stream,1);`就是解析打开的文件，并最终生成`playtree`。
+`parse_playtree()`函数实现还是比较复杂的，涉及到树的操作，暂时就不张开分析，以后会单独拉出来进行详细分析。
+至此，我们差不多弄清了MPlayer中main函数中`m_config_parse_mp_command_line()`的实现细节。下面回到MPlayer中main中去。
 
 
 
