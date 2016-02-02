@@ -153,9 +153,91 @@ const stream_info_t stream_info_file = {
 </code></pre>
 `stream_info_file`的protocols[]里面是{"file", "", NULL}，所以符合if((l == 0 && !strstr(filename, "://"))代码处的判断，所以程序
 会继续调用`open_stream_plugin()`。
+<pre><code>static stream_t* open_stream_plugin(const stream_info_t* sinfo, const char* filename,
+                                    int mode, char** options, int* file_format,
+                                    int* ret, char** redirected_url)
+{
+  void* arg = NULL;
+  stream_t* s;
+  m_struct_t* desc = (m_struct_t*)sinfo->opts;
 
+  // Parse options
+  if(desc) {
+   
+    if(options) {
 
+    }
+  }
+  s = new_stream(-2,-2);
+  s->url=strdup(filename);
+  s->flags |= mode;
+  *ret = sinfo->open(s,mode,arg,file_format);
+  if((*ret) != STREAM_OK) {
 
+  }
+
+  s->mode = mode;
+
+  return s;
+}
+</code></pre>
+`open_stream_plugin()`函数处理的东西本身是比较复杂的，这里我仍然只列出本应用会执行的部分。
+其中的`new_stream()`只是创建一个`stream`对象，然后初始化这个对象里面的一些变量。
+主要的部分还是执行`sinfo->open(s,mode,arg,file_format);`。这里的回调函数`open`就是之前`stream_info_file`中的`open_f`。
+<pre><code>static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
+  int f;
+  mode_t m = 0;
+  off_t len;
+  unsigned char *filename;
+  struct stream_priv_s* p = (struct stream_priv_s*)opts;
+
+  if(mode == STREAM_READ)
+    m = O_RDONLY;
+  else if(mode == STREAM_WRITE)
+    m = O_RDWR|O_CREAT|O_TRUNC;
+
+  if(p->filename)
+    filename = p->filename;
+  else if(p->filename2)
+    filename = p->filename2;
+  else
+    filename = NULL;
+
+  m |= O_BINARY;
+
+  if(!strcmp(filename,"-")){
+
+  } else {
+      mode_t openmode = S_IRUSR|S_IWUSR;
+
+      f=open(filename,m, openmode);
+    if(f<0) {
+      m_struct_free(&stream_opts,opts);
+      return STREAM_ERROR;
+    }
+  }
+
+  len=lseek(f,0,SEEK_END); lseek(f,0,SEEK_SET);
+
+  if(len == -1) {
+    if(mode == STREAM_READ) stream->seek = seek_forward;
+    stream->type = STREAMTYPE_STREAM; // Must be move to STREAMTYPE_FILE
+    stream->flags |= MP_STREAM_SEEK_FW;
+  } else if(len >= 0) {
+    stream->seek = seek;
+    stream->end_pos = len;
+    stream->type = STREAMTYPE_FILE;
+  }
+
+  stream->fd = f;
+  stream->fill_buffer = fill_buffer;
+  stream->write_buffer = write_buffer;
+  stream->control = control;
+
+  m_struct_free(&stream_opts,opts);
+  return STREAM_OK;
+}
+</code></pre>
 
 
 
