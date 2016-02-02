@@ -31,7 +31,7 @@ excerpt: MPlayer linux
 
 命令			|描述
 ----			|---
-conf=<文件>		|读取另外的input.conf.如果没有给出路径名，将假设是`~/.mplayer`.
+conf=文件		|读取另外的input.conf.如果没有给出路径名，将假设是`~/.mplayer`.
 ar-delay		|在开始自动重复一个键之前等待多少毫米(0表示禁用)。
 ar-rate			|当自动重复时，每秒重复多少次。
 keylist			|列出所有可以被绑定的键。
