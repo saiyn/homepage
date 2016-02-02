@@ -71,7 +71,57 @@ file			|从指定文件读取命令，用于命令管道。
 }
 </code></pre>
 
+显然得进入`parse_playlist_file`函数继续追踪。
+<pre><code>play_tree_t*
+parse_playlist_file(char* file) {
+  stream_t *stream;
+  play_tree_t* ret;
+  int f=DEMUXER_TYPE_PLAYLIST;
+  stream = open_stream(file,0,&f);
 
+  if(!stream) {
+    return NULL;
+  }
+  ret = parse_playtree(stream,1);
+  free_stream(stream);
+
+  play_tree_add_bpf(ret, file);
+
+  return ret;
+}
+</code></pre>
+上面的`open_stream`主要工作是继续调用`open_stream_full()`。
+<pre><code>stream_t* open_stream_full(const char* filename,int mode, char** options, int* file_format) {
+  int i,j,l,r;
+  const stream_info_t* sinfo;
+  stream_t* s;
+  char *redirected_url = NULL;
+
+  for(i = 0 ; auto_open_streams[i] ; i++) {
+    sinfo = auto_open_streams[i];
+    if(!sinfo->protocols) {
+      continue;
+    }
+    for(j = 0 ; sinfo->protocols[j] ; j++) {
+      l = strlen(sinfo->protocols[j]);
+      // l == 0 => Don't do protocol matching (ie network and filenames)
+      if((l == 0 && !strstr(filename, "://")) ||
+         ((strncasecmp(sinfo->protocols[j],filename,l) == 0) &&
+		      (strncmp("://",filename+l,3) == 0))) {
+	*file_format = DEMUXER_TYPE_UNKNOWN;
+	s = open_stream_plugin(sinfo,filename,mode,options,file_format,&r,
+				&redirected_url);
+	if(s) return s;
+	}
+	break;
+      }
+    }
+  }
+
+  return NULL;
+}
+</code></pre>
+上面的代码还是比较复杂的，我已经去除了其他的LOG输出和不会进入的程序分支，排除一下干扰，简化一下代码。
 
 
 
