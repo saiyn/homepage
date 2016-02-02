@@ -105,9 +105,7 @@ parse_playlist_file(char* file) {
     for(j = 0 ; sinfo->protocols[j] ; j++) {
       l = strlen(sinfo->protocols[j]);
       // l == 0 => Don't do protocol matching (ie network and filenames)
-      if((l == 0 && !strstr(filename, "://")) ||
-         ((strncasecmp(sinfo->protocols[j],filename,l) == 0) &&
-		      (strncmp("://",filename+l,3) == 0))) {
+      if((l == 0 && !strstr(filename, "://")) {
 	*file_format = DEMUXER_TYPE_UNKNOWN;
 	s = open_stream_plugin(sinfo,filename,mode,options,file_format,&r,
 				&redirected_url);
@@ -122,8 +120,39 @@ parse_playlist_file(char* file) {
 }
 </code></pre>
 上面的代码还是比较复杂的，我已经去除了其他的LOG输出和不会进入的程序分支，排除一下干扰，简化一下代码。
+BY THE WAY,看到这里我感觉MPlayer的代码写的很一般。
+`auto_open_streams[]`是定义在Stream.c中的静态全局数组，其实里面就是注册一些MPlayer所支持的流格式的“处理器”。
+查看`auto_open_streams[]`中的所有注册的处理器，我们发现只有`stream_info_file`是用来处理我们传入的`playlist`的。
+<pre><code>struct stream;
+typedef struct stream_info_st {
+  const char *info;
+  const char *name;
+  const char *author;
+  const char *comment;
+  /// mode isn't used atm (ie always READ) but it shouldn't be ignored
+  /// opts is at least in it's defaults settings and may have been
+  /// altered by url parsing if enabled and the options string parsing.
+  int (*open)(struct stream* st, int mode, void* opts, int* file_format);
+  const char* protocols[MAX_STREAM_PROTOCOLS];
+  const void* opts;
+  int opts_url; /* If this is 1 we will parse the url as an option string
+		 * too. Otherwise options are only parsed from the
+		 * options string given to open_stream_plugin */
+} stream_info_t;
 
-
+const stream_info_t stream_info_file = {
+  "File",
+  "file",
+  "Albeu",
+  "based on the code from ??? (probably Arpi)",
+  open_f,
+  { "file", "", NULL },
+  &stream_opts,
+  1 // Urls are an option string
+};
+</code></pre>
+`stream_info_file`的protocols[]里面是{"file", "", NULL}，所以符合if((l == 0 && !strstr(filename, "://"))代码处的判断，所以程序
+会继续调用`open_stream_plugin()`。
 
 
 
