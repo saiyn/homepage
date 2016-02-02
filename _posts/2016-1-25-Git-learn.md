@@ -16,10 +16,33 @@ excerpt: git github
 ##查看分支列表
 <pre><code>$git branch -a
 </code></pre>
-
+---
 ##查看远程分支列表
 <pre><code>$git branch -r
 </code></pre>
+---
+##撤销
+
+###恢复暂存区的指定文件到工作区
+<pre><code>$git checkout [file]
+</code></pre>
+
+###恢复某个commit的指定文件到暂存区和工作区
+<pre><code>$git checkout [commit] [file]
+</code></pre>
+
+###恢复暂存区的所有文件到工作区
+<pre><code>$git checkout .
+</code></pre>
+
+###重置暂存区的指定文件，与上一次commit保存一致，但工作区不变
+<pre><code>$git reset [file]
+</code></pre>
+
+###重置暂存区和工作区，与上一次commit保存一致
+<pre><code>$git reset --hard
+</code></pre>
+
 
 
 
