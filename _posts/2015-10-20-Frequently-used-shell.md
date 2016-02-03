@@ -98,5 +98,17 @@ grep常常与管道一起使用，在这个例子中，显示硬盘设备的名�
 
 ---
 
+##解压.cpio.gz文件
+<pre><code>$gzip -dc file.gz | cpio -div
+</code></pre>
+
+##解压ramdisk.gz文件
+<pre><code>$gunzip ramdisk.gz
+</code></pre>
+解压后得到ramdisk镜像文件，该镜像文件会把原有的ramdisk.gz覆盖。
+<pre><code>$mkdir mnt
+$mount -o loop ramdisk mnt 
+</code></pre>
+挂载镜像到mnt目录，这样mnt目录里面就是展开后的文件系统目录。
 
 
