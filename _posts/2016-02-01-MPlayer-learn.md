@@ -244,6 +244,7 @@ const stream_info_t stream_info_file = {
 `open_stream()`中打开了文件，接下来的`ret = parse_playtree(stream,1);`就是解析打开的文件，并最终生成`playtree`。
 `parse_playtree()`函数实现还是比较复杂的，涉及到树的操作，暂时就不张开分析，以后会单独拉出来进行详细分析。
 至此，我们差不多弄清了MPlayer中main函数中`m_config_parse_mp_command_line()`的实现细节。下面回到MPlayer中main中去。
+详细地见[下一篇](http://saiyn.github.io/homepage/2016/02/01/MPlayer-learn-2/)
 
 
 
