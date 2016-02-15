@@ -36,7 +36,60 @@ int execlp(const char *filename, const char *arg0, .../* (char *)0 */);
 int execvp(const char *filename, char *const argv[]);
 </code></pre>
 
+---
 
+##fork 函数
+子进程获得父进程数据空间、堆和栈的副本，父、子进程并不共享这些存储空间部分。
+另外，fork的一个特性是父进程的所有打开描述符都被复制到子进程中，父、子进程的每个相同的打开描述符共享一个文件表现。
+通过下面两个例子来演示一下：
+<pre><code>#include "apue.h"
+int glob = 6;
+char buf[] = "a write to stdout\n";
+int main(void)
+{
+  int var;
+  pid_t pid;
+  
+  var = 88;
+  if(write(STDOUT_FILENO, buf, sizeof(buf)-1) != sizeof(buf) - 1)
+	err_sys("write error");
+  prnitf("before fork\n");
+  
+  if((pid = fork()) < 0){
+	err_sys("fork error");
+  }else if(pid == 0){
+	glob++;
+	var++;
+  }else{
+	sleep(2); /*parent*/
+  }
+  
+  printf("pid = %d, glob = %d, var = %d\n", getpid(). glob, var);
+  exit(0);
+}
+</code></pre>
+执行此程序则得到：
+
+> $ ./a.out
+> a write to stdout
+> before fork
+> pid = 430, glob = 7, var = 89 子进程的变量值改变了
+> pid = 429, glob = 6, var = 88 父进程的变量值没有改变
+> $ ./a.out > temp.out
+> $cat temp.out
+> a write to stdout
+> before fork
+> pid = 432, glob = 7, var = 89
+> before fork 
+> pid = 431, glob = 6, var = 88
+
+除了注意上面执行结果的注释部分说明了子进程复制父进程的存储空间并且子进程对变量所作的
+改变并不影响父进程中的该变量的值以外，还要注意`fork`与I/O函数之间的交互关系。
+write函数是不带缓冲的，但是，标准I/O库是带缓冲的。如果标准输出连接到终端设备，则它是行缓冲的，
+否则它是全缓冲的。当以交互方式运行该程序时，只得到该printf输出的行一次，其原因是标准输出
+缓冲区由换行符冲洗。但是当标准输出重定向到一个文件时，却得到printf输出两次。
+其原因是，在fork之前调用了printf一次，但当调用fork时，该行数据仍在缓冲区中，然后在将父进程数据空间
+复制到子进程时，该缓冲区也被复制到子进程中。当每个进程终止时，最终会冲洗其缓冲区中的副本。
 
 
 
