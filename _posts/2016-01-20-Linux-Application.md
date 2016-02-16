@@ -34,9 +34,9 @@ int execle(const char *pathname, const char *arg0, .../*(char *)0*/, char *const
 int execve(const char *pathname, char *const argv[], char *const envp[]);
 int execlp(const char *filename, const char *arg0, .../* (char *)0 */);
 int execvp(const char *filename, char *const argv[]);
+
 </code></pre>
 
----
 
 ##fork 函数
 子进程获得父进程数据空间、堆和栈的副本，父、子进程并不共享这些存储空间部分。
