@@ -42,6 +42,7 @@ int execvp(const char *filename, char *const argv[]);
 子进程获得父进程数据空间、堆和栈的副本，父、子进程并不共享这些存储空间部分。
 另外，fork的一个特性是父进程的所有打开描述符都被复制到子进程中，父、子进程的每个相同的打开描述符共享一个文件表现。
 通过下面两个例子来演示一下：
+
 <pre><code>#include "apue.h"
 int glob = 6;
 char buf[] = "a write to stdout\n";
