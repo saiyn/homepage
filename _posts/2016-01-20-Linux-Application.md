@@ -68,6 +68,7 @@ int main(void)
   exit(0);
 }
 </code></pre>
+
 执行此程序则得到：
 
 > $ ./a.out
