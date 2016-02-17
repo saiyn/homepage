@@ -46,7 +46,7 @@ int main(void)
 </code></pre>
 
 执行此程序则得到：
-
+>
 > $ ./a.out
 > a write to stdout
 > before fork
@@ -59,7 +59,7 @@ int main(void)
 > pid = 432, glob = 7, var = 89
 > before fork 
 > pid = 431, glob = 6, var = 88
-
+>
 除了注意上面执行结果的注释部分说明了子进程复制父进程的存储空间并且子进程对变量所作的
 改变并不影响父进程中的该变量的值以外，还要注意`fork`与I/O函数之间的交互关系。
 write函数是不带缓冲的，但是，标准I/O库是带缓冲的。如果标准输出连接到终端设备，则它是行缓冲的，
