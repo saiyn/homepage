@@ -91,6 +91,8 @@ int execlp(const char *filename, const char *arg0, .../* (char *)0 */);
 int execvp(const char *filename, char *const argv[]);
 </code></pre>
 
+---
+
 ##system函数
 
 <pre><code>#include /<stdlib.h/>
@@ -100,10 +102,30 @@ int system(const char *cmdstring);
 > * 如果cmdstring是一个空指针，则仅当命令处理程序可用时，system返回非0值，这一特征可以确定在一个给定的操作系统上是否支持system
 > 函数。
 > * 因为system在其实现中调用了fork、exec和waitpid，因此有三种返回值：
->
-> 1.如果fork失败或者waitpid返回除EINTR之外的出错，则system返回-1，而且errno中设置了错误类型。
-> 2.如果exec失败，则其返回值如同shell执行了exit(127)一样。
-> 3.如果3个函数都执行成功，返回值是shell的终止状态。
+> 1).如果fork失败或者waitpid返回除EINTR之外的出错，则system返回-1，而且errno中设置了错误类型。
+> 2).如果exec失败，则其返回值如同shell执行了exit(127)一样。
+> 3).如果3个函数都执行成功，返回值是shell的终止状态。
+
+---
+
+##exit函数
+在大多数UNIX系统实现中，exit(3)是标准C库中的一个函数，而_exit(2)则是一个系统调用。
+进程要么是正常终止返回退出状态(exit status)，要么异常终止返回终止状态(terminatiom status)。
+在任意一种情况下，该终止进程的父进程都能够使用wait或者waitpid函数取得其终止状态。
+
+> 值得注意的是，在最后调用_exit时，内核将退出状态转换成终止状态。
+
+有四个互斥的宏可用来取得进程终止的原因，它们的名字以WIF开始：
+
+宏		|说明
+---		|---
+WIFEXITED(status)		|若为正常终止子进程返回的状态。则为真。对于这种情况可执行WEXITSTATUS(status)，取子进程传给exit、_exit或_Exit参数的低8位。
+WIFSIGNALED(status)		|若为异常终止子进程返回的状态，则为真。执行WTERMSIG(status)取使子进程终止的信号编号。
+WIFSTOPPED(status)		|若为当前暂停子进程的返回的返回状态，则为真。执行WSTOPSIG(status)取使子进程暂停的信号编号
+WIFCONTINUED(status)	|若在作业控制暂停后已经继续的子进程返回了状态，则为真。仅用于waitpid。
+
+
+
 
 
 
