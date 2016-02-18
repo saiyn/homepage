@@ -13,14 +13,14 @@ excerpt: 只记录平时开发中会长用的，太全太详细的shell命令没
 
 ---
 
-##重定向
+## 重定向
 
 **期望每个程序的输出都是其他程序的输入，即使是未知的程序。**这是Unix哲学里让我感受最深的一条。在[从LinkedIn,Apache Kafka到Unix哲学](http://www.jointforce.com/jfperiodical/article/1036?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io)一文中，对此有更加鲜明的说明。
 这里我们将主要关注两个符合: **>**和**|**。
 
 ---
 
-###重定向符: **>**
+### 重定向符: **>**
 
 ls命令默认将结果输出到屏幕，使用“>”重定向符可以将所得结果输出到指定文件中。
 <pre><code># ls -l /usr/bin > out.txt
@@ -30,11 +30,12 @@ ls命令默认将结果输出到屏幕，使用“>”重定向符可以将所�
 <pre><code># ls -l /usr/bin >> out.txt
 </code></pre>
 
-###管道符: **|**
+### 管道符: **|**
 
 ---
 
-##tar
+## tar
+
 > * `-c`:压缩文件
 > * `-x`:解压文件
 > * `-z`:用gzip压缩文件(压缩还是解压依赖是否组合了`-c`或者`-x`)
@@ -56,16 +57,19 @@ u-boot-2015.10 boa-0.94.13
 上面是一个压缩文件的例子，在参数f之后的文档名是自己取的，我们习惯上都用.tar来作为辨识。
 ---
 
-##grep
+## grep
+
 grep命令用来搜索文本，或从给定的文件中搜索行内包含了给定字符串或单词的文件。
 一般来说，grep显示匹配到的行。
 
-###grep命令的语法
+### grep命令的语法
+
 <pre><code>grep [-option] '搜索字符串' filename
 cat 文件 | grep '搜索字符串'
 </code></pre>
 
-###在一个文件进行搜索
+### 在一个文件进行搜索
+
 搜索/etc/passwd文件下的boo用户：
 <pre><code>$grep boo /etc/passwd
 </code></pre>
@@ -78,12 +82,14 @@ cat 文件 | grep '搜索字符串'
 可以通过添加`-c`选项显示匹配到的次数，`-n`选项可以输出匹配到的行号，`-v`选项可以进行反转匹配。
 
 
-###在一个目录中递归搜索
+### 在一个目录中递归搜索
+
 加上`-r`或者`-R`选项可以在一个目录中递归搜索所有文件。例如，在文件目录下面搜索所有包含字符串“192.168.1.5”的文件
 <pre><code>$grep -r "192.168.1.5" /etc/
 </code></pre>
 
-###管道与grep命令
+### 管道与grep命令
+
 grep常常与管道一起使用，在这个例子中，显示硬盘设备的名字：
 <pre><code>#dmesg | egrep '(s|h)d[a-z]'
 </code></pre>
@@ -91,18 +97,21 @@ grep常常与管道一起使用，在这个例子中，显示硬盘设备的名�
 <pre><code>#cat /proc/cpuinfo | grep -i 'Model'
 </code></pre>
 
-###仅仅显示匹配到内容的文件名字
+### 仅仅显示匹配到内容的文件名字
+
 使用`-l`选项去显示那些文件内容中包含main()的文件名：
 <pre><code>$grep -l 'main' *.c
 </code></pre>
 
 ---
 
-##解压.cpio.gz文件
+## 解压.cpio.gz文件
+
 <pre><code>$gzip -dc file.gz | cpio -div
 </code></pre>
 
-##解压ramdisk.gz文件
+## 解压ramdisk.gz文件
+
 <pre><code>$gunzip ramdisk.gz
 </code></pre>
 解压后得到ramdisk镜像文件，该镜像文件会把原有的ramdisk.gz覆盖。

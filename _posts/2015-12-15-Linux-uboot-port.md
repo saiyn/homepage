@@ -13,7 +13,8 @@ excerpt: linux u-boot port mini2440
 
 ---
 
-##启动内核时出现`undefined instruction`错误
+## 启动内核时出现`undefined instruction`错误
+
 启动内核时会出现各种错误，我遇到的是如下情况：
 <pre><code>......
 Image Name:linux-2.6.32.2
@@ -150,7 +151,7 @@ u-boot传入的参数，至此终于搞清楚为什么会出现`undefined instru
 
 ---
 
-##利用busybox制作根文件系统
+## 利用busybox制作根文件系统
 > * 第一步：制作最新根文件系统，让内核可以正常启动工作
 
 

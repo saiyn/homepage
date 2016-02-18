@@ -14,7 +14,8 @@ excerpt: Linux input driver
 
 ---
 
-##站在高处总体把握一下这个逼格较高的子系统
+## 站在高处总体把握一下这个逼格较高的子系统
+
 > 分析一个架构首先肯定是要分析一下这个架构中用到的主要数据结构，但是如果一开始就展开所有的结构体，那一下就晕了。
 > 主角登场：
 >
@@ -237,7 +238,8 @@ int input_register_handle(struct input_handle *handle)
 
 ---
 
-##长刀直入子系统
+## 长刀直入子系统
+
 > * 让我们借助于`../drivers/input/keyboard/gpio_keys.c`这个按键驱动实例来深入分析。
 >  
 >
@@ -247,7 +249,8 @@ int input_register_handle(struct input_handle *handle)
 
 ---
 
-##扩展，由`input`子系统反观`platform`驱动架构
+## 扩展，由`input`子系统反观`platform`驱动架构
+
 
 
 ---

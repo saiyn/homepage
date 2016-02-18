@@ -13,7 +13,8 @@ excerpt: MPlayer linux
 
 ---
 
-##启动MPlayer的代码执行流程
+## 启动MPlayer的代码执行流程
+
 项目中我从TF卡中读取所有被支持的音频文件，创建成一个简单的`playlist.txt`。应用程序中收到播放音乐命令时通过以下代码启动MPlayer。
 <pre><code>ret = execlp("mplayer", "mplayer",
 			 "-slave", "-input",
@@ -27,7 +28,7 @@ excerpt: MPlayer linux
 
 `-slave`选项是将MPlayer设置为slave模式，这样就可以通过向MPlayer进程发送命令来控制其运行状态。通过`-input`选项来指定如何传输命令。
 
-###`-input`选项详细说明
+### `-input`选项详细说明
 
 命令			|描述
 conf=文件		|读取另外的input.conf.如果没有给出路径名，将假设是`~/.mplayer`.
@@ -40,7 +41,7 @@ file			|从指定文件读取命令，用于命令管道。
 
 上面我们就是通过`file=/temp/my_fifo`指定`my_fifo`这个命令管道来接受我们应用程序发送过来的命令。
 
-###`-playlist`选项
+### `-playlist`选项
 
 由于我们是想让MPlayer播放我们所建`playlist.txt`中的音乐文件，所以我们通过`-playlist`传入`/usr/sbin/playlist.txt`参数，让MPlayer读取这个文件生成`playtree`。
 下面我们来追踪一下MPlayer是如何一步步生成`playtree`的。
