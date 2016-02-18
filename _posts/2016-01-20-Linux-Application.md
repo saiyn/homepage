@@ -89,9 +89,20 @@ int execle(const char *pathname, const char *arg0, .../*(char *)0*/, char *const
 int execve(const char *pathname, char *const argv[], char *const envp[]);
 int execlp(const char *filename, const char *arg0, .../* (char *)0 */);
 int execvp(const char *filename, char *const argv[]);
-
 </code></pre>
 
+##system函数
+
+<pre><code>#include /<stdlib.h/>
+int system(const char *cmdstring);
+</code></pre>
+
+> *如果cmdstring是一个空指针，则仅当命令处理程序可用时，system返回非0值，这一特征可以确定在一个给定的操作系统上是否支持system
+> 函数。
+> *因为system在其实现中调用了fork、exec和waitpid，因此有三种返回值：
+> 1.如果fork失败或者waitpid返回除EINTR之外的出错，则system返回-1，而且errno中设置了错误类型。
+> 2.如果exec失败，则其返回值如同shell执行了exit(127)一样。
+> 3.如果3个函数都执行成功，返回值是shell的终止状态。
 
 
 
