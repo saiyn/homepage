@@ -13,7 +13,8 @@ excerpt: linux
 
 ---
 
-##fork 函数
+## fork 函数
+
 子进程获得父进程数据空间、堆和栈的副本，父、子进程并不共享这些存储空间部分。
 另外，fork的一个特性是父进程的所有打开描述符都被复制到子进程中，父、子进程的每个相同的打开描述符共享一个文件表现。
 通过下面两个例子来演示一下：
@@ -68,7 +69,8 @@ write函数是不带缓冲的，但是，标准I/O库是带缓冲的。如果标
 其原因是，在fork之前调用了printf一次，但当调用fork时，该行数据仍在缓冲区中，然后在将父进程数据空间
 复制到子进程时，该缓冲区也被复制到子进程中。当每个进程终止时，最终会冲洗其缓冲区中的副本。
 
-##exec 函数
+## exec 函数
+
 当进程调用一种exec函数时，该进程执行的程序完全替换为新程序，而新程序则从其main函数开始执行。
 因为调用exec并不创建新进程，所以前后的进程ID并未改变。exec只是用一个全新的程序替换了当前进程的正文、数据、堆和栈段。
 `exec`加上`v`, `l`, `e`, `p`这4个字母的两两组合或者单独一个总共有6种不同的函数可供使用。
@@ -93,7 +95,7 @@ int execvp(const char *filename, char *const argv[]);
 
 ---
 
-##system函数
+## system函数
 
 <pre><code>#include /<stdlib.h/>
 int system(const char *cmdstring);
@@ -108,7 +110,8 @@ int system(const char *cmdstring);
 
 ---
 
-##exit函数
+## exit函数
+
 在大多数UNIX系统实现中，exit(3)是标准C库中的一个函数，而_exit(2)则是一个系统调用。
 进程要么是正常终止返回退出状态(exit status)，要么异常终止返回终止状态(terminatiom status)。
 在任意一种情况下，该终止进程的父进程都能够使用wait或者waitpid函数取得其终止状态。
