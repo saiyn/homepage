@@ -124,6 +124,14 @@ WIFSIGNALED(status)		|若为异常终止子进程返回的状态，则为真。�
 WIFSTOPPED(status)		|若为当前暂停子进程的返回的返回状态，则为真。执行WSTOPSIG(status)取使子进程暂停的信号编号
 WIFCONTINUED(status)	|若在作业控制暂停后已经继续的子进程返回了状态，则为真。仅用于waitpid。
 
+对于waitpid函数中pid参数的作用解释如下：
+
+pid值		|说明
+---		|---
+-1		|等待任一子进程。就这一方面而言，waitpid与wait等效。
+>0		|等待其进程ID与pid相等的子进程。
+==0		|等待其组ID等于调用进程组ID的任一子进程。
+<-1		|等待其组ID等于pid绝对值的任一子进程。
 
 
 
