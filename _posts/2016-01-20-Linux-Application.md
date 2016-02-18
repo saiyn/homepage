@@ -81,7 +81,7 @@ p		|path	|`p`表示可以通过传递文件名来定位新程序文件的位置�
 
 > *值得注意的是：如果`execlp`或者`execvp`使用PATH搜索到一个可执行文件，但是该文件不是由连接器产生的机器可执行文件，则认为该文件时应该`shell`脚本，于是试着调用`/bin/sh`，并以该`filename`作为`shell`的输入。
 
-<pre><code>#include <unistd.h>
+<pre><code>#include /<unistd.h/>
 
 int execl(const char *pathname, const char *arg0, .../* (char *)0 */);
 int execv(const char *pathname, char *const argv[]);
