@@ -55,6 +55,7 @@ u-boot-2015.10 boa-0.94.13
 #u-boot-2015.10 boa-0.94.13 u-boot.tar.gz
 </code></pre>
 上面是一个压缩文件的例子，在参数f之后的文档名是自己取的，我们习惯上都用.tar来作为辨识。
+
 ---
 
 ## grep
@@ -110,6 +111,8 @@ grep常常与管道一起使用，在这个例子中，显示硬盘设备的名�
 <pre><code>$gzip -dc file.gz | cpio -div
 </code></pre>
 
+---
+
 ## 解压ramdisk.gz文件
 
 <pre><code>$gunzip ramdisk.gz
@@ -119,5 +122,9 @@ grep常常与管道一起使用，在这个例子中，显示硬盘设备的名�
 $mount -o loop ramdisk mnt 
 </code></pre>
 挂载镜像到mnt目录，这样mnt目录里面就是展开后的文件系统目录。
+
+---
+
+##
 
 
