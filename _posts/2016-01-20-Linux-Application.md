@@ -123,7 +123,7 @@ int system(const char *cmdstring);
 有四个互斥的宏可用来取得进程终止的原因，它们的名字以WIF开始：
 
 宏		|说明
----		|---
+----		|----
 WIFEXITED(status)		|若为正常终止子进程返回的状态。则为真。对于这种情况可执行WEXITSTATUS(status)，取子进程传给exit、_exit或_Exit参数的低8位。
 WIFSIGNALED(status)		|若为异常终止子进程返回的状态，则为真。执行WTERMSIG(status)取使子进程终止的信号编号。
 WIFSTOPPED(status)		|若为当前暂停子进程的返回的返回状态，则为真。执行WSTOPSIG(status)取使子进程暂停的信号编号
@@ -132,7 +132,7 @@ WIFCONTINUED(status)	|若在作业控制暂停后已经继续的子进程返回�
 对于waitpid函数中pid参数的作用解释如下：
 
 pid值		|说明
----		|---
+----		|----
 -1		|等待任一子进程。就这一方面而言，waitpid与wait等效。
 >0		|等待其进程ID与pid相等的子进程。
 ==0		|等待其组ID等于调用进程组ID的任一子进程。

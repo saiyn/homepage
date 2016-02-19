@@ -125,6 +125,40 @@ $mount -o loop ramdisk mnt
 
 ---
 
-##
+## PS命令
+
+Linux上进程的5种状态：
+
+状态		|描述								|PS中的状态码
+----		|----								|----
+运行		|正在运行或在运行队列中等待			|R(runnable)
+中断		|休眠中，受阻，在等待某个条件		|S(sleeping)
+不可中断	|信号不可唤醒，必须等到中断发送		|D(uninterruptble sleep)
+僵死		|进程已终止，等待父进程回收			|Z(zombie)
+停止		|进程收到SIGSTOP,SIGSTP,SIGTIN		|T(traced or stopped)
+
+显示所有进程信息，连同命令行
+<pre><code>#ps -ef
+</code></pre>
+
+列出目前所有的正在内存当中的程序
+<pre><code>#ps aux
+</code></pre>
+
+将目前属于自己这次登入的PID与相关信息列出来
+<pre><code>#ps -l
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
