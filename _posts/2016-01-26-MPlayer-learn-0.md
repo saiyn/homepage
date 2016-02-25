@@ -1,0 +1,258 @@
+---
+layout: post
+title:  "MPlayer 学习应用笔记(0)"
+date:   2016-2-1 15:15:54
+categories: MPlayer
+excerpt: MPlayer linux
+---
+
+* content
+{:toc}
+
+记录开发中实际涉及的MPlayer知识
+
+---
+
+## 启动MPlayer的代码执行流程
+
+项目中我从TF卡中读取所有被支持的音频文件，创建成一个简单的`playlist.txt`。应用程序中收到播放音乐命令时通过以下代码启动MPlayer。
+<pre><code>ret = execlp("mplayer", "mplayer",
+			 "-slave", "-input",
+			 "file=/tmp/my_fifo",
+			 "-playlist",
+			 "/usr/sbin/playlist.txt",
+			 "-loop", "0",
+			 NULL
+			);
+</code></pre>
+
+`-slave`选项是将MPlayer设置为slave模式，这样就可以通过向MPlayer进程发送命令来控制其运行状态。通过`-input`选项来指定如何传输命令。
+
+### `-input`选项详细说明
+
+命令			|描述
+conf=文件		|读取另外的input.conf.如果没有给出路径名，将假设是`~/.mplayer`.
+ar-delay		|在开始自动重复一个键之前等待多少毫米(0表示禁用)。
+ar-rate			|当自动重复时，每秒重复多少次。
+keylist			|列出所有可以被绑定的键。
+cmdlist			|列出所有可以被绑定的命令。
+js-dev			|指定可用的游戏操纵杆设备。
+file			|从指定文件读取命令，用于命令管道。
+
+上面我们就是通过`file=/temp/my_fifo`指定`my_fifo`这个命令管道来接受我们应用程序发送过来的命令。
+
+### `-playlist`选项
+
+由于我们是想让MPlayer播放我们所建`playlist.txt`中的音乐文件，所以我们通过`-playlist`传入`/usr/sbin/playlist.txt`参数，让MPlayer读取这个文件生成`playtree`。
+下面我们来追踪一下MPlayer是如何一步步生成`playtree`的。
+<pre><code>mpctx->playtree = m_config_parse_mp_command_line(mconfig, argc, argv);
+</code></pre>
+在`MPlayer.c`文件中我们可以找到MPlayer的main函数，上面这行代码就是解析`-playlist`选项生成`playtree`的入口。
+<pre><code>tmp = is_entry_option(opt,(i+1<argc) ? argv[i + 1] : NULL,&entry);
+</code></pre>
+进入`m_config_parse_mp_command_line`，我们会发现代码应该会进入上面这句继续执行，里面出现的“if(strcasecmp(opt,"playlist") == 0)”这句话验证了我们的推断。
+<pre><code>static int is_entry_option(char *opt, char *param, play_tree_t** ret) {
+  play_tree_t* entry = NULL;
+
+  *ret = NULL;
+
+  if(strcasecmp(opt,"playlist") == 0) { // We handle playlist here
+    if(!param)
+      return M_OPT_MISSING_PARAM;
+
+    entry = parse_playlist_file(param);
+    if(!entry)
+      return -1;
+    else {
+       *ret=entry;
+       return 1;
+    }
+  }
+    return 0;
+}
+</code></pre>
+
+显然得进入`parse_playlist_file`函数继续追踪。
+<pre><code>play_tree_t*
+parse_playlist_file(char* file) {
+  stream_t *stream;
+  play_tree_t* ret;
+  int f=DEMUXER_TYPE_PLAYLIST;
+  stream = open_stream(file,0,&f);
+
+  if(!stream) {
+    return NULL;
+  }
+  ret = parse_playtree(stream,1);
+  free_stream(stream);
+
+  play_tree_add_bpf(ret, file);
+
+  return ret;
+}
+</code></pre>
+上面的`open_stream`主要工作是继续调用`open_stream_full()`。
+<pre><code>stream_t* open_stream_full(const char* filename,int mode, char** options, int* file_format) {
+  int i,j,l,r;
+  const stream_info_t* sinfo;
+  stream_t* s;
+  char *redirected_url = NULL;
+
+  for(i = 0 ; auto_open_streams[i] ; i++) {
+    sinfo = auto_open_streams[i];
+    if(!sinfo->protocols) {
+      continue;
+    }
+    for(j = 0 ; sinfo->protocols[j] ; j++) {
+      l = strlen(sinfo->protocols[j]);
+      // l == 0 => Don't do protocol matching (ie network and filenames)
+      if((l == 0 && !strstr(filename, "://")) {
+	*file_format = DEMUXER_TYPE_UNKNOWN;
+	s = open_stream_plugin(sinfo,filename,mode,options,file_format,&r,
+				&redirected_url);
+	if(s) return s;
+	}
+	break;
+      }
+    }
+  }
+
+  return NULL;
+}
+</code></pre>
+上面的代码还是比较复杂的，我已经去除了其他的LOG输出和不会进入的程序分支，排除一下干扰，简化一下代码。
+BY THE WAY,看到这里我感觉MPlayer的代码写的很一般。
+`auto_open_streams[]`是定义在Stream.c中的静态全局数组，其实里面就是注册一些MPlayer所支持的流格式的“处理器”。
+查看`auto_open_streams[]`中的所有注册的处理器，我们发现只有`stream_info_file`是用来处理我们传入的`playlist`的。
+<pre><code>struct stream;
+typedef struct stream_info_st {
+  const char *info;
+  const char *name;
+  const char *author;
+  const char *comment;
+  /// mode isn't used atm (ie always READ) but it shouldn't be ignored
+  /// opts is at least in it's defaults settings and may have been
+  /// altered by url parsing if enabled and the options string parsing.
+  int (*open)(struct stream* st, int mode, void* opts, int* file_format);
+  const char* protocols[MAX_STREAM_PROTOCOLS];
+  const void* opts;
+  int opts_url; /* If this is 1 we will parse the url as an option string
+		 * too. Otherwise options are only parsed from the
+		 * options string given to open_stream_plugin */
+} stream_info_t;
+
+const stream_info_t stream_info_file = {
+  "File",
+  "file",
+  "Albeu",
+  "based on the code from ??? (probably Arpi)",
+  open_f,
+  { "file", "", NULL },
+  &stream_opts,
+  1 // Urls are an option string
+};
+</code></pre>
+`stream_info_file`的protocols[]里面是{"file", "", NULL}，所以符合if((l == 0 && !strstr(filename, "://"))代码处的判断，所以程序
+会继续调用`open_stream_plugin()`。
+<pre><code>static stream_t* open_stream_plugin(const stream_info_t* sinfo, const char* filename,
+                                    int mode, char** options, int* file_format,
+                                    int* ret, char** redirected_url)
+{
+  void* arg = NULL;
+  stream_t* s;
+  m_struct_t* desc = (m_struct_t*)sinfo->opts;
+
+  // Parse options
+  if(desc) {
+   
+    if(options) {
+
+    }
+  }
+  s = new_stream(-2,-2);
+  s->url=strdup(filename);
+  s->flags |= mode;
+  *ret = sinfo->open(s,mode,arg,file_format);
+  if((*ret) != STREAM_OK) {
+
+  }
+
+  s->mode = mode;
+
+  return s;
+}
+</code></pre>
+`open_stream_plugin()`函数处理的东西本身是比较复杂的，这里我仍然只列出本应用会执行的部分。
+其中的`new_stream()`只是创建一个`stream`对象，然后初始化这个对象里面的一些变量。
+主要的部分还是执行`sinfo->open(s,mode,arg,file_format);`。这里的回调函数`open`就是之前`stream_info_file`中的`open_f`。
+<pre><code>static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
+  int f;
+  mode_t m = 0;
+  off_t len;
+  unsigned char *filename;
+  struct stream_priv_s* p = (struct stream_priv_s*)opts;
+
+  if(mode == STREAM_READ)
+    m = O_RDONLY;
+  else if(mode == STREAM_WRITE)
+    m = O_RDWR|O_CREAT|O_TRUNC;
+
+  if(p->filename)
+    filename = p->filename;
+  else if(p->filename2)
+    filename = p->filename2;
+  else
+    filename = NULL;
+
+  m |= O_BINARY;
+
+  if(!strcmp(filename,"-")){
+
+  } else {
+      mode_t openmode = S_IRUSR|S_IWUSR;
+
+      f=open(filename,m, openmode);
+    if(f<0) {
+      m_struct_free(&stream_opts,opts);
+      return STREAM_ERROR;
+    }
+  }
+
+  len=lseek(f,0,SEEK_END); lseek(f,0,SEEK_SET);
+
+  if(len == -1) {
+    if(mode == STREAM_READ) stream->seek = seek_forward;
+    stream->type = STREAMTYPE_STREAM; // Must be move to STREAMTYPE_FILE
+    stream->flags |= MP_STREAM_SEEK_FW;
+  } else if(len >= 0) {
+    stream->seek = seek;
+    stream->end_pos = len;
+    stream->type = STREAMTYPE_FILE;
+  }
+
+  stream->fd = f;
+  stream->fill_buffer = fill_buffer;
+  stream->write_buffer = write_buffer;
+  stream->control = control;
+
+  m_struct_free(&stream_opts,opts);
+  return STREAM_OK;
+}
+</code></pre>
+上面代码实现的功能还是很清晰的，通过系统调用`f=open(filename,m, openmode);`打开我们传入的文件，然后将文件的描述符和文件大小信息注册进`stream`对象。
+另外就是注册`seek()`、`fill_buffer()`、`write_buffer()`和`control()`这4个回调函数。一切顺利的话，函数就返回`STREAM_OK`。
+追踪完`parse_playlist_file()`里的`open_stream()`，让我们回过头来继续下面的代码。
+`open_stream()`中打开了文件，接下来的`ret = parse_playtree(stream,1);`就是解析打开的文件，并最终生成`playtree`。
+`parse_playtree()`函数实现还是比较复杂的，涉及到树的操作，暂时就不张开分析，以后会单独拉出来进行详细分析。
+至此，我们差不多弄清了MPlayer中main函数中`m_config_parse_mp_command_line()`的实现细节。下面回到MPlayer中main中去。
+详细地见[下一篇](http://saiyn.github.io/homepage/2016/02/01/MPlayer-learn-2/)
+
+
+
+
+
+
+
+
+
+
