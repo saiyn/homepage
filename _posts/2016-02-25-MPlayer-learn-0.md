@@ -33,7 +33,7 @@ switch(val){
 		break;
 		
 	...
-}<\code></pre>
+}</code></pre>
 通过上面程序可以看出来，一般使用宏生成FOURCC.
 
 
