@@ -41,10 +41,17 @@ switch(val){
 -- by Mike Melanson, who has developed a number of open source decoders for the MPlayer.
 
 > Points:
-> 1.If the encoded data is stored in a media file format that MPlayer doesn't understand, then you will either need to 
+> 1. If the encoded data is stored in a media file format that MPlayer doesn't understand, then you will either need to 
 > somehow convert the format to a media file format that the program does understand, or write your own MPlayer file `demuxer`
 > that can handle the data.
-> 2.vv
+> 2. vv
+
+> Step:
+> 1. Modify the local copy of codecs.conf.
+> 2. Follow the ad_sample.c or vd_*.c to create a new source file which contains the main decoding function that MPlayer will call to decode data.
+> 3. Modify the Makefile so that it will compile your new source file.
+> 4. Add your codec to the array in ad.c or vd.c.
+
 
 
 
