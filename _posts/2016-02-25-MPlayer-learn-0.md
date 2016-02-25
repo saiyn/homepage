@@ -36,6 +36,17 @@ switch(val){
 }</code></pre>
 通过上面程序可以看出来，一般使用宏生成FOURCC.
 
+## A Guide To Developing MPlayer Codes -- by Mike Melanson, who has developed a number of open source decoders for the MPlayer.
+
+> Points:
+>
+> 1.If the encoded data is stored in a media file format that MPlayer doesn't understand, then you will either need to 
+> somehow convert the format to a media file format that the program does understand, or write your own MPlayer file `demuxer`
+> that can handle the data.
+> 2.
+
+
+
 
 
 
