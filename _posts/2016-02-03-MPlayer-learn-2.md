@@ -52,7 +52,20 @@ main:
 	    ......
 		/*为该音频流寻找最佳的codec*/
 		reinit_audio_chain();
-				->
+				->init_best_audio_codec();
+					->init_audio();
+						->{
+						    // ok, it matches all rules, let's find the driver!
+		                    for (i = 0; mpcodecs_ad_drivers[i] != NULL; i++){
+		                         if (!strcmp(mpcodecs_ad_drivers[i]->info->short_name, sh_audio->codec->drv)){
+				                     break;
+							 }
+							 /*mpcodecs_ad_drivers[]数组里面就是注册的各种codec了*/
+							 mpadec = mpcodecs_ad_drivers[i];
+		                  
+						  }
+		
+						  
 
 	3.2)  START PLAYING
 	/*真正开始输出音频数据*/
