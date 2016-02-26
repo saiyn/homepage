@@ -55,6 +55,38 @@ switch(val){
 > 4. Add your codec to the array in ad.c or vd.c.
 
 
+## 播放器一般原理
+
+<pre><code>
+
+Source filter -> 
+	Demux filter ->
+        -->Video Decoder filter  
+				-> Color Space Converter filter
+					->Video Render filter
+					
+		-->Audio Decoder filter
+			->Audio Render filter
+					
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
