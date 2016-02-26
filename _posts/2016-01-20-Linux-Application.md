@@ -153,6 +153,22 @@ pid值		|说明
 > 5. 关闭不再需要的文件描述符。
 > 6. 某些守护进程打开/dev/null使其具有描述符0，1和2.
 
+## 标准I/O库
+
+### 打开流
+
+下面3个函数打开一个标准I/O流。
+<pre><code>FILE *fopen(const char *restrict pathname, const char *restrict type);
+FILE *freopen(conat char *restrict pathname, const char *restrict type, FILE *restrict fp);
+FILE *fdopen(int fileds, const char *type);
+</code></pre>
+这三个函数的区别是：
+(1)fopen打开一个指定的文件。
+(2)freopen在一个指定的流上打开一个指定的文件，
+
+
+
+
 
 
 
