@@ -9,7 +9,7 @@ description: This homepage just for recording something about the sofeware knowl
 
 
 baseurl: /
-# url: "http://yourdomain.com" # the base hostname & protocol for your site
+url: http://saiyn.github.io/homepage
 # twitter_username: jekyllrb
 github_username:  saiyn
 permalink: /:year/:month/:day/:title/
