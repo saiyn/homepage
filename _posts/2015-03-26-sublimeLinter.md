@@ -199,8 +199,8 @@ SublimeLinter-jshint 是基于 nodeJS 下的 jshint 的插件，实际上 Sublim
 
 在编辑过程中，会有如下提示   
 
-![SublimeLinter-csslint-test](http://pan.baidu.com/s/1jHAivwa)
-/*![SublimeLinter-csslint-test](http://7q5cdt.com1.z0.glb.clouddn.com/SublimeLinter-csslint-test.jpg)*/
+![SublimeLinter-csslint-test](http://7q5cdt.com1.z0.glb.clouddn.com/SublimeLinter-csslint-test.jpg)
+![test](http://saiyn.github.io/homepage/_post/configyaml)
 
 点击提示点后，Sublime 状态栏也会有相应的说明   
 
