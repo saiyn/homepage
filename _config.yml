@@ -8,7 +8,7 @@ description: This homepage just for recording something about the sofeware knowl
 #   Google search results) and in your feed.xml site description.
 
 
-baseurl: /
+baseurl: /homepage
 url: http://saiyn.github.io/homepage
 # twitter_username: jekyllrb
 github_username:  saiyn
