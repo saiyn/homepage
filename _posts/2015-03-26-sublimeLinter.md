@@ -195,7 +195,9 @@ SublimeLinter-jshint 是基于 nodeJS 下的 jshint 的插件，实际上 Sublim
 	C:\Users\Administrator>csslint --version
 	v0.10.0
 
-现在，恭喜你，我们使用 Sublime 编辑 css 文件，就会有语法检查了！     
+现在，恭喜你，我们使用 Sublime 编辑 css 文件，就会有语法检查了！  
+
+   
 
 在编辑过程中，会有如下提示   
 
