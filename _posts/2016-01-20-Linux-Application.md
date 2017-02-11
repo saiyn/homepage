@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Linux 应用编程笔记"
+title:  "Linux 基础笔记"
 date:   2016-1-20 15:15:54
 categories: Linux-Application
 excerpt: linux
@@ -53,7 +53,7 @@ excerpt: linux
 
 6.inittab中的语法是:[设置选项]:[run levle]:[init的操作行为]:[命令选项].
 
-7.init的操作行为说明如下表:
+**init的操作行为说明如下表:**
 
 inittab设置值	|意义说明
 ------	|------
@@ -62,7 +62,26 @@ sysinit	|代表系统初始化的操作选项
 wait	|代表后面字段设置的命令项目必须要执行完毕才能继续下面其他的操作
 respawn	|代表后面的字段设置的命令可以重新启动
 
-8.
+**启动系统服务与相关启动配置文件**
+
+1.服务的启动是/etc/rc.d/rc文件以/etc/init.d/xxx{start,stop}来启动与关闭的。
+
+2./etc/rc.d/ 中的文件都是K和S开头的文件，后面接着的数字是表示该文件被执行的顺序，数字越大表示越后执行。
+
+3.最后一个被执行的选项是S99local,即是/etc/rc.d/rc.local这个文件。
+
+**用户自定义启动程序(/etc/rc.d/rc.local)**
+
+我们有任何想要在启动时就可以进行的工作，直接将它写入/etc/rc.d/rc.local就会在启动时候被自动加载。而
+不必等我们登陆系统去启动它。
+
+**启动过程中会用到的主要配置文件**
+
+1.启动过程中用到的配置文件大多数放置在/etc/sysconfig目录下。
+
+2.某些条件下我们得对模块进行一些参数的规划，此时要使用/etc/modprobe.conf。
+
+
 
 ---
 
