@@ -16,6 +16,10 @@ excerpt: linux
 ##	tcpdump
 
 
+![tcp-header](https://danielmiessler.com/images/tcp_header.png)
+
+
+
 ---
 
 
