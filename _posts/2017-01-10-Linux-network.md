@@ -15,6 +15,41 @@ excerpt: linux
 
 ##	tcpdump
 
+tcpdump根据使用者的定义对网络上的数据包进行截获分析，它可以将网络中传送的数据包头完整截获下来提供分析。它支持针对网络层，协议，主机，网络或者端口的过滤。
+
+### Options
+
+It's important to note that `tcpdump` only takes the first 96 bytes of data from a packet by default.
+
+
+-n	|names are not resolved,resulting in the IPs themselves always being displayed
+-nn	|don't resolved hostnames or port names
+-X	|displays both hex and ascii content within the packet
+-S	|changes the display of sequence numbers to absolute rather than relative
+-s	|change the number of bytes you want to capture,and 0 means gets everything
+-i eth0	|listen on the eth0 interface
+-D	|show the list of available interfaces
+-v,-vv,-vvv	|increase the amount of packet informaton you get back
+-c	|only get x number of packets and then stop
+icmp	|only get ICMP packets
+
+
+### Basic Usage
+
+
+
+
+### Examples
+
+### Writing to a File
+
+### Getting Creative
+
+### Advanced 
+
+
+
+
 
 ![tcp-header](https://danielmiessler.com/images/tcp_header.png)
 
