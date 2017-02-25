@@ -25,5 +25,9 @@ excerpt: english
 <pre><code>encapsulate--封装; decouple --去耦
 </code></pre>
 
+## 算法中常见的
+
+1.write a function to compute their intersection -- 计算交集
+
 ---
 
