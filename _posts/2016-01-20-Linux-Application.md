@@ -13,6 +13,30 @@ excerpt: linux
 
 ---
 
+## 存储映射I/O(mmap)
+
+存储映射I/O使一个磁盘文件与存储空间的一个缓冲区相映射，这样就不用执行read和write
+来读文件或者写缓存区。
+
+为了使用这种功能，应首先告诉内核将一个给定的文件映射到一个存储区域中。这是由mmap函数实现的。
+<pre><code>#include "sys/mman.h"
+void *mmap(void *addr, size_t len, int prot, int flag, int filedes, off_t off);
+</code></pre>
+
+addr 参数用于指定映射存储区的起始地址，通常设置为0,这样表示由系统选择该映射区的起始地址。此函数的返回地址是该映射区的起始地址。
+
+prot　参数说明对映射区的保护要求:
+
+prot	|说明
+---		|---
+PROT_READ	|映射区可读
+PROT_WRITE	|映射区可写
+PROT_EXEC	|映射区可执行
+PROT_NONE	|映射区不可访问
+
+
+
+
 ##	Linux启动
 
 ### 启动具体流程
