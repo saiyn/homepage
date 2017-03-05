@@ -29,5 +29,5 @@ saiyn是我在之前外企公司的英文名，也是我一直使用的英文名
 
 
 
-
-![kiss](http://coolshell.cn//wp-content/uploads/2013/01/kiss.png)
+---
+			![kiss](http://coolshell.cn//wp-content/uploads/2013/01/kiss.png)
