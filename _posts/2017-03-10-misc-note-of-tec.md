@@ -9,10 +9,12 @@ excerpt: unix linux note
 * content
 {:toc}
 
+
+![image](http://coolshell.cn//wp-content/uploads/2012/05/Banni%C3%A8re-Unix-linux.jpg)
+
 记下阅读一些技术书籍时的知识，或者是书中某个点引发的思想灵感。
 
 
-![image](http://coolshell.cn//wp-content/uploads/2016/10/drawing-recursive-300x204.jpg)
 
 ---
 
