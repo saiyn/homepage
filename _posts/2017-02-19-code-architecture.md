@@ -63,6 +63,9 @@ The compiler will be happy to accept code containing pointers to an incompletely
 Always #include A.h file to avoid hiding anything it is missing that gets included by other .h file.Then, if A's implementation code uses X, explicitly #include X.h in A.c, so A.c is not dependent on X.h accidentally being #included somewhere else.
 
 
+---
+
+
 ## Unix哲学
 
 ### 模块性
@@ -90,7 +93,16 @@ Always #include A.h file to avoid hiding anything it is missing that gets includ
 重构(refactoring)概念跟正交性紧密联系。重构代码就是改变代码的数据和组织，而不改变其外在行为。
 
 
+**胶合层**
 
+一般来说，设计函数和对象的层次结构时可以选择两个方向，一个是自底向上(Bottom-To-Top),从具体到抽象;另一个是自顶向下(Top-To-Bottom),从抽象到具体。两种方向都有各自的优缺点，Unix哲学鼓励程序员
+应该尽量双管齐下:一方面以自顶向下的应用逻辑来表达抽象规范，另一方面以函数和库来收集底层的域原语，这样，当高层设计变化时，这样域原语仍然可以重用。
+当自顶向下和自底向上发送冲突时，其结果往往是一团糟。顶层的应用逻辑和底层的域原语必须使用`胶合层`逻辑来进行阻抗匹配(impedance match).
+薄胶合层原则可以看作是分离原则的升华。策略(应用逻辑)应该与机制(域原语)清晰分离。如果许多代码即不属于策略又不属于机制，就很有可能除了增加系统的整体复杂度之外，没有任何其他用途。
+
+oo语言使抽象变得很容易－－也许是太容易了。OO语言鼓励具有后重的胶合和复杂层次的体系。所有的OO语言都显示出某种使程序员陷入过度分层陷阱的倾向。
+
+Unix风格程序设计所面临的主要挑战就是任何将分离法的优点同代码和设计的薄胶合，浅平透层次结构的优点相结合。
 
 
 
