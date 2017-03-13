@@ -92,6 +92,8 @@ Always #include A.h file to avoid hiding anything it is missing that gets includ
 
 重构(refactoring)概念跟正交性紧密联系。重构代码就是改变代码的数据和组织，而不改变其外在行为。
 
+对引起设计问题的特殊、意外的情况进行抽象、简化和概况，并尽量从中分离处理。
+
 
 **胶合层**
 
