@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Linux 基础笔记"
-date:   2016-1-20 15:15:54
+date:   2017-03-17 15:15:54
 categories: Linux-Application
 excerpt: linux
 ---
@@ -15,6 +15,8 @@ excerpt: linux
 
 ## 存储映射I/O(mmap)
 
+### 基本概念
+
 存储映射I/O使一个磁盘文件与存储空间的一个缓冲区相映射，这样就不用执行read和write
 来读文件或者写缓存区。
 
@@ -25,7 +27,7 @@ void *mmap(void *addr, size_t len, int prot, int flag, int filedes, off_t off);
 
 addr 参数用于指定映射存储区的起始地址，通常设置为0,这样表示由系统选择该映射区的起始地址。此函数的返回地址是该映射区的起始地址。
 
-prot　参数说明对映射区的保护要求:
+**prot　参数说明对映射区的保护要求:**
 
 prot	|说明
 ---		|---
@@ -36,7 +38,7 @@ PROT_NONE	|映射区不可访问
 
 对指定映射存储区的保护要求不能超过文件open模式访问权限。
 
-flag　参数影响映射存储区的多种属性:
+**flag　参数影响映射存储区的多种属性:**
 
 flag	|说明
 ---		|---
@@ -67,6 +69,18 @@ mmap/memcpy	|0.64	|1.31	|24.26
 
 
 如果考虑到时钟时间，那么mmap和memcpy方式比read/write方式要快。
+
+### /dev/zero的存储映射
+
+
+
+### 匿名存储映射
+
+在调用mmap时指定`MAP_ANON`标志，并将文件描述符指定为-1,就可以得到一个匿名的区域(因为它并不通过一个文件描述符与一个路径相结合)，并且创建一个可与后代进程共享的存储区。具体的调用方法如下:
+
+<pre><code>area = mmap(0,SIZE,PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0);
+</code></pre>
+
 
 
 
