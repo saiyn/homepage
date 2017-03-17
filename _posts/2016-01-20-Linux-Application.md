@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Linux 基础笔记"
-date:   2017-03-17 15:15:54
+date:   2016-01-20 15:15:54
 categories: Linux-Application
 excerpt: linux
 ---
