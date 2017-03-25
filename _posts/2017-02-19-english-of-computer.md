@@ -13,6 +13,11 @@ excerpt: english
 
 ---
 
+## ffmpeg相关的专业术语和缩写
+
+ACL -- Access Control List
+
+
 ## GPU领域的专业术语与缩写
 
 GEM -- Graphics Execution Manager

@@ -13,6 +13,28 @@ excerpt: linux
 
 ---
 
+## netstat
+
+今天在运行ffserver时出现`Address already in use`的错误提示，使用netstat工具去查看是哪个进程占用了端口号是一个不错的选择。现在记录一下netstat的一些用法。
+
+-a	|列出当前所有域的连接，包含TCP/IP域和UNIX域
+-tu	|只显示TCP/IP的连接信息
+-l	|只列出正在监听(LISTEN)状态的套接字
+-p	|查看连接所对应的进程名、进程号
+-e	|查看连接所对应的用户名
+-s	|列出所有网络包的统计情况
+-r	|显示内核路由信息
+-ie	|输出结果和ifconfig一致
+-g	|输出IPV4/V6的多播组信息
+-n	|禁用反向域名解析，加快查询速度
+
+下面是使用带`n`和不带的对比:
+
+![netstat_n](http://omp8s6jms.bkt.clouddn.com/image/git/netstat1.png)
+
+![netstat](http://omp8s6jms.bkt.clouddn.com/image/git/netstat2.png)
+
+
 ## 网络IPC:套接字
 
 SOCK_SEQPACKET 套接字类型和SOCK_RAW套接字类型很类似，但是该套接字得到的是基于报文的服务而不是字节流服务;SCTP(stream control transmission protocal)－－流控制传输协议提供的就是因特网域上的顺序数据包服务。
