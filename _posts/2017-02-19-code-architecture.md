@@ -107,6 +107,17 @@ oo语言使抽象变得很容易－－也许是太容易了。OO语言鼓励具�
 Unix风格程序设计所面临的主要挑战就是任何将分离法的优点同代码和设计的薄胶合，浅平透层次结构的优点相结合。
 
 
+## 开源软件(ffmpeg,vlc,gstreamer)架构分析与实际开发使用
+
+近一年多以来主要研究的开源软件都是音视频相关的，其中ffmpeg,vlc,gstreamer是开源软件中非常优秀而且使用率较高的。它们的架构中有非常相似的核心思想，这样综合分析比较学习研究这三款开源软件意义很大。
+
+### vlc
+
+One of the main concepts in vlc is "modularity".
+
+Vlc uses modules to do most of the work, at every stage of the pipeline. Modules are loaded accordingly at runtime depending on the necessity.
+
+Plugins modules are loaded and unloaded dynamically by functions in src/modules/modules.c.
 
 
 
