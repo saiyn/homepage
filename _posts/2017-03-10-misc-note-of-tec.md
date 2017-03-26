@@ -18,6 +18,27 @@ excerpt: unix linux note
 
 ---
 
+
+## 流媒体协议中的Timestamp机制
+
+各种音视频处理中都会涉及音频数据和视频数据的打包封装传输处理，这时都会在一包数据头部添加timestamp信息。例如，MPEG-2协议、RTP协议的头部都包含这个字段，而且它们的含义和用法是一致的。下面的说明来自RTP协议开发人员的回答。
+
+**Practically speaking, how is the timestamp computed?**
+
+For audio, the timestamp is incremented by the packetization interval times the samping rate(数据包的时间跨度乘以采样率). For example, for audio packets containing 20ms of audio sampled at 8000Hz. The timestamp for each block of audio inreases by 160, even if the block is not sent due to silence suppression. Also, note that the actual samplig rate will differ slightly from this nominal rate, but the sender typically has no reliable way to measure this divergence.For video, time clock rate is fixed at 90kHz. The timestamp generated depend on whether the application can determine the frame number or not. If it can or it can be sure that it is transmitting every frame with a fixed frame rate, the timestamp is governed by the nominal frame rate. Thus, for a 30fps video, timestamps would increase by 3000 for each frame. If a frame is transmitted as several RTP packets, these packets would all bear the same timestamp. If the frame number cannot be determined or if frames are sampled aperidcally, as is typically the case for software codecs, the timestamp has to be computed from the system clock(e.g gettimeifday()).
+
+
+**In a multimedia conference, are the initial timestamp values related?**
+
+No, initial time stamp values are picked randomly and independently for each RTP stream. Synchronization between different media is performed by receivers through the NTP(一个网络时间协议) timestamps in the RTCP sender reports. This timestamp provides a common time reference that associates a media-specific RTP timestamp with the common "wallclock" time shared across media.
+
+
+
+
+
+
+---
+
 ## 多进程还是多线程
 
 从入职接触到我司项目代码开始，一直有个疑问，对于这么复杂庞大的音视频项目软件，是否需要使用多进程，还是说使用多线程是最佳解决方案。
@@ -33,7 +54,7 @@ Multi-process approach wasn't chosen either, because multi-process decoders usua
 在我看来，如果使用多进程的话，首先得为多进程之间的通信制定良好的通信协议。而且，音视频领域的软件需要交互大量的音视频数据，使用进程间的通信进行大量数据传输可能带来非常大的开销。而多线程天生的优势就是隐式的自动的提供无任何消耗的共享内存通信机制。
 
 
-
+---
 
 ## Form 《The art of unix programming》
 

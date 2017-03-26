@@ -13,10 +13,26 @@ excerpt: english
 
 ---
 
-## ffmpeg相关的专业术语和缩写
+## 音视频领域相关的专业术语和缩写
 
 ACL -- Access Control List
 
+RTSP -- RealTime Stream Protocol
+
+RTP  -- RealTime Transport Protocol
+
+RTCP -- RTP Control Protocol
+
+While HTTP is stateless,RTSP has state;an identifier is used when needed to `track concurrent sessions`. -- 追踪并发的会话
+
+RTP is used `in conjunction with` the RTCP. While RTP carries the media streams, RTCP is used to monitor transmission statistics and quality of service and aids synchronization of multiple streams. -- 与。。。协力
+
+The protocol provides facilities for `jitter compensation` and detection of out of sequence arrival in data, which are common during transmissions on an IP network. -- 抖动补偿
+
+
+  
+
+---
 
 ## GPU领域的专业术语与缩写
 
@@ -39,6 +55,8 @@ GEM buffer objects are often abbreviated to BO
 3.This is a powerful technique for encapsulating a module and decoupling it from other modules.--这是一个非常有效的封装化模块以及解除模块之间耦合的技术手法。
 <pre><code>encapsulate--封装; decouple --去耦
 </code></pre>
+
+---
 
 ## 算法中常见的
 
