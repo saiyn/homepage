@@ -56,6 +56,8 @@ GEM buffer objects are often abbreviated to BO
 <pre><code>encapsulate--封装; decouple --去耦
 </code></pre>
 
+modular structure -- 模块化结构
+
 ---
 
 ## 算法中常见的
