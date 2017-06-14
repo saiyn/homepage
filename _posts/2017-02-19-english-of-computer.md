@@ -40,6 +40,13 @@ GEM -- Graphics Execution Manager
 
 GEM buffer objects are often abbreviated to BO
 
+CRTC -- 
+
+Streams the framebuffer following the screen's timings
+
+DRM -- Direct Rendering Manager
+
+exports GPU primitives(原语)
 ---
 
 ## 架构相关

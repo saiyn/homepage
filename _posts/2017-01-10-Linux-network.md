@@ -34,6 +34,7 @@ excerpt: linux
 
 ![netstat](http://omp8s6jms.bkt.clouddn.com/image/git/netstat2.png)
 
+---
 
 ## 网络IPC:套接字
 
@@ -43,7 +44,9 @@ SOCK_RAW套接字提供一个数据报接口用于直接访问下面的网络层
 使用这个接口时，应用程序负责构造自己的协议首部，这是因为传输协议(TCP、UDP)被绕开了。当创建一个原始套接字时需要有超级用户特权，用以防止恶意程序绕过安全机制。
 
 
-##	tcpdump
+---
+
+##	> tcpdump
 
 tcpdump根据使用者的定义对网络上的数据包进行截获分析，它可以将网络中传送的数据包头完整截获下来提供分析。它支持针对网络层，协议，主机，网络或者端口的过滤。
 
@@ -96,11 +99,24 @@ icmp	|only get ICMP packets
 
 ![catch-set](http://www.bo56.com/wp-content/uploads/2014/11/wireshark_catch_set.png)
 
+
 这里面主要有两个设置，一个是设置混杂模式(promiscuous mode)，使能该模式就可以捕获局域网内所有的数据包，否则你只能捕获发往你主机或者从你主机出去的数据包。
 
 另一个设置项是捕获过滤条件(capture filter),注意它不同于后面将要提到的显示过滤条件。如果我们只想捕获http相关的数据包，我们就可以设置捕获过滤条件为"port 80"
 
 ### 使用显示过滤器
+
+在Filter对话框里面可以直接填写过滤条件，常见的如指定只想查看某个ip过来的所有数据包，如下图所示:
+
+![filter](http://omp8s6jms.bkt.clouddn.com/image/git/filter_ip.PNG)
+
+
+我们同时限定了源ip和目的ip。另外，当我们想将我们过滤好的数据包生成新的抓包文件时，如下图所示，点击`Export special pakcts as...`，进行保存即可。
+
+![save_spe](http://omp8s6jms.bkt.clouddn.com/image/git/save_s.PNG)
+
+
+
 
 点击显示表达式按钮(Expression),对应对话框如下:
 
@@ -144,6 +160,7 @@ lower(mount.dump.hostnmae) == "BO56.COM"
 
 ![color-rules](http://www.bo56.com/wp-content/uploads/2014/11/wireshark_color_rules.jpg)
 
+
 对话框已经包含了很多已经存在的规则，如果要新建则点击"New",弹出对话框如下:
 
 
@@ -172,9 +189,9 @@ string字段填写过滤规则，这里的语法和显示规则表达式一致�
 
 
 
+上图中底部有个下拉框，默认是如图的`Entire conversation`，即上面的stream content是tcp两端对话的往返流，有时我们只需要分析单向的流数据，如下图，这时可以点击下拉框，选择我们想指定的一个数据流向。
 
-
-
+![stream](http://omp8s6jms.bkt.clouddn.com/image/git/direction.PNG)
 
 
 
