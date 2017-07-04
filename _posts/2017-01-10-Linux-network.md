@@ -46,7 +46,7 @@ SOCK_RAW套接字提供一个数据报接口用于直接访问下面的网络层
 
 ---
 
-##	> tcpdump
+##	tcpdump
 
 tcpdump根据使用者的定义对网络上的数据包进行截获分析，它可以将网络中传送的数据包头完整截获下来提供分析。它支持针对网络层，协议，主机，网络或者端口的过滤。
 
@@ -63,16 +63,29 @@ It's important to note that `tcpdump` only takes the first 96 bytes of data from
 -i eth0	|listen on the eth0 interface
 -D	|show the list of available interfaces
 -v,-vv,-vvv	|increase the amount of packet informaton you get back
+-tttt	|give maximally human-readable timestamp output
 -c	|only get x number of packets and then stop
 icmp	|only get ICMP packets
 
 
 ### Basic Usage
 
+如果想得到和wireshark软件中默认的抓包显示效果，可以执行:
 
+> # tcpdump -nnvS -s 0
 
+如果比较关心数据包的时间值，可以添加`-tttt`,即执行:
 
-### Examples
+> # tcpdump -ttttnnvS -s 0
+
+上面的`-s 0`表示不对抓取的数据量做限制，运行实际效果如下图。
+
+![nnvs](http://omp8s6jms.bkt.clouddn.com/image/git/verbase.PNG)
+
+如果想查看所抓包里面的具体二进制内容，可以添加`-X`选项，同时为了控制所抓包的数量，添加`-c`选项。下面就是从送往ip:172.8.1.98的数据包中抓取2个数据包进行内容查看。
+
+![X_dst](http://omp8s6jms.bkt.clouddn.com/image/git/tcp_c2.PNG)
+
 
 ### Writing to a File
 
