@@ -77,11 +77,13 @@ icmp	|only get ICMP packets
 ### Basic Usage
 
 如果想得到和wireshark软件中默认的抓包显示效果，可以执行:
-<pre><code>#tcpdump -nnvS -s 0
-</code></pre>
+
+`#tcpdump -nnvS -s 0`
+
 如果比较关心数据包的时间值，可以添加`-tttt`,即执行:
-<pre><code>#tcpdump -ttttnnvS -s 0
-</code></pre>
+
+`#tcpdump -ttttnnvS -s 0`
+
 
 上面的`-s 0`表示不对抓取的数据量做限制，运行实际效果如下图。
 
@@ -99,30 +101,30 @@ icmp	|only get ICMP packets
 </code></pre>
 
 
-### Advanced 
+> ### Advanced 
 
 组合起各种选项设置可以实现非常强大的功能。实现组合的三种方式为:
 
 > 1. AND 	-- and or &&
-> 2. OR  	-- or  or ||
+> 2. OR  	-- or  or ｜｜
 > 3. EXCEPT -- not or !
 
 
 指定源ip和目的端口
 
-'tcpdump -nnvvS src 172.8.1.98 and dst port 37777'
+`#tcpdump -nnvvS src 172.8.1.98 and dst port 37777`
 
 查看所有192.168.x.x网段内到10.x网段或者到172.16.x.x网段的数据包
 
-'tcpdump -nvX src net 192.168.0.0/16 and dst net 10.0.0.0/8 or 172.16.0.0/16'
+`#tcpdump -nvX src net 192.168.0.0/16 and dst net 10.0.0.0/8 or 172.16.0.0/16`
 
 过滤掉发往某个ip的icmp数据包
 
-`tcpdump dst 192.168.0.2 and src net and not icmp`
+`#tcpdump dst 192.168.0.2 and src net and not icmp`
 
 当我们使用更加复杂的过滤选项时，有时我们需要使用单引号来规避特殊符号的干扰
 
-例如`tcpdump src 10.0.2.4 and (dst port 3389 or 22)`这样的写法是错误的，应该是`tcpdump 'src 10.0.2.4 and (dst port 3389 or 22)'`
+例如`#tcpdump src 10.0.2.4 and (dst port 3389 or 22)`这样的写法是错误的，应该是`#tcpdump 'src 10.0.2.4 and (dst port 3389 or 22)'`
 
 
 ![tcp-header](https://danielmiessler.com/images/tcp_header.png)
