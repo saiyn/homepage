@@ -50,7 +50,7 @@ SOCK_RAW套接字提供一个数据报接口用于直接访问下面的网络层
 
 tcpdump根据使用者的定义对网络上的数据包进行截获分析，它可以将网络中传送的数据包头完整截获下来提供分析。它支持针对网络层，协议，主机，网络或者端口的过滤。
 
-### Options
+> ### Options
 
 It's important to note that `tcpdump` only takes the first 96 bytes of data from a packet by default.
 
@@ -74,7 +74,7 @@ icmp	|only get ICMP packets
 > * Protocol 主要让你限定数据包所属的协议类型，必然tcp,udp,icmp,ah等等.
 
 
-### Basic Usage
+> ### Basic Usage
 
 如果想得到和wireshark软件中默认的抓包显示效果，可以执行:
 
@@ -94,7 +94,7 @@ icmp	|only get ICMP packets
 ![X_dst](http://omp8s6jms.bkt.clouddn.com/image/git/tcp_c2.PNG)
 
 
-### Writing to a File
+> ### Writing to a File
 
 其实通常的情况是，我们在设备上通过tcpdump工具抓包保存到文件中，然后通过图形化的软件wireshark来分析数据。tcpdump保存的文件格式类型是PCAP.执行命令中添加`-w`选项即可。例如:
 <pre><code>#tcpdump port 80 -w cap_file
@@ -105,9 +105,11 @@ icmp	|only get ICMP packets
 
 组合起各种选项设置可以实现非常强大的功能。实现组合的三种方式为:
 
-> 1. AND 	-- and or &&
-> 2. OR  	-- or  or ｜｜
-> 3. EXCEPT -- not or !
+1. AND 	-- and or &&
+
+2. OR  	-- or  or ｜｜
+
+3. EXCEPT -- not or !
 
 
 指定源ip和目的端口
@@ -130,6 +132,40 @@ icmp	|only get ICMP packets
 ![tcp-header](https://danielmiessler.com/images/tcp_header.png)
 
 > 下面借助上图介绍如何通过TCP FLAGS来进行过滤。
+
+过滤出所有URG packets
+
+`#tcpdump 'tcp[13]&32 !=0'`
+
+过滤出所有ACK packets
+
+`#tcpdump 'tcp[13]&16 != 0'`
+
+过滤出所有RST packets
+
+`#tcpdump 'tcp[13]&8 != 0'`
+
+过滤出所有SYNACK(SYNCHRONIZE/ACKNOWLEDGE) packets
+
+`#tcpdump 'tcp[13]=18'`
+
+> 下面介绍几个需要死记但是非常实用的过滤条件
+
+packets with both the RST and SYN flags set
+
+`#tcpdump 'tcp[13]=6'`
+
+find cleartext http GET requests
+
+`#tcpdump 'tcp[32:4]=0x47455420'`
+
+find SSH connections on any port(via banner text)
+
+`#tcpdump 'tcp[(tcp[12]>>2):4] = 0x5353482d'`
+
+find packets with a TTL less than 10(usually indicates a problem or use of TRACEROUTE)
+
+`#tcpdump 'ip[8]<10'`
 
 
 
