@@ -67,16 +67,21 @@ It's important to note that `tcpdump` only takes the first 96 bytes of data from
 -c	|only get x number of packets and then stop
 icmp	|only get ICMP packets
 
+有三个主要的types of expression: type,dir,and proto.
+
+> * Type options 主要包含:host,net,and port.
+> * Direction lets you do src,dst,and combinations thereof.
+> * Protocol 主要让你限定数据包所属的协议类型，必然tcp,udp,icmp,ah等等.
+
 
 ### Basic Usage
 
 如果想得到和wireshark软件中默认的抓包显示效果，可以执行:
-
-> # tcpdump -nnvS -s 0
-
+<pre><code>#tcpdump -nnvS -s 0
+</code></pre>
 如果比较关心数据包的时间值，可以添加`-tttt`,即执行:
-
-> # tcpdump -ttttnnvS -s 0
+<pre><code>#tcpdump -ttttnnvS -s 0
+</code></pre>
 
 上面的`-s 0`表示不对抓取的数据量做限制，运行实际效果如下图。
 
@@ -89,15 +94,40 @@ icmp	|only get ICMP packets
 
 ### Writing to a File
 
-### Getting Creative
+其实通常的情况是，我们在设备上通过tcpdump工具抓包保存到文件中，然后通过图形化的软件wireshark来分析数据。tcpdump保存的文件格式类型是PCAP.执行命令中添加`-w`选项即可。例如:
+<pre><code>#tcpdump port 80 -w cap_file
+</code></pre>
+
 
 ### Advanced 
 
+组合起各种选项设置可以实现非常强大的功能。实现组合的三种方式为:
+
+> 1. AND 	-- and or &&
+> 2. OR  	-- or  or ||
+> 3. EXCEPT -- not or !
 
 
+指定源ip和目的端口
+
+'tcpdump -nnvvS src 172.8.1.98 and dst port 37777'
+
+查看所有192.168.x.x网段内到10.x网段或者到172.16.x.x网段的数据包
+
+'tcpdump -nvX src net 192.168.0.0/16 and dst net 10.0.0.0/8 or 172.16.0.0/16'
+
+过滤掉发往某个ip的icmp数据包
+
+`tcpdump dst 192.168.0.2 and src net and not icmp`
+
+当我们使用更加复杂的过滤选项时，有时我们需要使用单引号来规避特殊符号的干扰
+
+例如`tcpdump src 10.0.2.4 and (dst port 3389 or 22)`这样的写法是错误的，应该是`tcpdump 'src 10.0.2.4 and (dst port 3389 or 22)'`
 
 
 ![tcp-header](https://danielmiessler.com/images/tcp_header.png)
+
+> 下面借助上图介绍如何通过TCP FLAGS来进行过滤。
 
 
 
