@@ -3,7 +3,7 @@ layout: post
 title:  "常用Shell技能"
 date:   2015-10-20 15:15:54
 categories: Linux
-excerpt: 只记录平时开发中会长用的，太全太详细的shell命令没有必要。
+excerpt: linux shell
 ---
 
 * content
@@ -12,6 +12,22 @@ excerpt: 只记录平时开发中会长用的，太全太详细的shell命令没
 本文只记录一下平时开发经常会用到的Shell命令，一些细节记录下来方便以后查找。
 
 ---
+
+## objdump
+
+代码实例是[C学习笔记](http://saiyn.github.io/homepage/2016/08/07/C/)一文中`地址无关代码`小节中的代码。
+
+参数`-h`就是把ELF文件的各个段的基本信息打印出来。
+
+![obi_h](http://omp8s6jms.bkt.clouddn.com/image/git/obj_h.png)
+
+参数`-d`是将所有包含指令的段进行反汇编。
+
+![obj_d](http://omp8s6jms.bkt.clouddn.com/image/git/obj_d.png)
+
+
+
+
 
 ## 重定向
 
