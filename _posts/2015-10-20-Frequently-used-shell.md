@@ -25,7 +25,9 @@ excerpt: linux shell
 
 ![obj_d](http://omp8s6jms.bkt.clouddn.com/image/git/obj_d.png)
 
+ELF文件中一个非常重要的段是`.dynamic`，它是专门用于动态链接的，这个段里面保存了动态链接器所需要的基本信息，具体相关说明见[c学习笔记](http://saiyn.github.io/homepage/2016/08/07/C/)。参数`-R`就是用来查阅`.dynamic`段中相关信息的。
 
+![obj_R](http://omp8s6jms.bkt.clouddn.com/image/git/obj_R.png)
 
 
 
