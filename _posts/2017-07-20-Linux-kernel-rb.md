@@ -428,6 +428,137 @@ break;
 
 经过上面的分类处理之后，有些情况需要调用`____rb_erase_color()`函数继续进行再平衡处理，该函数实现较为复杂，这里不再展开。
 
+---
 ### 遍历
+
+二叉树所有操作中遍历的实现是最简单的，也是二叉树的价值所在，前面所有的操作都是为了最后遍历的方便和高效。Linux内核中总共提供4个函数实现中序遍历:
+
+	struct rb_node *rb_first(struct rb_root *tree);
+	struct rb_node *rb_last(struct rb_root *tree);
+	struct rb_node *rb_next(struct rb_node *node);
+	struct rb_node *rb_prev(struct rb_node *node);
+
+其中，rb_first()和rb_next()配合实现升序中序遍历，rb_last()和rb_prev()配合实现降序中序遍历。示列代码如下:
+
+	struct rb_node *node;
+	for(node = rb_first(&mytree); node; node = rb_next(node))
+		printk("key = %s\n", rb_entry(node, struct mytype, node)->keystring);
+
+	
+
+
+下面是代码的具体实现:
+
+	struct rb_node *rb_first(const struct rb_root *root)
+	{
+		struct rb_node *n;
+
+		n = root->rb_node;
+		if(!n)
+			return NULL;
+
+		while(n->rb_left)
+			n = n->rb_left;
+		
+
+		return n;
+	}
+
+
+	struct rb_node *rb_last(const struct rb_root *root)
+	{
+		struct rb_node *n;
+
+		n = root->rb_node;
+		if(!n)
+			return NULL;
+
+		while(n->rb_right)
+			n = n->rb_right;
+		
+
+		return n;
+	}
+
+
+
+	struct rb_node *rb_next(const struct rb_node *node)
+	{
+		struct rb_node *parent;
+
+		if(RB_EMPTY_NODE(node))
+			return NULL;
+		
+		/**
+		 * If we have a right-hand child, go down and then left as far
+		 * as we can.
+		 */
+
+		if(node->rb_right){
+			node = node->rb_right;
+			while(node->rb_left)
+				node = node->left;
+			
+			return (struct rb_node *)node;
+		}
+
+
+		/**
+		 * No right-hand children. Everything down and left is smaller than us,
+		 * so any 'next' node must be in the general direction of ouf parent,
+		 * Go up the tree;any time the ancestor is a right-hand chile of its
+		 * parent, keep going up. 
+		 */
+
+		while(parent = rb_parent(node) && node == parent->rb_right)
+			node = parent;
+		
+		return parent;
+	}
+
+
+在中序进行升序遍历时，我们先主要考虑当前节点有右子树的情况。试想，如果整个红黑树没有右子树时，遍历将会是多简单。
+
+	
+	struct rb_node *rb_prev(const struct rb_node *node)
+	{
+		struct rb_node *parent;
+	
+		if(RB_EMPTY_NODE(node))
+			return NULL;
+
+		/**
+		 * If we have a left-hand child, go down and then right as
+		 * far as we can.
+		 */
+
+		if(node->rb_left){
+			node = node->rb_left;
+			while(node->rb_right)
+				node = node->rb_right;
+
+			return (struct rb_node *)node;
+		}
+
+		/**
+		 * No left-hand children. Go up till we find an ancestot which
+		 * is a right-hand chlid of its parent.
+		 */
+
+		while((parent = rb_parent(node)) && node == parent->rb_left)
+			node = parent;
+
+		return parent;
+	}
+
+---
+## 在应用程序中使用
+
+---
+## 内核驱动中的使用的分析
+
+---
+## 在自制内存泄露检查工具中的使用
+
 
 
