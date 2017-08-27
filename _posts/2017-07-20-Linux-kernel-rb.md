@@ -363,7 +363,7 @@ break;
 
 从上面骨架代码可见，删除节点时，主要分成３种情况，下面结合示意图分析具体实现细节:
 
-1. 待删除的节点只有一个或者没有子树,这种情况最简单。
+* 1) 待删除的节点只有一个或者没有子树,这种情况最简单。
 
 ![no_l_r](http://omp8s6jms.bkt.clouddn.com/image/git/no_l_o_r.png)
 
@@ -393,7 +393,7 @@ break;
 	}
 
 
-2. 待删除节点的successor 是他的右子树。这里需要解释一下binary tree中的`in-order predecessor`和`in-order successor`概念。
+* 2) 待删除节点的successor 是他的右子树。这里需要解释一下binary tree中的`in-order predecessor`和`in-order successor`概念。
 
 ![pre_suc](http://omp8s6jms.bkt.clouddn.com/image/git/pre_succ.png)
 
@@ -410,7 +410,7 @@ break;
 	}
 
 
-3. 待删除节点的successor是其右子树中的leftmost,这种情况最为复杂。
+* 3) 待删除节点的successor是其右子树中的leftmost,这种情况最为复杂。
 
 ![case3](http://omp8s6jms.bkt.clouddn.com/image/git/case3.png)
 
