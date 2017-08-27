@@ -284,20 +284,150 @@ break;
 
 </code></pre>
 
+---
 ### 删除
 
+对于删除一个已经存在的节点，首先我们自己实现通过键值寻找到相应的节点，然后调用`rb_erase()`进行实际的删除操作。事例代码如下:
+
+	struct mytype *data = mysearch(&mytree, "saiyn");
+
+	if(data){
+		rb_erase(&data->node, &mytree);
+		myfree(data);
+	}
 
 
+下面来具体分析`rb_erase()`函数的实现:
+
+	void rb_erase(struct rb_node *node, struct rb_root *root)
+	{
+		struct rb_node *rebalance;
+
+		rebalance = __rb_erase_augmented(node, root, &dummy_callbacks);
+		if(rebalance)
+			____rb_erase_color(rebalance, root, dummy_ratate);
+	}
 
 
+上面函数中，通过`__rb_erase_augmented()`函数先进行节点的删除，有些节点删除后需要进行平衡调整的则继续调用`____rb_erase_color()`函数。__rb_erase_augmented()的函数骨架如下:
+
+	struct rb_node *__rb_erase_augmented(struct rb_node *node, struct rb_root *root, const struct rb_augment_callbacks *augment)
+	{
+		struct rb_node *child = node->rb_right;
+		struct rb_node *tmp = node->rb_left;
+
+		if(!tmp || !child){
+			/**
+			 * case 1: node to erase has no more then 1 child.
+			 *
+			 * Note that if there is one child it must be red duo to 5)
+			 * and node must be black duo to 4). We adjust colors locally
+			 * so as to bypass __rb_erase_color() later on.
+			 */
+							
+			...
 
 
+		}else{
+			
+			struct rb_node *successor = child, *child2;
+
+			tmp = child->rb_left;
+
+			if(!tmp){
+				/**
+				 * case 2: node's successor is its right child
+				 *
+				 */
+			
+				...
+
+			}else{
+
+				/**
+				 * case 3: node's successor is leftmost under
+				 * node's right child subtree
+				 */
+
+				...
+			}
+	
+			...
+
+		}
+		
+		augment->propagate(tmp,NULL);
+		return rebalance;
+	}
 
 
+从上面骨架代码可见，删除节点时，主要分成３种情况，下面结合示意图分析具体实现细节:
+
+1. 待删除的节点只有一个或者没有子树,这种情况最简单。
+
+![no_l_r](http://omp8s6jms.bkt.clouddn.com/image/git/no_l_o_r.png)
+
+	if(!tmp){ /* 无左子树 */
+		pc = node->__rb_parent_color;
+		parent = __rb_parent(pc);
+		__rb_change_child(node, child, parent, root); /* 将node替换成child */
+		if(child){
+			/**
+			 * 如果右子树存在，则更新一下其属性即可。
+			 */
+			child->__rb_parent_color = pc;
+			rebalance = NULL;
+		}else{
+			/**
+			 * 如果右子树也不存在，那么如果被删除节点是黑色的那么就需要进行再平衡处理。
+			 */	
+			rebalance = __rb_is_black(pc) ? parent : NULL;
+		}
+		tmp = parent;
+	}else if(!child){ /* 无右子树 */
+		tmp->__rb_parent_color = pc = node->__rb_parent_color;
+		parent = __rb_parent(pc);
+		__rb_change_child(node, tmp, parent, root);
+		rebalance = NULL;
+		tmp = parent;
+	}
 
 
+2. 待删除节点的successor 是他的右子树。这里需要解释一下binary tree中的`in-order predecessor`和`in-order successor`概念。
+
+![pre_suc](http://omp8s6jms.bkt.clouddn.com/image/git/pre_succ.png)
+
+如上图所示，节点4就是节点3的`in-order successor`，意思据说4节点是3节点左子树中排序上紧跟其后的节点。节点8的`in-order predecessor`是节点7。概念清楚后，这里的case2就很好理解了。
+
+![case2](http://omp8s6jms.bkt.clouddn.com/image/git/case2.png)
+
+	struct rb_node *successor = child, *child2;
+
+	tmp = child->rb_left;
+	if(!tmp){
+		parent = successor;
+		child2 = sucessor->rb_right;
+	}
 
 
+3. 待删除节点的successor是其右子树中的leftmost,这种情况最为复杂。
 
+![case3](http://omp8s6jms.bkt.clouddn.com/image/git/case3.png)
+
+	do{
+		parent = successor;
+		successor = tmp;
+		tmp = tmp->rb_left;
+	}while(tmp);
+
+	child2 = successor->rb_right;
+	WRITE_ONCE(parent->rb_left, child2);
+	WRITE_ONCE(successor->rb_right, child);
+	rb_set_parent(child, successor);
+
+
+经过上面的分类处理之后，有些情况需要调用`____rb_erase_color()`函数继续进行再平衡处理，该函数实现较为复杂，这里不再展开。
+
+### 遍历
 
 
