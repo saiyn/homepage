@@ -52,9 +52,10 @@ unix系统中使用两种不同的时间值，日历时间和进程时间。
 来读文件或者写缓存区。
 
 为了使用这种功能，应首先告诉内核将一个给定的文件映射到一个存储区域中。这是由mmap函数实现的。
-<pre><code>#include "sys/mman.h"
-void *mmap(void *addr, size_t len, int prot, int flag, int fd, off_t off);
-</code></pre>
+
+	#include <sys/mman.h?
+	void *mmap(void *addr, size_t len, int prot, int flag, int fd, off_t off);
+
 
 **addr参数** 用于指定映射存储区的起始地址，通常设置为0,这样表示由系统选择该映射区的起始地址。此函数的返回地址是该映射区的起始地址。
 
@@ -118,9 +119,43 @@ mmap/memcpy	|0.64	|1.31	|24.26
 
 在实际项目中我们经常会碰到这样的寻求，我们需要一个数组来做映射表，有时键值是不连续的整形，而且有的会很大。这时我们会"痛苦"地发现，直接通过 `int array[MAX_SIZE]`使用静态内存，还是 `int *array = malloc(MAX_SIZE)`动态申请内存，都不太合适，因为我们机器的内存还是很紧俏的，不太可能随随便便申请百兆甚至上G的内存。通过使用匿名存储映射实现我们的虚拟内存分配函数可以巧妙的解决我们的烦恼。
 
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <unistd.h>
+	#include <sys/mman.h>
+	#include <errno.h>
+	#include <string.h>
 	
+	#define MAX_OBJECTS (1000000000ULL)
+	#define PAGE_SIZE sysconf(_SC_PAGE_SIZE)
+	
+	static void *virtual_alloc(size_t size)
+	{	
+		void *ptr;
+		
+		ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1,0);
+		
+		return ptr;
+	}
+	
+	int main()
+	{
+		int *array = virtual_alloc(MAX_OBJECTS * sizeof(int));
+		
+		if(!array)
+		{
+			printf("virtual_alloc fail, %d - %s\n", errno, strerror(errno));
+			return -1;
+		}
+		
+		array[100000] = 12345678;
+		
+		printf("value: %d\n", array[100000]);
+		
+		return 0;
+	}
 
-
+编译执行代码，发现在只有2G内存的机器上也是正常运行的，而我们上面分配的虚拟内存为8G，这就证明了mmap只是从虚拟内存中申请地址空间。目前的处理器基本上都是64位的了，理论上虚拟地址空间总共2的64次方大小，虽然实际上目前的硬件只实现了48位地址线，那也是256TB的空间，足够大了。
 
 
 
