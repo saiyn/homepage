@@ -53,7 +53,7 @@ unix系统中使用两种不同的时间值，日历时间和进程时间。
 
 为了使用这种功能，应首先告诉内核将一个给定的文件映射到一个存储区域中。这是由mmap函数实现的。
 
-	#include <sys/mman.h?
+	#include <sys/mman.h>
 	void *mmap(void *addr, size_t len, int prot, int flag, int fd, off_t off);
 
 
@@ -153,7 +153,37 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 
 下面我们自己实现一个驱动和一个应用程序，完整的展现一下mmap的运用。首先在驱动程序中分配一页大小的内存，然后应用程序通过mmap将这块内存映射进用户空间。映射完成后，驱动程序往这块内存填写一些数据，然后应用进程打印出这些数据。
 
+	#include <linux/miscdevice.h>  
+	#include <linux/kernel.h>  
+	#include <linux/module.h>  
+	#include <linux/init.h>  
+	#include <linux/mm.h>  
+	#include <linux/fs.h>  
+	#include <linux/types.h>  
+	#include <linux/errno.h>  
+	#include <linux/ioctl.h>  
+	#include <linux/cdev.h>  
+	#include <linux/string.h>  
+
+	static unsigned char *buf;
+
+	static int saiyn_mmap(struct file *filp, struct vm_area_struct *vma)
+	{
+		unsigned long page;
+		long size = vma->end - vma->start;
+		
+		page = virt_to_phys(buf);
+		
+		if(remap_pfn_range(vma, vma->start, page >> PAGE_SHIFT, size, PAGE_SHARED))
+		{
+			printk("remap_pfn_range fail.\n");
+			return -1;
+		}
+		
+		strcpy(buf, "saiyn mmap");
 	
+		
+	}
 
 ---
 
@@ -210,7 +240,7 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 
 编译执行代码，发现在只有2G内存的机器上也是正常运行的，而我们上面分配的虚拟内存为8G，这就证明了mmap只是从虚拟内存中申请地址空间。目前的处理器基本上都是64位的了，理论上虚拟地址空间总共2的64次方大小，虽然实际上目前的硬件只实现了48位地址线，那也是256TB的空间，足够大了。
 
-
+更多关于virtual memory的tricks见[这篇文章](http://ourmachinery.com/post/virtual-memory-tricks/)
 
 
 ---
