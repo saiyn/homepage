@@ -104,6 +104,59 @@ mmap/memcpy	|0.64	|1.31	|24.26
 
 ---
 
+**实例分析**
+
+alsa中，应用空间和内核空间分别维护着ring buffer的读写指针，这个ring buffer是用来缓存播放数据或者是采集数据的。为了保证ring buffer的
+状态信息在应用层和内核层的同步性，alsa-lib通过mmap将驱动中的变量之间映射到用户空间进行操作。
+	
+	/**
+	 * alsa-lib/src/pcm/pcm_hw.c
+	 */
+	 
+	enum{
+		SNDRV_PCM_MMAP_OFFSET_DATA = 0X00000000,
+		SNDRV_PCM_MMAP_OFFSET_STATUS = 0X80000000,
+		SNDRV_PCM_MMAP_OFFSET_CONTROL = 0X81000000,
+	};
+	 
+	static int snd_pcm_hw_mmap_status(snd_pcm_t *pcm)
+	{
+	 	snd_pcm_hw_t *hw = pcm->private_data;
+		void *ptr;
+		
+		ptr = mmap(NULL, page_align(sizeof(struct snd_pcm_mmap_status)),
+			   PROT_READ, MAP_FILE|MAP_SHARED, 
+			   hw->fd, SNDRV_PCM_MMAP_OFFSET_STATUS);
+			   
+		...
+		
+		return 0;
+	}
+	
+	static int snd_pcm_hw_mmap_control(snd_pcm_t *pcm)
+	{
+		snd_pcm_hw_t *hw = pcm->private_data;
+		void *ptr;
+		
+		ptr = mmap(NULL, page_align(sizeof(struct snd_pcm_mmap_control)),
+			    PPOT_READ|PROT_WRITE, MAP_FILE|MAP_SHARED,
+			    hw->fd, SNDRV_PCM_MMAP_OFFSET_CONTROL);
+			    
+		...
+		
+		return 0;
+	}
+
+上面代码中值得注意的地方是第二个入参使用page_align进行了page对齐操作，以及最后一个入参off的定义。
+
+**实例操作**
+
+下面我们自己实现一个驱动和一个应用程序，完整的展现一下mmap的运用。首先在驱动程序中分配一页大小的内存，然后应用程序通过mmap将这块内存映射进用户空间。映射完成后，驱动程序往这块内存填写一些数据，然后应用进程打印出这些数据。
+
+	
+
+---
+
 ### 匿名存储映射
 
 在调用mmap时指定`MAP_ANONYMOUS`标志，并将文件描述符fd指定为-1,偏移量off设为0,就可以得到一个匿名的区域(因为它并不通过一个文件描述符与一个路径相结合)，并且创建一个可与后代进程共享的存储区。具体的调用方法如下:
