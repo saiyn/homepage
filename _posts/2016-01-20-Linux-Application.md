@@ -153,6 +153,11 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 
 下面我们自己实现一个驱动和一个应用程序，完整的展现一下mmap的运用。首先在驱动程序中分配一页大小的内存，然后应用程序通过mmap将这块内存映射进用户空间。映射完成后，驱动程序往这块内存填写一些数据，然后应用进程打印出这些数据。
 
+驱动程序：
+	
+	/**
+	 * saiyn_driver.c
+	 */
 	#include <linux/miscdevice.h>  
 	#include <linux/kernel.h>  
 	#include <linux/module.h>  
@@ -164,6 +169,8 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 	#include <linux/ioctl.h>  
 	#include <linux/cdev.h>  
 	#include <linux/string.h>  
+
+	#define DEVICE_NAME "saiyn_mmap"
 
 	static unsigned char *buf;
 
@@ -182,9 +189,96 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 		
 		strcpy(buf, "saiyn mmap");
 	
-		
+		return 0;
 	}
+	
+	static struct file_operations dev_fops = {
+		.owner = THIS_MODULE,
+		.open  = saiyn_open,
+		.mmap  = saiyn_mmap,
+	};
+	
+	static struct miscdevice misc = {
+		.minor = MISC_DYNAMIC_MINOR,
+		.name  = DEVICE_NAME,
+		.fops  = &dev_fops,
+	};
+	
+	static int __init dev_init(void)
+	{
+		int ret;
+		
+		ret = misc_register(&misc);
+		
+		buf = (unsigned char *)kmalloc(PAGE_SIZE, GFP_KERNEL);
+		
+		/**
+		 * 将该段内存设置为保留
+		 */
+		SetPageReserved(virt_to_page(buf));
+		
+		return ret;
+	}
+	
+	static void __exit dev_exit(void)
+	{
+		misc_deregister(&misc);
+	
+		ClearPageReserved(virt_to_page(buf));
+		
+		kfree(buf);
+	}
+	
+	module_init(dev_init);
+	module_exit(dev_exit);
+	MODULE_LICENSE("GPL");
+	MODULE_AUTHOR("saiyn");
 
+
+应用程序：
+
+	/**
+	 * saiyn.c
+	 */
+	
+	#define _GNU_SOURCE
+	#include <unistd.h>
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include <sys/mman.h>
+	#include <sys/ioctl.h>
+	#include <errno.h>
+	
+	#define PAGE_SIZE (sysconf(_SC_PAGE_SIZE))
+	
+	int main()
+	{
+		int fd;
+		unsigned char *buf;
+		
+		fd = open(/dev/saiyn_mmap, O_RDWR);
+		if(fd < 0)
+		{
+			printf("open saiy_mmap device fail: %d - %s\n", errno, strerror(errno));
+			return -1;
+		}
+		
+		buf = (unsigned char *)mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+		if(buf == MAP_FAILED)
+		{
+			printf("mmap fail: %d - %s\n", errno, strerror(errno));
+			return -1;
+		}
+		
+		printf("buf:%s\n");
+		
+		munmap(buf, PAGE_SIZE);
+		
+		return 0;
+	}
+	
+	
 ---
 
 ### 匿名存储映射
