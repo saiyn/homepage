@@ -13,7 +13,7 @@ excerpt: linux
 
 ---
 
-## 动态链接相关的
+# 动态链接相关的
 
 这部分内容主要阐述Linux环境下动态链接的一些环境参数和编译链接的参数选项的使用，主要涉及到LD_LIBRARY_PATH、LD_PRELOAD、LD_DEBUG这几个环境变量，`-rpath`链接选项，`-L`、`-l`编译选项。这些知识点在网上有很多，但是大部分都是说得不够清楚详细。
 
@@ -23,7 +23,7 @@ excerpt: linux
 
 
 ---
-## unix中的时间值
+# unix中的时间值
 
 unix系统中使用两种不同的时间值，日历时间和进程时间。
 
@@ -42,11 +42,11 @@ unix系统中使用两种不同的时间值，日历时间和进程时间。
 
 ---
 
-## 存储映射I/O(mmap)
+# 存储映射I/O(mmap)
 
 ---
 
-### 基本概念
+## 基本概念
 
 存储映射I/O使一个磁盘文件与存储空间的一个缓冲区相映射，这样就不用执行read和write
 来读文件或者写缓存区。
@@ -281,7 +281,7 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 	
 ---
 
-### 匿名存储映射
+## 匿名存储映射
 
 在调用mmap时指定`MAP_ANONYMOUS`标志，并将文件描述符fd指定为-1,偏移量off设为0,就可以得到一个匿名的区域(因为它并不通过一个文件描述符与一个路径相结合)，并且创建一个可与后代进程共享的存储区。具体的调用方法如下:
 
@@ -339,9 +339,9 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 
 ---
 
-##	Linux启动
+#	Linux启动
 
-### 启动具体流程
+## 启动具体流程
 
 > 1. 加载BIOS执行硬件自检，依据设置取得第一个可启动设备。   	
 > 2. 读取并执行第一个启动设备内MBR的boot loader。MBR位于第一个扇区，也就是最前面512字节。主引导记录有三部分组成:
@@ -365,7 +365,7 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 > 7. init执行/etc/rc.d/rc.local文件。
 > 8. init执行终端模拟程序mingetty来启动login进程。
 
-### 启动相关细节
+## 启动相关细节
 
 1.由于模块放置在磁盘的根目录内，因此在启动的过程中内核必须要挂载根目录系统，而且为了担心影响到磁盘内的文件系统，因此启动过程中根目录是以只读方式来挂载的。
 
@@ -410,6 +410,8 @@ respawn	|代表后面的字段设置的命令可以重新启动
 
 
 ---
+
+# 基本函数使用
 
 ## fork 函数
 
@@ -497,9 +499,9 @@ int execvp(const char *filename, char *const argv[]);
 
 ## system函数
 
-<pre><code>#include /<stdlib.h/>
-int system(const char *cmdstring);
-</code></pre>
+	#include <stdlib.h>
+	int system(const char *cmdstring);
+
 
 > * 如果cmdstring是一个空指针，则仅当命令处理程序可用时，system返回非0值，这一特征可以确定在一个给定的操作系统上是否支持system
 > 函数。
@@ -507,6 +509,98 @@ int system(const char *cmdstring);
 > 1).如果fork失败或者waitpid返回除EINTR之外的出错，则system返回-1，而且errno中设置了错误类型。
 > 2).如果exec失败，则其返回值如同shell执行了exit(127)一样。
 > 3).如果3个函数都执行成功，返回值是shell的终止状态。
+
+因为system函数内部实现是调用比较耗内存的fork函数，所以实际项目中经常出现，在内存资源紧张时调用system()出现返回-1的失败，且此时的errno对应的字符串
+为"cannot allocate memory"。这个时候一种算是规避的解决办法就是通过调用vfork()自己实现system函数的功能。下面贴出代码实现:
+
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <signal.h>
+	#include <errno.h>
+	
+	int run_cmd(const char *cmd)
+	{
+		struct sigaction ignore, saveintr, savequit;
+		sigset_t childmask, savemask;
+		pid_t pid;
+		int status = 0;
+		
+		if(!cmd)
+		{
+			perror("cmd is NULL\n");
+			return 1;
+		}
+		
+		/**
+		 * ignore sigint and sigquit.
+		 */
+		ignore.sa_handler = SIG_IGN;
+		sigempteyset(&ignore.sa_mask);
+		ignore.sa_flags = 0;
+		
+		if(sigaction(SIGINT, &ignore, &saveintr) < 0)
+		{
+			printf("sigaction SIGINT fail %d - %s\n", errno, strerror(errno));
+			return -1;
+		}
+		
+		if(sigaction(SIGQUIT, &ignore, &savequit) < 0)
+		{
+			printf("sigaction SIGQUIT fail %d - %s\n", errno, strerror(errno));
+			return -1;
+		}
+		
+		/**
+	         * block sigchld.
+		 */
+		sigemptyset(&childmask);
+		sigaddset(&childmask, SIGCHLD);
+		
+		if(sigprocmask(SIG_BLOCK, &childmask, &savemask) < 0)
+		{
+			printf("sigprocmask  SIGCHLD fail %d - %s\n", errno, strerror(errno));
+			return -1;
+		}
+		
+		if((pid = vfork()) < 0)
+		{
+			printf("vfork fail %d\n", (int)pid);
+			status = -1;
+		}
+		else if(pid == 0)
+		{
+			/**
+			 * here comes the child
+			 */
+			sigaction(SIGINT, &saveintr, NULL);
+			sigaction(SIGQUIT, &savequit, NULL);
+			sigprocmask(SIG_SETMASKM, &savemask, NULL);
+			
+			execlp("sh", "sh", "-c", cmd, (char *)0);
+			_exit(127);
+		}
+		else
+		{
+			/**
+			 * here comes the parent
+			 */
+			while(waitpid(pid, &status, 0) < 0)
+			{
+				if(errno != EINTR)
+				{
+					status = -1;
+					printf("waitpid fail %d - %s\n", errno, strerror(errno));
+					break;
+				}
+			}
+		}
+		
+		sigaction(SIGINT, &saveintr, NULL);
+		sigaction(SIGQUIT, &savequit, NULL);
+		sigprocmask(SIG_SETMASKM, &savemask, NULL);
+		
+		return status;
+	}
 
 ---
 
@@ -538,7 +632,7 @@ pid值		|说明
 
 ---
 
-## 守护进程
+# 守护进程
 
 > 编写守护进程时的基本规则：
 >
@@ -551,9 +645,12 @@ pid值		|说明
 > 5. 关闭不再需要的文件描述符。
 > 6. 某些守护进程打开/dev/null使其具有描述符0，1和2.
 
-## 标准I/O库
 
-### 打开流
+---
+# 标准I/O库
+
+---
+## 打开流
 
 下面3个函数打开一个标准I/O流。
 <pre><code>FILE *fopen(const char *restrict pathname, const char *restrict type);
