@@ -13,7 +13,21 @@ excerpt: linux shell
 
 ---
 
-## objdump
+# find 命令
+
+在Linux环境下开发，find命令使用可以说是非常的频繁，熟练的掌握可以极大地提高我们的工作效率。
+
+**找到所有想要的文件并且copy到指定目录**
+
+一个常见的场景是，我们在编译服务器上编译某个开源代码，执行make后，一般我们可能不想执行make install，而只是想得到生成的所有.a或者.so文件，这时我们
+可以执行如下命令:
+
+  find ./ -name *.a -print0 | xargs -I{} -0 cp -v {} /lib/path
+  
+
+
+---
+# objdump
 
 代码实例是[C学习笔记](http://saiyn.github.io/homepage/2016/08/07/C/)一文中`地址无关代码`小节中的代码。
 
@@ -29,30 +43,9 @@ ELF文件中一个非常重要的段是`.dynamic`，它是专门用于动态链�
 
 ![obj_R](http://omp8s6jms.bkt.clouddn.com/image/git/obj_R.png)
 
-
-
-## 重定向
-
-**期望每个程序的输出都是其他程序的输入，即使是未知的程序。**这是Unix哲学里让我感受最深的一条。在[从LinkedIn,Apache Kafka到Unix哲学](http://www.jointforce.com/jfperiodical/article/1036?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io)一文中，对此有更加鲜明的说明。
-这里我们将主要关注两个符合: **>**和**|**。
-
 ---
 
-### 重定向符: **>**
-
-ls命令默认将结果输出到屏幕，使用“>”重定向符可以将所得结果输出到指定文件中。
-<pre><code># ls -l /usr/bin > out.txt
-</code></pre>
-
-重复运行上面的命令，发现out.txt中的文件一直不变，这是因为当我们使用">"来重定向输出结果时，目标文件总是从开头被重写。如果想把重定向结果追加到文件内容后面，就使用">>"重定向符。
-<pre><code># ls -l /usr/bin >> out.txt
-</code></pre>
-
-### 管道符: **|**
-
----
-
-## tar
+# tar
 
 > * `-c`:压缩文件
 > * `-x`:解压文件
@@ -76,18 +69,20 @@ u-boot-2015.10 boa-0.94.13
 
 ---
 
-## grep
+# grep
 
 grep命令用来搜索文本，或从给定的文件中搜索行内包含了给定字符串或单词的文件。
 一般来说，grep显示匹配到的行。
 
-### grep命令的语法
+---
+## grep命令的语法
 
 <pre><code>grep [-option] '搜索字符串' filename
 cat 文件 | grep '搜索字符串'
 </code></pre>
 
-### 在一个文件进行搜索
+---
+## 在一个文件进行搜索
 
 搜索/etc/passwd文件下的boo用户：
 <pre><code>$grep boo /etc/passwd
@@ -100,14 +95,15 @@ cat 文件 | grep '搜索字符串'
 </code></pre>
 可以通过添加`-c`选项显示匹配到的次数，`-n`选项可以输出匹配到的行号，`-v`选项可以进行反转匹配。
 
-
-### 在一个目录中递归搜索
+---
+## 在一个目录中递归搜索
 
 加上`-r`或者`-R`选项可以在一个目录中递归搜索所有文件。例如，在文件目录下面搜索所有包含字符串“192.168.1.5”的文件
 <pre><code>$grep -r "192.168.1.5" /etc/
 </code></pre>
 
-### 管道与grep命令
+---
+## 管道与grep命令
 
 grep常常与管道一起使用，在这个例子中，显示硬盘设备的名字：
 <pre><code>#dmesg | egrep '(s|h)d[a-z]'
@@ -116,7 +112,8 @@ grep常常与管道一起使用，在这个例子中，显示硬盘设备的名�
 <pre><code>#cat /proc/cpuinfo | grep -i 'Model'
 </code></pre>
 
-### 仅仅显示匹配到内容的文件名字
+---
+## 仅仅显示匹配到内容的文件名字
 
 使用`-l`选项去显示那些文件内容中包含main()的文件名：
 <pre><code>$grep -l 'main' *.c
@@ -124,14 +121,14 @@ grep常常与管道一起使用，在这个例子中，显示硬盘设备的名�
 
 ---
 
-## 解压.cpio.gz文件
+# 解压.cpio.gz文件
 
 <pre><code>$gzip -dc file.gz | cpio -div
 </code></pre>
 
 ---
 
-## 解压ramdisk.gz文件
+# 解压ramdisk.gz文件
 
 <pre><code>$gunzip ramdisk.gz
 </code></pre>
@@ -143,7 +140,7 @@ $mount -o loop ramdisk mnt
 
 ---
 
-## PS命令
+# PS命令
 
 Linux上进程的5种状态：
 
