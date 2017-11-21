@@ -14,22 +14,22 @@ excerpt: linux makefile
 ---
 
 # if 函数
----
+
 
 之前一直混淆`if`函数和条件语句`ifeq`,if函数的语法是：
 
-$(if <condition>, <then-part>)
+	$(if <condition>, <then-part>)
 	
 或者是：
 
-$(if <condition>, <then-part>, <else-part>)
+	$(if <condition>, <then-part>, <else-part>)
 
 如果\<condition\>为真则返回\<then-part\>否则返回\<else-part\>.
 
 ---
 
 # 伪目标
----
+
 
 **没有依赖的伪目标**
 
@@ -59,7 +59,6 @@ $(if <condition>, <then-part>, <else-part>)
 ---
 
 # 变量
----
 
 ### 变量的定义与引用
 
@@ -105,9 +104,28 @@ obj := $(obj) main.o
 ---
 
 
+# foreach 函数
 
 
+foreach函数是用来做循环处理的，就想c语言中的for一样。它的语法是：
 
+	$(foreach <var>, <list>, <text>)
+
+这个函数的语法就是，把参数list中的单词逐一取出放到参数var所指定的变量中，然后再执行text所包含的表达式。每次text会
+返回一个字符串，循环过程中，所返回的字符串都以空格分隔，最后当整个循环结束时，text所返回的每个字符串所组成的整个字符串
+将会死foreach函数的返回值。
+
+**实际应用**
+
+一个经常遇见的场景是，我们需要链接多个目录下多个.a库生成可执行文件，对于一个目录下的所有.a文件我们可以这样做:
+
+	LIBS := $(wildcard /lib/path/*.a)
+	
+对于多个目录，我们自然而然的想法是，使用循环自动对每个目录进行上面的操作，于是我们可以这样做:
+
+	LIBS := $(foreach dir, $(LIB_PATH), $(wildcard $(dir)/*.a))
+	
+这样LIB_PATH指定的多个目录下的所有.a文件都被包含了。
 
 
 
