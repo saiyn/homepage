@@ -2,7 +2,7 @@
 layout: post
 title:  "常用Shell技能"
 date:   2015-10-20 15:15:54
-categories: Linux
+categories: Linux-Application
 excerpt: linux shell
 ---
 
@@ -22,7 +22,7 @@ excerpt: linux shell
 一个常见的场景是，我们在编译服务器上编译某个开源代码，执行make后，一般我们可能不想执行make install，而只是想得到生成的所有.a或者.so文件，这时我们
 可以执行如下命令:
 
-  find ./ -name *.a -print0 | xargs -I{} -0 cp -v {} /lib/path
+	find ./ -name *.a -print0 | xargs -I{} -0 cp -v {} /lib/path
   
 
 
