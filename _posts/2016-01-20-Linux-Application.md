@@ -25,22 +25,71 @@ excerpt: linux
 
 
 ---
+<br />
+
 # unix中的时间值
 
 <br />
 
 unix系统中使用两种不同的时间值，日历时间和进程时间。
 
-> * 日历时间
+<br />
+
+**日历时间**
 
 日历时间很好理解，其实就是和程序没有任何关系的自然时间。该值是自1970年01.01.00:00:00以来的国际标准时间(UTC)。见到最多的地方应该是我们执行`ls -l`时，文件和文件夹后面跟着的时间值。这是因为unix系统就是使用这些时间值来记录文件最近一此被修改的时间等。
 
-系统基本数据类型`time_t`用于保存这种时间值。
+系统基本数据类型`time_t`用于保存这种时间值。time函数返回当前时间和日期:
 
-> * 进程时间
+	#include <time.h>
+	
+	time_t time(time_t *calptr);
+	
+clock_gettime()函数可用于获取指定时钟类型的时间，它把时间表示为秒和纳秒:
 
-该时间主要是用来度量进程使用cpu资源情况的，所以又被称之为cpu时间。系统使用基本数据架构`clock_t`来保存这种时间值。
+	#include <sys/time.h>
+	
+	int clock_gettime(clockid_t clock_id, struct timespec *tsp);
 
+时钟类型通过clockid_t类型来标识:
+
+标识符	|选项	|说明
+---	|---	|---
+CLOCK_REALTIME	|/	|实时系统时间
+CLOCK_MONOTONIC	|_POSIX_MONOTONIC_CLOCK	|不带负数的实时系统时间
+CLOCK_PROCESS_CPUTIME_ID	|_POSIX_CPUTIME	|调用进程的CPU时间
+CLOCK_THREAD_CPUTIME_ID	|_POSIX_THREAD_CPUTIME	|调用线程的CPU时间
+
+
+
+
+
+<br />
+
+**进程时间**
+
+该时间主要是用来度量进程使用cpu资源情况的，所以又被称之为cpu时间。系统使用基本数据架构`clock_t`来保存这种时间值。任一进程都可以调用times函数来获得它
+自己以及终止进程的墙上时钟时间、用户CPU时间和系统CPU时间。
+
+	#include <sys/times.h>
+	
+	struct tms{
+		clock_t tms_utime;  /*user CPU time*/
+		clock_t tms_stime;  /*systme CPU time*/
+		clock_t tms_cutime; /*user CPU time, terminated children*/
+		clock_t tms_cstime; /*systme CPU time, terminated children*/
+	};
+	
+	clock_t times(struct tms *buf); 
+
+有时，我们只想获取一个程序消耗的墙上时钟时间，可以使用clock()函数:
+
+	#include <time.h>
+	
+	clock_t clock(void);
+	
+
+需要注意的是，上面所有clock_t的时间值，都要_SC_CLK_TCK(由sysconf函数返回的每秒时钟滴答数)转换成秒数。
 
 
 
@@ -63,11 +112,14 @@ unix系统中使用两种不同的时间值，日历时间和进程时间。
 	void *mmap(void *addr, size_t len, int prot, int flag, int fd, off_t off);
 
 
-**addr参数** 用于指定映射存储区的起始地址，通常设置为0,这样表示由系统选择该映射区的起始地址。此函数的返回地址是该映射区的起始地址。
+**addr参数**
 
-**prot　参数说明对映射区的保护要求:**
+用于指定映射存储区的起始地址，通常设置为0,这样表示由系统选择该映射区的起始地址。此函数的返回地址是该映射区的起始地址。
 
-<br />
+**prot参数**
+
+说明对映射区的保护要求:
+
 
 prot	|说明
 ---		|---
@@ -78,9 +130,10 @@ PROT_NONE	|映射区不可访问
 
 对指定映射存储区的保护要求不能超过文件open模式访问权限。
 
-**flag　参数影响映射存储区的多种属性:**
+**flag参数**
 
-<br />
+影响映射存储区的多种属性:
+
 
 flag	|说明
 ---		|---
@@ -103,7 +156,6 @@ off 和 addr的值通常应该是系统虚存页长度的倍数。虚存页的�
 
 **read/write 与　mmap/memcpy比较的时间结果**
 
-<br />
 
 操	|Linux2.4.22(intel x86)	
 	|---	|---
@@ -114,11 +166,13 @@ mmap/memcpy	|0.64	|1.31	|24.26
 
 如果考虑到时钟时间，那么mmap和memcpy方式比read/write方式要快。
 
----
+<br />
 
-**实例分析**
+## 实例分析
 
 <br />
+
+**内核中的运用**
 
 alsa中，应用空间和内核空间分别维护着ring buffer的读写指针，这个ring buffer是用来缓存播放数据或者是采集数据的。为了保证ring buffer的
 状态信息在应用层和内核层的同步性，alsa-lib通过mmap将驱动中的变量之间映射到用户空间进行操作。
@@ -163,7 +217,9 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 
 上面代码中值得注意的地方是第二个入参使用page_align进行了page对齐操作，以及最后一个入参off的定义。
 
-**实例操作**
+<br />
+
+**自己编写实例运用**
 
 <br />
 
@@ -250,6 +306,7 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 	MODULE_LICENSE("GPL");
 	MODULE_AUTHOR("saiyn");
 
+<br />
 
 应用程序：
 
@@ -297,7 +354,7 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 	}
 	
 	
----
+<br />
 
 ## 匿名存储映射
 
@@ -312,9 +369,9 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 
 这样，我们可以通过匿名存储映射实现我们的虚拟内存分配函数virtual_malloc()，使用它做一些非常trick的事情。
 
-**创建超大数组**
-
 <br />
+
+**创建超大数组**
 
 在实际项目中我们经常会碰到这样的寻求，我们需要一个数组来做映射表，有时键值是不连续的整形，而且有的会很大。这时我们会"痛苦"地发现，直接通过 `int array[MAX_SIZE]`使用静态内存，还是 `int *array = malloc(MAX_SIZE)`动态申请内存，都不太合适，因为我们机器的内存还是很紧俏的，不太可能随随便便申请百兆甚至上G的内存。通过使用匿名存储映射实现我们的虚拟内存分配函数可以巧妙的解决我们的烦恼。
 
@@ -356,10 +413,22 @@ alsa中，应用空间和内核空间分别维护着ring buffer的读写指针�
 
 编译执行代码，发现在只有2G内存的机器上也是正常运行的，而我们上面分配的虚拟内存为8G，这就证明了mmap只是从虚拟内存中申请地址空间。目前的处理器基本上都是64位的了，理论上虚拟地址空间总共2的64次方大小，虽然实际上目前的硬件只实现了48位地址线，那也是256TB的空间，足够大了。
 
-更多关于virtual memory的tricks见[这篇文章](http://ourmachinery.com/post/virtual-memory-tricks/)
+<br />
+
+**优雅实现RingBuffer**
+
+<br />
+
+具体参见[这篇文章]()
+
+
+
+> 更多关于virtual memory的tricks见[这篇文章](http://ourmachinery.com/post/virtual-memory-tricks/)
 
 
 ---
+
+<br />
 
 # Linux启动
 
