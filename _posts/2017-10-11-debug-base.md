@@ -25,12 +25,12 @@ dwarf3.0于2006年推出，现在已经是一种独立的标准，支持c,c++,ja
 使用readelf工具可以分析查看dwarf存放在elf文件中的各个段，只要编译时加上-g参数，elf文件中都包含.debug_info,.debug_line,.debug_str等段。
 这些段的内容就是dwarf协议的具体表现。执行`readelf -S cycbuf`，结果如下:
 
-![dwarf_1]()
+![dwarf_1](http://omp8s6jms.bkt.clouddn.com/image/git/dwarf_1.png)
 
 要查看上面几个相关的debug段的具体内容，使用readelf -w*命令，*是需要查看段名的第一个字母，比如-wi就是查看.debug_info段的内容，结果如下:
 
-![dwarf_2]()
+![dwarf_2](http://omp8s6jms.bkt.clouddn.com/image/git/dwarf_2.png)
 
 执行readelf -wl cycbuf的结果如下：
 
-![dwarf_3]()
+![dwarf_3](http://omp8s6jms.bkt.clouddn.com/image/git/dwarf_3.png)
