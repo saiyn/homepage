@@ -13,7 +13,35 @@ excerpt: english
 
 ---
 
+## H264协议相关专业术语
+
+<br />
+
+1. Some VUI parameters are required to check bitstream **conformance** and for output timing decoder conformance.
+
+VUI - Videro usability information 
+
+conformance - 一致性
+
+2. An access unit may also contain one or more **redundant** coded pictures.
+
+redundant - 冗余的
+
+3. NAL - Network Abstraction Layer
+
+4. RBSP - Raw Byte Sequence Payload
+
+5. SEI - Supplement Enhancement Information 补充增强信息
+
+6. 
+
+
+<br />
+
+---
 ## 音视频领域相关的专业术语和缩写
+
+<br />
 
 ACL -- Access Control List
 
