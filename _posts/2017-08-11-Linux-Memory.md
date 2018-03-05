@@ -40,6 +40,34 @@ excerpt:  linux memory
 
 **Private Memory**
 
+所谓的private memory就是这块内存是一个进程内部私有的，其他进程无法访问。In case of file-backed private memory, the changs made by the process
+are not written back to the underlying file, however changs made to the file may or may not be made available to the process.
+
+<br />
+
+**Shared Memory**
+
+<br />
+
+与private对应的自然是shared, it can only be created by explicitly requesting it using the right mmap() call or a dedicated call (shm*)。
+
+如果这块shared内存是file-backed, 那么any process mapping the file will see the changes in the file.
+
+<br />
+
+**Anonymous Memory**
+
+Anonymous memory is purely in RAM. 但是在这块虚拟内存没有被实现写之前，内核是不会将其映射到实际的物理内存的。因为虚拟内存的这个特性，我们可以实现很多有意思功能，具体见这篇文章[Virtual Memory Tricks](http://ourmachinery.com/post/virtual-memory-tricks/)
+
+<br />
+
+**File-backed and Swap**
+
+When a memory map is file-backed, the data is loaded from the disk. 大部分情况下，这些数据是按需加载的，但是你也可以给内核一些hints,让内核可以
+在访问前进行预取(prefetch)。
+
+当系统出现内存紧张时，内核会尝试将RAM中的一些数据移到硬盘上去。如果这些内存是file-backed and shared,那么这种搬移很简单。Since the file is the source of the data, it is just removed from RAM,then 下次需要的时候再从文件中加载。但是当内核尝试将RAM中的anonymous或者private内存搬移到硬盘上时，内核得将这些数据写到硬盘上的特殊位置。这个过程叫做swap。
+
 
 
 
@@ -84,6 +112,27 @@ cached = page cache + tmpfs + "share memory based IPC" + SHARED mmap + GEM objec
 
 
 <br />
+
+**Mapped**
+
+cached中的page cache包含了文件的缓存页，其中有些文件当前已经不在使用，page cache仍然可能保留着它们的缓存页面；而另外一些正在被用户进程关联的文件，
+比如shared libraries、可执行文件、mmap的文件等，这些文件的缓存页就被称为`mapped`。这里所说的内存即为上面章节Memory Types图中的3,4。
+
+进程所占的内存页分为annoymous pages和file-backed pages,理论上应该有:
+
+【所有进程的PSS之和】 == 【Mapped + AnonPages】
+
+但是执行命令`$ grep Pss /proc/[1-9]*/smaps | awk ‘{total+=$2}; END {print total}’`得到的值比Mapped + AnonyPages的值要小，这是因为mapped还包含Memory Types图中的1.2和2的内存部分。即Mapped = file-backed pages + mmap(ANON)
+
+<br />
+
+**AnonPages**
+
+用户进程的内存页分为两种：filed-backed pages 和 anonymous pages。 anonymous pages就记录在/proc/meminfo中的anonpages项中， 它具有如下特性:
+
+* cached中的page cache里面都是file-backed pages, 没有anonymous pages。
+* 
+
 
 ---
 
