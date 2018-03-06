@@ -66,7 +66,7 @@ Anonymous memory is purely in RAM. 但是在这块虚拟内存没有被实现写
 When a memory map is file-backed, the data is loaded from the disk. 大部分情况下，这些数据是按需加载的，但是你也可以给内核一些hints,让内核可以
 在访问前进行预取(prefetch)。
 
-当系统出现内存紧张时，内核会尝试将RAM中的一些数据移到硬盘上去。如果这些内存是file-backed and shared,那么这种搬移很简单。Since the file is the source of the data, it is just removed from RAM,then 下次需要的时候再从文件中加载。但是当内核尝试将RAM中的anonymous或者private内存搬移到硬盘上时，内核得将这些数据写到硬盘上的特殊位置。这个过程叫做swap。
+当系统出现内存紧张时，内核会尝试将RAM中的一些数据移到硬盘上去。如果这些内存是file-backed and shared,那么这种搬移很简单。Since the file is the source of the data, it is just removed from RAM,then 下次需要的时候再从文件中加载，这个过程称为page-out,不需要用到交换区(swap)。但是当内核尝试将RAM中的anonymous或者private内存搬移到硬盘上时，内核得将这些数据写到硬盘上的特殊位置。这个过程叫做swap-out。
 
 
 
@@ -79,7 +79,22 @@ When a memory map is file-backed, the data is loaded from the disk. 大部分情
 
 <br />
 
-/proc/meminfo文件是了解Linux系统内存使用状况的主要途径，常用的`free`、`vmstat`等命令都是通过它获取数据的。下面分析其中各项统计的含义。
+/proc/meminfo文件是了解Linux系统内存使用状况的主要途径，常用的`free`、`vmstat`等命令都是通过它获取数据的。
+
+
+
+<br />
+
+### 内核层统计
+
+<br />
+
+
+
+
+---
+
+### 用户层统计
 
 <br />
 
@@ -110,6 +125,32 @@ cached = page cache + shmem
 
 cached = page cache + tmpfs + "share memory based IPC" + SHARED mmap + GEM objects
 
+<br />
+
+**LRU**
+
+<br />
+
+LRU(Least Recently Used)是kernel的页面回收算法(Page Frame Reclaiming)使用的数据结构。Page cache和所有用户进程的内存(kernel stack、huge pages除外)都在LRU lists上。
+
+LRU lists包含如下几种，在/proc/meminfo中都要对应的统计值:
+
+LRU_INACTIVE_ANON - 对应Inactive(anon)
+
+LRU_ACTIVE_ANON   - 对应Active(anon)
+
+LRU_INACTIVE_FILE - 对应Inactive(file)
+
+LRU_ACTIVE_FILE   - 对应Active(file)
+
+LRU_UNEVICTABLE   - 对应Unevictable
+
+另外，
+
+* Inactive list里的是长时间未被访问过的内存页，Active list里的是最近被访问过的内存页，LRU算法利用Inactive list和Active list可以判断哪些内存页可以被优先回收。
+* 括号中的anon表示匿名页(anonymous pages)。用户进程的内存页分为两种：file-backed pages(与文件对应的内存页)、anonymous pages(匿名页)。进程的代码、映射的文件都是file-backed,而进程的堆、栈都是不与文件相对应的，就属于匿名页。
+* Unevictable LRU list上的是不能page-out/swap-out的内存页，包括VM_LOCKED的内存页、SHM_LOCK共享内存页(被统计在`Mlocked`项中)和ramfs。在unevictable list出现之前，这些内存页都在active/inactive lists上，vmscan每次都要扫过它们，但是又不能把它们page-out/swap-out，这在打内存的系统上严重影响性能，设计unevictable list的初衷就是避免这种情况。
+
 
 <br />
 
@@ -131,7 +172,13 @@ cached中的page cache包含了文件的缓存页，其中有些文件当前已�
 用户进程的内存页分为两种：filed-backed pages 和 anonymous pages。 anonymous pages就记录在/proc/meminfo中的anonpages项中， 它具有如下特性:
 
 * cached中的page cache里面都是file-backed pages, 没有anonymous pages。
-* 
+* mmap(ANON, PRIVATE)属于AnonPages, 而mmap(ANON, SHARED)属于cached(file-backed pages)，因为shared anonymous mmap也是基于tmpfs实现的。
+* Anonymous Pages是与用户进程共存的，一旦进程退出，anonymous pages就被释放掉，不像page cache即使文件与进程不关联了还可以缓存。
+* AnonPages统计值中包含了Transparent HugePages(THP)对应的AnonHugePages。
+
+<br />
+
+****
 
 
 ---
