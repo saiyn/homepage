@@ -34,7 +34,7 @@ excerpt:  linux memory
 
 从两个不同维度可以将虚拟内存分为4种类型，其中一个维度是，这个内存是进程私有的(specific to that process)还是多个进程可以共享的(shared)；另一个维度是，这个内存是匿名的(anonymous)还是绑定文件的(file-backed)。4中不同类型的内存如下图所示:
 
-
+![lmem_0](http://omp8s6jms.bkt.clouddn.com/image/git/lmem_0.png)
 
 <br />
 
