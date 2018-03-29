@@ -89,8 +89,22 @@ When a memory map is file-backed, the data is loaded from the disk. 大部分情
 
 <br />
 
+kernel的动态内存分配主要通过以下几种接口：
 
+* alloc_pages/__get_free_page: 以页为单位分配。
+* vmalloc: 以字节为单位分配虚拟地址连续的内存块。
+* slab allocator: 以字节为单位分配物理地址连续的内存块。
 
+内核所用内存的静态部分，比如内核代码、页面描述符等数据在引导阶段就分配掉了，并不计入MemTotal里，而是算作Reserved。而内核所用内存的动态部分，
+是通过上文提到的几个接口申请的，其中通过alloc_pages申请的内存有可能未纳入统计，就像**黑洞**一样。下面讨论的都是/proc/mmeinfo中统计到的部分。
+
+<br />
+
+**SLAB**
+
+通过slab分配的内存被统计在以下三个值中:
+
+* SReclaimable
 
 ---
 
