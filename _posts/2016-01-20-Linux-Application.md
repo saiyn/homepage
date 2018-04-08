@@ -535,15 +535,23 @@ respawn	|代表后面的字段设置的命令可以重新启动
 如下图是xrandr的结果输出，我们的需求是获取某个端口支持的分辨率信息，也就是谁我们需要截取这个输出中的一个段落。
 
 
+![linuxapp_0](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp_0.png)
+
+<br />
 
 awk对于按列处理文本流很好使，但是对于按行截取一个段落好像有点力不从心，所以需要结合awk和sed一起完成需求功能。
 
 因为分辨率信息都在同一列，使用awk提取出第一列，执行`xrandr | awk '{print $1}'`，结果如下:
 
 
+![linuxapp_1](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp_1.png)
+
+<br />
+
 然后在上面的基础上再使用sed截取HDMI1和HDMI2之间部分的分辨率信息，执行`xrandr | awk '{print $1}' | sed -n "/^HDMI1/,/^HDMI2/p"`，结果如下:
 
 
+![linuxapp_2](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp_2.png)
 
 
 <br />
