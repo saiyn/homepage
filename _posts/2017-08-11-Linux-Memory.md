@@ -75,6 +75,33 @@ When a memory map is file-backed, the data is loaded from the disk. 大部分情
 
 ---
 
+## /proc/buddyinfo
+
+<br />
+
+buddyinfo记录的信息是Linux系统下Buddy memory allocation机制下内存分配的状态，网上大部分文章只是说明了其中字段的含义，也顺便说了句该文件的信息
+主要用来分析linux系统内存碎片的情况，但是很少有文章说明如何从这个文件的信息来判断当前系统内存碎片的情况。
+
+cat /proc/buddyinfo的输出结果大致如下:
+
+![lmem_1](http://omp8s6jms.bkt.clouddn.com/image/git/lmem_1.png)
+
+<br />
+
+要理解上面输出的含义，得先参阅一下wiki上的这篇文章[Buddy memory allocation](https://en.wikipedia.org/wiki/Buddy_memory_allocation)
+
+判断当前系统内存碎片严重程度有个计算公式:
+
+![lmem_2](http://omp8s6jms.bkt.clouddn.com/image/git/lmem_2.png)
+
+下面通过一个实例计算来说明这个公式的使用方法:
+
+![lmem_3](http://omp8s6jms.bkt.clouddn.com/image/git/lmem_3.png)
+
+<br />
+
+---
+
 ## /proc/meminfo
 
 <br />
