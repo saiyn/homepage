@@ -139,7 +139,9 @@ The buffer-usr
 		struct module *owner;
 		struct list_head list_node; /* node for dma_buf accounting and debugging */
 		void *priv; /* exporter specific private data for this buffer object */
+		
 		struct reservation_object *resv; /* reservation object linked to this dma-buf */
+		
 		wait_queue_head_t poll;
 		struct dma_buf_poll_cb_t{
 			struct fence_cb cb;
