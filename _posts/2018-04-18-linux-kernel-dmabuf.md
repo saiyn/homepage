@@ -80,7 +80,75 @@ dma_buf是内核中一个独立的子系统，提供了一个让不同设备、�
 
 dma_buf子系统包含三个主要组成:
 
-1. 
+1. dma-buf对象，它代表的后端是一个sg_table,它暴露给应用层的接口是一个文件描述符，通过传递描述符达到了交互访问dma-buf对象，进而最终达成了
+共享访问sg_table的目的。
+
+2. fence对象, which provides a mechanism to signal when one device as finished access.
+
+3. reservation对象, 它负责管理缓存的分享和互斥访问。.
+
+<br />
+
+## dma-buf实现
+
+<br />
+
+**整体构架**
+
+<br />
+
+DMA_BUF框架下主要有两个角色对象，一个是`exporter`，相当于是buffer的生产者，相对应的是`importer`或者是`user`,即buffer的消费使用者。
+
+假设驱动A想使用由驱动B产生的内存，那么我们称B为exporter,A为importer.
+
+The exporter
+
+   * 实现struct dma_buf_ops中的buffer管理回调函数。
+   
+   * 允许其他使用者通过dma_buf的sharing APIS来共享buffer。
+   
+   * 通过struct dma_buf结构体管理buffer的分配、包装等细节工作。
+   
+   * 决策buffer的实际后端内存的来源。
+   
+   * 管理好scatterlist的迁移工作。
+      
+The buffer-usr
+
+   * 是共享buffer的使用者之一。
+   
+   * 无需关心所用buffer是哪里以及如何产生的。
+   
+   * 通过struct dma_buf_attachment结构体访问用于构建buffer的scatterlist,并且提供将buffer映射到自己地址空间的机制。
+
+<br />
+
+**数据结构**
+
+<br />
+
+	struct dma_buf{
+		size_t size;
+		struct file *file; /* file pointer used for sharing buffers across,and for refcounting */
+		struct list_head attachments; /* list of dma_buf_attachment that denotes all devices attached */
+		const struct dma_buf_ops *ops;
+		struct mutex lock;
+		unsigned vmapping_counter;
+		void *vmap_ptr;
+		const char *exp_name; /* name of the exporter; useful for debugging */
+		struct module *owner;
+		struct list_head list_node; /* node for dma_buf accounting and debugging */
+		void *priv; /* exporter specific private data for this buffer object */
+		struct reservation_object *resv; /* reservation object linked to this dma-buf */
+		wait_queue_head_t poll;
+		struct dma_buf_poll_cb_t{
+			struct fence_cb cb;
+			wait_queue_head_t *poll;
+			unsigned long active;
+		}cb_excl, cb_shared;
+	};
+
+
 
 
 
