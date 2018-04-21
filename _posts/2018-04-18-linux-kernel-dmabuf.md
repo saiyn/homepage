@@ -150,6 +150,12 @@ The buffer-usr
 		}cb_excl, cb_shared;
 	};
 
+dma_buf对象中最重要的成员变量是ops方法集，dma_buf本身是一个通用的框架，正是依靠这里的ops回调函数集来实现dma_buf对象的`重载功能`，所谓重载就是
+说dma_buf框架可以用于不同的运用场景。所以ops定义的回调函数是我们编写dma_buf框架下exporter驱动的主要实现代码。
+
+ops中定义的回调函数都对应着dma_buf模块外部头文件dma_buf.h中的API，比如其他驱动调用dma_buf.h中的dma_buf_attach()API时，实际最终调用的就是
+我们实现的ops中的`int (*attach)(struct dma_buf *, struct device *, struct dma_buf_attachment *)`方法；调用dma_buf_map_attachment() API
+实际就是调用ops中的`struct sg_table * (*map_dma_buf)(struct dma_buf_attachment *, enmu dma_data_direction)`方法。
 
 
 
