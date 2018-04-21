@@ -157,6 +157,46 @@ ops中定义的回调函数都对应着dma_buf模块外部头文件dma_buf.h中�
 我们实现的ops中的`int (*attach)(struct dma_buf *, struct device *, struct dma_buf_attachment *)`方法；调用dma_buf_map_attachment() API
 实际就是调用ops中的`struct sg_table * (*map_dma_buf)(struct dma_buf_attachment *, enmu dma_data_direction)`方法。
 
+dma_buf对象中更加重要的一个成员变量是file,我们知道`一切皆文件`是unix的核心思想。dma_buf子系统之所以可以使不同的驱动设备可以共享访问内存，就
+是借助于文件系统是全局的这个特征。和dma_buf对象中file成员变量对应的API接口有，dma_buf_export()、dma_buf_fd()。
+
+	/**
+	 * dma_buf_export - Create a new dma_buf, and associates an anon file with this buffer,
+	 * so it can be exported.
+	 */
+	struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
+	{
+		struct dma_buf *dma_buf;
+		struct file *file;
+		
+		...
+		
+		dmabuf = kzalloc(alloc_size, GFP_KERNEL);
+		if(!dmabuf){
+			module_put(exp_info->owner);
+			return ERR_PTR(-ENOMEM);
+		}
+		
+		...
+		
+		dmabuf->ops = exp_info->ops; //[0]
+		
+		...
+		
+		file = anon_inode_getfile("dmabuf", &dma_buf_fops, dmabuf, exp_info->flags); //[1]
+		file->f_mode |= FMODE_LSEEK;
+		dmabuf->file = file;
+		
+		...
+		
+		return dmabuf;
+	}
+
+
+上面[0]出传入的ops方法集就是上面提到的我们编写驱动应该实现的回调函数集，dmabuf通过anon_inode_getfile()函数挂载到了file对象上的
+priv指针上，而dma_buf_fops回调函数集挂载在file对象上的ops上，最后dma_buf_fops函数集中的回调函数实现都会通过file->priv拿到dma_buf对象，
+然后直接调用dma_buf中的ops方法。这样的函数重载实现是file作为驱动程序接口功能实现的`常规操作`.
+
 
 
 
