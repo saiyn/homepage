@@ -197,6 +197,35 @@ dma_buf对象中更加重要的一个成员变量是file,我们知道`一切皆�
 priv指针上，而dma_buf_fops回调函数集挂载在file对象上的ops上，最后dma_buf_fops函数集中的回调函数实现都会通过file->priv拿到dma_buf对象，
 然后直接调用dma_buf中的ops方法。这样的函数重载实现是file作为驱动程序接口功能实现的`常规操作`.
 
+dma_buf_fd()函数的实现很简单，就是根据传入的dma_buf对象，生成全局可见的文件描述符fd。后面正是通过这个fd作为媒介来实现各个驱动设备间的
+交互。
+
+<br />
+
+## 运作流程
+
+<br />
+
+![dmab_0](http://omp8s6jms.bkt.clouddn.com/image/git/dmab_0.png)
+
+<br />
+
+1. Exporter驱动申请或者引用导入的待共享访问的内存。
+
+2. Exporter驱动调用dma_buf_export()创建dma_buf对象，同时将自定义的struct dma_buf_ops方法集和步骤1中的内存挂载到dma_buf对象中。
+
+3. Exporter驱动调用dma_buf_fd()将步骤2中创建的dam_buf对象关联到全局可见的文件描述符fd，同时通过ioctl方法将fd传递给应用层。
+
+4. 应用层将fd传递给importer驱动程序。
+
+5. importer驱动通过调用dma_buf_get(fd)获取dma_buf对象。
+
+6. importer驱动调用dma_buf_attach()和dma_buf_map_attachment()获取共享缓存的信息。
+
+	* dev->dma_parms should be expanded to tell if receiving device needs contiguous memory or any other special requirmnets.
+	
+	* allocation of backing pages could be deferred by ...
+
 
 
 
