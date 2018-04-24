@@ -15,8 +15,7 @@ Linux内核中的通用子系统DMA_BUF。
 
 ---
 
-
-# 驱动实例
+# DMA_BUF
 
 <br />
 
@@ -29,19 +28,6 @@ Linux内核中的通用子系统DMA_BUF。
 
 实际的硬件环境是，采集设备是一个pciv驱动，编码设备就是i915驱动。现在就是要编写一个驱动程序，让i915驱动可以直接访问pciv中管理的视频数据内存。
 
-<br />
-
-## 驱动设计
-
-
-
----
-
-<br />
-
-# DMA_BUF
-
-<br />
 
 ## 概述
 
@@ -158,7 +144,7 @@ ops中定义的回调函数都对应着dma_buf模块外部头文件dma_buf.h中�
 实际就是调用ops中的`struct sg_table * (*map_dma_buf)(struct dma_buf_attachment *, enmu dma_data_direction)`方法。
 
 dma_buf对象中更加重要的一个成员变量是file,我们知道`一切皆文件`是unix的核心思想。dma_buf子系统之所以可以使不同的驱动设备可以共享访问内存，就
-是借助于文件系统是全局的这个特征。和dma_buf对象中file成员变量对应的API接口有，dma_buf_export()、dma_buf_fd()。
+是借助于文件系统是全局的这个特征。另外，因为Unix操作系统都是通过Unix domain域的socket使用SCM_RIGHTS语义来实现文件描述符传递，所以安全性很高。和dma_buf对象中file成员变量对应的API接口有，dma_buf_export()、dma_buf_fd()。
 
 	/**
 	 * dma_buf_export - Create a new dma_buf, and associates an anon file with this buffer,
@@ -222,12 +208,68 @@ dma_buf_fd()函数的实现很简单，就是根据传入的dma_buf对象，生�
 
 6. importer驱动调用dma_buf_attach()和dma_buf_map_attachment()获取共享缓存的信息。
 
-	* dev->dma_parms should be expanded to tell if receiving device needs contiguous memory or any other special requirmnets.
+<br />
+
+## Importer驱动实例剖析
+
+<br />
+
+Linux内核中的DRM子系统中实现了importer功能，这样我们可以通过实现exporter驱动来将某个内存传递进DRM子系统中，让DRM进行访问。
+
+上面描述的运作流程中的4~6步骤都是importer需要实现的代码，其中对应于第4点，drm驱动中通过ioctl的`DRM_IOCTL_PRIME_FD_TO_HANDLE`命令来将应用层
+传递的fd转换为对应的dma_buf对象。不过要注意的是，drm中对应这个命令的函数不仅是将fd转换为了dma_buf对象，同时还将这个dma_buf对象通过idr机制将dmd_buf
+索引为handle,方便drm驱动中进行内存的管理。具体函数实现如下:
+
+	int drm_gem_prime_fd_to_handle(struct drm_device *dev, struct drm_file *file_priv, int prime_fd, uint32_t *handle)
+	{
+		struct dma_buf *dma_buf;
+		struct drm_gem_object *obj;
+		int ret;
+		
+		dma_buf = dma_buf_get(prime_fd); //[0]
+		
+		...
+		
+		ret = drm_prime_lookup_buf_handle(&file_priv->prime, dma_buf, handle); //[1]
+		if(ret == 0)
+		{
+			...
+			return 0;
+		}
+		
+		...
+		
+		obj = dev->driver->gem_prime_import(dev, dma_buf); //[2]
+		
+		...
+		
+		drm_gem_handle_create_tail(file_priv, obj, handle); //[3]
 	
-	* allocation of backing pages could be deferred by ...
+		...
+		
+		drm_prime_add_buf_handle(&file_priv->prime, dma_buf, *handle); //[4]
+		
+		...
+		
+		dma_buf_put(dma_buf); //[5]
+		
+		return 0;
+	}
+
+从drm_gem_prime_fd_to_handle()函数的实现的[1]处可见，当prime_fd对应的内存对象已经通过dma_buf机制获取过，那么prime的机制和drm中的flink机制
+一样，用于将bo在多个上下文下共享。也就是说上面代码中的[1]、[3]、[4]处和dma_buf机制没有关系，而是drm中的bo对象管理机制，基于的是idr机制。所以下面
+重点分析[1]处的代码实现，其回调实现如下:
+
+	
 
 
 
+
+
+
+## Export驱动实例编写
+
+<br />
 
 ---
 
