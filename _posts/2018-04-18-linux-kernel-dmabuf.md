@@ -256,15 +256,39 @@ Linux内核中的DRM子系统中实现了importer功能，这样我们可以通�
 		return 0;
 	}
 
+上面代码中的[0]处就是实现了运作流程中的第5点。
+
 从drm_gem_prime_fd_to_handle()函数的实现的[1]处可见，当prime_fd对应的内存对象已经通过dma_buf机制获取过，那么prime的机制和drm中的flink机制
 一样，用于将bo在多个上下文下共享。也就是说上面代码中的[1]、[3]、[4]处和dma_buf机制没有关系，而是drm中的bo对象管理机制，基于的是idr机制。所以下面
 重点分析[1]处的代码实现，其回调实现如下:
 
-	
+	struct drm_gem_object *i915_gem_prime_import(struct drm_device *dev, struct dma_buf *dma_buf)
+	{
+		struct dma_buf_attachment *attach;
+		struct drm_gem_object *obj;
+		
+		
+		...
+		
+		attach = dma_buf_attach(dma_buf, dev->dev); //[0]
+		
+		get_dma_buf(dma_buf);
+		
+		obj = i915_gem_object_alloc(dev); //[1]
+		
+		...
+		
+		drm_gem_private_object_init(dev, &obj->base, dma_buf->size);
+		i915_gem_object_init(obj, &i915_gem_object_dmabuf_ops); //[2]
+		obj->base.import_attach = attach;
+		
+		return &obj->base;
+	}
 
 
-
-
+从上面代码看，i915_gem_prime_import()貌似只是完成了运作流程步骤中第6点的一半工作，即[0]处调用的dma_buf_attach()，并没有调用
+dma_buf_map_attachment()方法。其实i915驱动是将dma_buf_map_attachment()函数的调用lazy到了obj->ops中去了，即上面代码中[2]处
+注册的方法集i915_gem_object_dmabuf_ops。
 
 
 ## Export驱动实例编写
