@@ -286,9 +286,41 @@ Linux内核中的DRM子系统中实现了importer功能，这样我们可以通�
 	}
 
 
+
 从上面代码看，i915_gem_prime_import()貌似只是完成了运作流程步骤中第6点的一半工作，即[0]处调用的dma_buf_attach()，并没有调用
 dma_buf_map_attachment()方法。其实i915驱动是将dma_buf_map_attachment()函数的调用lazy到了obj->ops中去了，即上面代码中[2]处
-注册的方法集i915_gem_object_dmabuf_ops。
+注册的方法集i915_gem_object_dmabuf_ops。i915驱动中调用obj->ops中方法的流程如下：
+
+![dmab_1](http://omp8s6jms.bkt.clouddn.com/image/git/dmab_1.png)
+
+<br />
+
+通过上面的具体流程可以看出，当i915驱动需要实际使用内存时，会调用obj->pos中的get_pages()方法。而这个方法的具体实现如下:
+
+	static int i915_gem_object_get_pages_dmabuf(struct drm_i915_gem_object *obj)
+	{
+		struct sg_table *sg;
+		
+		sg = dma_buf_map_attachment(obj->base.import_attach, DMA_BIDIRECTIONAL);
+		
+		...
+		
+		obj->pages = sg;
+		
+		return 0;
+	}
+	
+	static void i915_gem_object_put_pages_dmabuf(struct drm_i915_gem_object *obj)
+	{
+		dma_buf_unmap_attachment(obj->base.import_attach, obj->pages, DMA_BIDIRECTIONAL);
+	}
+	
+	static const struct drm_i915_gem_object_ops i915_gem_object_dmabuf_ops = {
+		.get_pages = i915_gem_object_get_pages_dmabuf,
+		.put_pages = i915_gem_object_put_pages_dmabuf,
+	};
+	
+至此，作为linux内核中一个dma_buf的importer实例,即i915驱动中的importer运作流程分析完成了。
 
 
 ## Export驱动实例编写
