@@ -20,12 +20,28 @@ excerpt: Internet network zmap Internet-wide scan
 
 do upnp protocol scan - `sudo zmap -p 1900 --probe-module="upnp" -O json -r 10000`
 
+![zmap_0](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_0.png)
 
+<br />
 
 we need more specific information, so try to figure out what's else zmap can offer us - `zmap --probe-module="upnp -O json --list-output-fields"
 
+![zmap_1](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_1.png)
+
+<br />
 
 use -f options to add what we are interested - `sudo zmap -p 1900 --probe-module="upnp" -O json -r 10000 -f "saddr, classifiction, location"
 
-`
+![zmap_2](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_2.png)
+
+<br />
+
+
+
+
+
+
+
+
+
 
