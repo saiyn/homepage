@@ -30,13 +30,26 @@ We need more specific information, so try to figure out what's else zmap can off
 
 ![zmap_1](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_1.png)
 
-<br />
+<br /> /
 
 use -f options to add what we are interested - `sudo zmap -p 1900 --probe-module="upnp" -O json -r 10000 -f "saddr, classifiction, location" `
 
 ![zmap_2](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_2.png)
 
 <br />
+
+---
+
+# Zgrab
+
+<br />
+
+## Usage
+
+<br />
+
+`sudo zmap -p 443 --output-field=* -O csv -r 10000 | ztee results.csv | ./zgrab --port 443 --tls --http="/" --output-file=banners.json`
+
 
 
 
