@@ -38,7 +38,7 @@ excerpt: linux
 
 执行`arp -a`获取当前的路由缓存信息，因为其中必定包含有Gateway的信息，所以可以通过这个命令获取Gateway的MAC地址。
 
-![linux_net_0](https://danielmiessler.com/images/linux_net_0.png)
+![linux_net_0](http://omp8s6jms.bkt.clouddn.com/image/git/linux_net_0.png)
 
 
 
