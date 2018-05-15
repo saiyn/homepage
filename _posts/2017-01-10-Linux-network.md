@@ -13,7 +13,41 @@ excerpt: linux
 
 ---
 
+## ARP:地址解析协议
+
+<br />
+
+### 基础知识
+
+<br />
+
+地址解析协议(ARP)用于实现IP地址到网络接口硬件地址的映射，以太网(ether)是这里所说的网络中的一种。以太网48位的硬件地址就是我们常说的MAC地址。
+
+在以太网中，当某个主机要向以太网中的另一台主机发送IP数据时，它首先根据目的主机的IP地址在ARP缓存(*一个IP地址到相应以太网地址的映射表*)中查询相应的以太网地址(MAC)。如果查询到匹配的结点，则相应的以太网地址被写入以太网帧首部，数据报被加入到输出队列等待发送；如果查询失败，ARP会先保留待发送的IP数据报，然后广播一个询问目的主机硬件地址的ARP报文，等收到回答后再将IP数据报发送出去。
+
+
+<br />
+
+### 运用
+
+<br />
+
+**获取Gateway的MAC地址**
+
+<br />
+
+执行`arp -a`获取当前的路由缓存信息，因为其中必定包含有Gateway的信息，所以可以通过这个命令获取Gateway的MAC地址。
+
+
+
+
+
+
+---
+
 ## netstat
+
+<br />
 
 今天在运行ffserver时出现`Address already in use`的错误提示，使用netstat工具去查看是哪个进程占用了端口号是一个不错的选择。现在记录一下netstat的一些用法。
 
@@ -30,9 +64,9 @@ excerpt: linux
 
 下面是使用带`n`和不带的对比:
 
-![netstat_n](http://omp8s6jms.bkt.clouddn.com/image/git/netstat1.png)
+![netstat_n](http://omp8s6jms.bkt.clouddn.com/netstat1.png)
 
-![netstat](http://omp8s6jms.bkt.clouddn.com/image/git/netstat2.png)
+![netstat](http://omp8s6jms.bkt.clouddn.com/netstat2.png)
 
 ---
 
