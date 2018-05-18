@@ -13,6 +13,44 @@ excerpt: linux
 
 ---
 
+## 基础知识
+
+<br />
+
+### 套接字地址结构
+
+<br />
+
+大多数套接字函数都需要一个指向套接字地址结构的指针作为参数。每个协议族都定义它自己的套接字地址结构。这些结构的名字均以`sockaddr_`开头，并以对应每个协议族的唯一后缀结尾。比如IPv4套接字地址结构即为`sockaddr_in`,它定义在`<netinet/in.h>`头文件中：
+
+	struct in_addr{
+		in_addr_t s_addr;
+	};
+	
+	struct sockaddr_in{
+		uint8_t 		sin_len; /* length of structure, 有些实现中这个字段不存在 */
+		sa_family_t 	sin_family; 
+		in_port_t 		sin_port;
+		struct in_addr 	sin_addr;
+		char 			sin_zero[8];
+	};
+	
+关于上面的IPv4套接字地址结构实现需要注意两个问题：
+
+* 长度字段sin_len是为增加对OSI协议的支持而随4.3BSD-Reno添加的。在此之前，第一个成员是sin_family，它是一个无符号短整形(unsigned short)。因为并不是
+所有的厂家都支持套接字地址的长度字段，所以为了实现的兼容性，在支持sin_len的实现中，sa_family_t定义为一个8位的无符号整数，而在不支持长度的实现中，它
+则是一个16位的无符号整数。
+
+* 因为历史遗留的原因，sin_addr字段是一个机构，而不仅仅是一个in_addr_t类型的无符号长整型。虽然serv.sin_addr和serv.sin_addr.s_addr引用的是同一个
+32位IPv4地址，但是将它作为函数的参数时要注意准确性，因为变压器对传递结构和传递整形的处理是完全不同的。
+	
+	
+
+
+
+
+---
+
 ## ARP:地址解析协议
 
 <br />
