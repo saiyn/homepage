@@ -29,9 +29,9 @@ excerpt: linux
 	
 	struct sockaddr_in{
 		uint8_t 		sin_len; /* length of structure, 有些实现中这个字段不存在 */
-		sa_family_t 	sin_family; 
+		sa_family_t 		sin_family; 
 		in_port_t 		sin_port;
-		struct in_addr 	sin_addr;
+		struct in_addr 		sin_addr;
 		char 			sin_zero[8];
 	};
 	
@@ -44,7 +44,23 @@ excerpt: linux
 * 因为历史遗留的原因，sin_addr字段是一个机构，而不仅仅是一个in_addr_t类型的无符号长整型。虽然serv.sin_addr和serv.sin_addr.s_addr引用的是同一个
 32位IPv4地址，但是将它作为函数的参数时要注意准确性，因为变压器对传递结构和传递整形的处理是完全不同的。
 	
+上面描述的是IPv4协议族对应的套接字地址格式，其他协议族也对应的套接字地址格式，当这些地址作为参数传递进任何套接字函数时，套接字地址结构总是以指针形式
+来传递。为了兼容不同的地址指针类型，得想一个办法。有了ANSI C后我们很清楚解决办法很简单，就是使用通用的指针类型 - `void *`，**然而套接字函数是在ANSI C之前定义的**， 所以在1982年采取的办法是在`<sys/socket.h>`头文件中定义一个通用的套接字地址结构，如下:
+
+	struct sockaddr{
+		uint8_t 	sa_len;
+		sa_family_t 	sa_family;
+		char 		sa_data[14];
+	}
+
+于是套接字函数被定义为以指向某个通用套接字地址结构的一个指针作为其参数之一，这正如bind函数的ANSI C函数原型所示:
+
+	int bind(int, struct sockaddr *, socklen_t);
 	
+
+
+
+
 
 
 
@@ -345,6 +361,8 @@ string字段填写过滤规则，这里的语法和显示规则表达式一致�
 上图中底部有个下拉框，默认是如图的`Entire conversation`，即上面的stream content是tcp两端对话的往返流，有时我们只需要分析单向的流数据，如下图，这时可以点击下拉框，选择我们想指定的一个数据流向。
 
 ![stream](http://omp8s6jms.bkt.clouddn.com/image/git/direction.PNG)
+
+
 
 
 
