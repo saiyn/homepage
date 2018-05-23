@@ -67,6 +67,22 @@ excerpt: linux
 
 ---
 
+## 网络工具
+
+<br />
+
+ifconfig、route、arp和netstat这些统称为net-tools的工具是大家常用的管理和配置linux网络的工具。这些工具来自BSD TCP/IP工具箱，并且这些工具是用来
+配置较旧的内核版本的，所以现在很多Linux发行商已经开始淘汰net-tools转向使用iproute2。
+
+iproute2是另外一个网络配置工具，致力于取代net-tools。和net-tools通过/proc文件系统和ioctl系统调用来访问和修改网络配置相比，iproute2是通过netlink套接字接口和内核进行通信的。一个大家都认同的观点是，使用netlink接口要比使用/proc文件系统**轻盈**。撇开性能不谈，iproute2工具比net-tools工具更加直观，更重要的是iproute2工具一直处于不断开发完善中。
+
+关于iproute2和net-tools命令的使用对比，参加[这篇文章](http://xmodulo.com/linux-tcpip-networking-net-tools-iproute2.html)。
+
+
+<br />
+
+---
+
 ## ARP:地址解析协议
 
 <br />
