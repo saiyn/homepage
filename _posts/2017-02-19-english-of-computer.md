@@ -13,6 +13,22 @@ excerpt: english
 
 ---
 
+## Linux网络相关
+
+<br />
+
+1. Some Linux distros such as Arch Linux and Centos have already **deprecated** net-tools.
+
+deprecate - 对...表示及不赞成
+
+2.
+
+
+
+<br />
+
+---
+
 ## H264协议相关专业术语
 
 <br />
