@@ -78,6 +78,32 @@ iproute2是另外一个网络配置工具，致力于取代net-tools。和net-to
 
 关于iproute2和net-tools命令的使用对比，参加[这篇文章](http://xmodulo.com/linux-tcpip-networking-net-tools-iproute2.html)。
 
+### traceroute
+
+<br />
+
+traceroute使用IPv4的TTL字段或者IPv6的跳限字段以及两种ICMP消息来确定IP数据报从本地主机游历到某个远程主机所经过的路径。它一开始向目的地发送一个TTL为
+1的UDP数据报。这个数据报导致第一跳路由器返送一个ICMP"time exceeded in transmit"(传输中超时)错误。接着它每递增TTL一次发送一个UDP数据报，从而逐步确定吓一跳路由器。当某个UDP数据报到达最终目的地时，期望这个主机可以返送一个ICMP"port unreachabel"(端口不可达)错误。如何实现让目标主机返送这个错误呢？
+一个简单但是不保证完全可行的方法是随机选取一个目的端口号向目标主机发送UDP数据报。
+
+早期版本的traceroute程序只能通过设置IP_HDRINCL套接字选项直接构造自己的IPv4首部来设置TTL字段。然而如今的系统却提供IP_TTL套接字选项，它允许我们指定
+发送出去的数据报用的TTL。实现的代码如下：
+
+	int ttl = 1;
+	int sendfd = socket(AF_INET, SOCK_DGRAM, 0);
+	
+	setsockopt(sendfd, IPPROTO_IP, IP_TTL, &ttl, sizeof(int));
+
+traceroute代码实现中比较复杂部分是解析收到的ICMP报文，traceroute中需要处理的ICMP报文格式如下:
+
+![linux_net_2](http://omp8s6jms.bkt.clouddn.com/image/git/linux_net_2.png)
+
+如果所读入的ICMP消息是一个"time exceeded in transmit"出错消息，那么它可能是响应本进程某个探测分组的应答。hip指向在这个ICMP消息中返回的IPv4首部。udp指向跟在这个IPv4首部之后的UDP首部。如果该ICMP消息是由某个UDP数据报引起的，而且这个UDP数据报的源端口和目的端口确实是本进程发送的值，那么它是来自某个中间路由器的响应我们的探测分组的一个应答。
+
+如果所读入的ICMP消息是一个"destination unreachable"出错消息，我们就查看在这个ICMP消息中返回的UDP首部，判定它是不是响应本进程某个探测分组的应答。确认是的后，需要进一步判定这个ICMP的code字段是否为"port unreachable"。
+
+
+
 
 <br />
 
