@@ -13,6 +13,20 @@ excerpt: english
 
 ---
 
+## 网络安全相关
+
+<br />
+
+1. NSE(nmap scripting engine) can even be used for vulnerability exploitation.
+
+vulnerability exploitation - 漏洞挖掘
+
+exploitation - 开发
+
+
+
+---
+
 ## Linux网络相关
 
 <br />
@@ -67,6 +81,7 @@ RTP  -- RealTime Transport Protocol
 
 RTCP -- RTP Control Protocol
 
+
 While HTTP is stateless,RTSP has state;an identifier is used when needed to `track concurrent sessions`. -- 追踪并发的会话
 
 RTP is used `in conjunction with` the RTCP. While RTP carries the media streams, RTCP is used to monitor transmission statistics and quality of service and aids synchronization of multiple streams. -- 与。。。协力
@@ -114,6 +129,7 @@ modular structure -- 模块化结构
 ## 算法中常见的
 
 1.write a function to compute their intersection -- 计算交集
+
 
 
 
