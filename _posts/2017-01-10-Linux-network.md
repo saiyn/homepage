@@ -430,6 +430,21 @@ string字段填写过滤规则，这里的语法和显示规则表达式一致�
 
 ![stream](http://omp8s6jms.bkt.clouddn.com/image/git/direction.PNG)
 
+---
+
+<br />
+
+## 实战
+
+<br />
+
+### samba共享服务
+
+<br />
+
+
+
+
 
 
 
