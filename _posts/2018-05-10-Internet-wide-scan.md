@@ -38,6 +38,22 @@ use -f options to add what we are interested - `sudo zmap -p 1900 --probe-module
 
 <br />
 
+## zmap实现原理
+
+<br />
+
+### zmap的addressing probes
+
+<br />
+
+在ip地址扫描策略上，zmap进行了特别的优化，相对于nmap逐个按顺序的扫描ip地址，zmap进行散列式的分组随机扫描。nmap在扫描时需要维护每次扫描时建立的连接状态，以避免重复扫描，而zmap通过一个cyclic multiplicative group机制做到无状态的不重复的扫描。
+
+那么zmap具体是怎么做到如此高效的addressing probes呢？
+
+
+
+
+
 ---
 
 # Zgrab
