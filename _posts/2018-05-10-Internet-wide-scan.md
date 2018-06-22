@@ -75,6 +75,8 @@ use -f options to add what we are interested - `sudo zmap -p 1900 --probe-module
 上面代码是在实际发送一个packet时的组包处理，validate_gen()函数将源ip地址src_ip和目的ip地址current_ip进行哈希，哈希得到的结果存入validation变量
 传入probe module中实际组包的回调函数，make_packet回调函数会加哈希结果写到可以重载的字段。不同的probe module发送的包处于不同的协议层，因此重载的字段不一样，下面以icmp echo这个probe module为例：
 
+	//
+
 	static int icmp_echo_make_packet(void *buf, size_t *buf_len, ipaddr_n_t src_ip, ipaddr_n_t dst_ip, uint32_t *validation, ...)
 	{
 		struct ether_header *ether_header = (struct ether_header *)buf;
@@ -84,15 +86,63 @@ use -f options to add what we are interested - `sudo zmap -p 1900 --probe-module
 		...
 		
 		icmp_header->icmp_id = validation[1] & 0xffff;
-		icmp_header->icmp_seq = validation[2] 7 0xffff;
+		icmp_header->icmp_seq = validation[2] & 0xffff;
 		
 		...
 		
 	}
 	
+icmp报文的格式如下:
 
 
+![zmap_3](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_3.png)
 
+<br />
+
+具体到icmp echo报文，格式如下:
+
+![zmap_4](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_4.png)
+
+<br />
+
+通过报文格式和前面的ping和traceroute程序的实现，可见，icmp_id和icmp_seq字段是可以重载而不会影响通信的。
+
+
+下面再来看看tcp syncscan的probe module的make packet函数实现:
+
+	//module_tcp_synscan.c
+	
+	static int synscan_make_packet(*buf, size_t *buf_len, ...)
+	{
+		struct ether_header *ether_header = (struct ether_header *)buf;
+		struct ip *ip_header = (struct ip*)(&ether_headr[1]);
+		struct tcphdr *tcp_header = (struct tcphdr *)(ip_header[1]);
+		
+		...
+		
+		tcp_header->th_sport = htons(get_src_port(num_ports, probe_num, validation));
+		tcp_header->th_seq = validation[0];
+		
+		...
+	
+	}
+
+	//packet.h
+
+	static inline uint16_t get_src_port(int num_ports, int probe_num, uint32_t *validation)
+	{
+		return zconf.source_port_first + ((validation[1] + probe_num) % num_ports);
+	}
+	
+因为在zmap 的tcp synscan机制中，tcp协议字段中的源端口sport和seq是没有作用的，所以将哈希值重载到了th_sport字段。
+
+在接收报文时通过解析对应的被重载过的字段，来判断接收到的包是不是对于我们scan的回应，这样就实现了不需要再scan时通过保存状态信息来识别
+对应的response。
+
+
+	
+
+<br />
 
 ---
 
