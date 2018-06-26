@@ -151,7 +151,6 @@ icmp报文的格式如下:
 
 
 下面再来看看tcp syncscan的probe module的make packet函数实现:
-
 	//module_tcp_synscan.c
 	
 	static int synscan_make_packet(*buf, size_t *buf_len, ...)
@@ -182,9 +181,16 @@ icmp报文的格式如下:
 对应的response。
 
 
-	
 
 <br />
+
+
+### Packet Transmission and Receipt
+
+<br />
+
+
+
 
 ---
 
