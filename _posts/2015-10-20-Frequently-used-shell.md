@@ -13,7 +13,24 @@ excerpt: linux shell
 
 ---
 
+# ls
+
+<br />
+
+**查看某个目录下某天的文件**
+
+有时我们需要查看某个目录下某一天生成了哪些文件，这时可以执行如下命令:
+
+`ls /tmp/output -l --time-style=long-iso | grep 2018-07-05`
+
+
+---
+
+<br />
+
 # find 命令
+
+<br />
 
 在Linux环境下开发，find命令使用可以说是非常的频繁，熟练的掌握可以极大地提高我们的工作效率。
 
@@ -27,7 +44,12 @@ excerpt: linux shell
 
 
 ---
+
+<br />
+
 # objdump
+
+<br />
 
 代码实例是[C学习笔记](http://saiyn.github.io/homepage/2016/08/07/C/)一文中`地址无关代码`小节中的代码。
 
@@ -46,6 +68,8 @@ ELF文件中一个非常重要的段是`.dynamic`，它是专门用于动态链�
 ---
 
 # tar
+
+<br />
 
 > * `-c`:压缩文件
 > * `-x`:解压文件
@@ -70,6 +94,8 @@ u-boot-2015.10 boa-0.94.13
 ---
 
 # grep
+
+<br />
 
 grep命令用来搜索文本，或从给定的文件中搜索行内包含了给定字符串或单词的文件。
 一般来说，grep显示匹配到的行。
@@ -141,6 +167,8 @@ $mount -o loop ramdisk mnt
 ---
 
 # PS命令
+
+<br />
 
 Linux上进程的5种状态：
 
