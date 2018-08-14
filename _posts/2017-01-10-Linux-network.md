@@ -289,6 +289,7 @@ icmp	|only get ICMP packets
 
 > 下面借助上图介绍如何通过TCP FLAGS来进行过滤。
 
+
 过滤出所有URG packets
 
 `#tcpdump 'tcp[13]&32 !=0'`
@@ -327,46 +328,63 @@ find packets with a TTL less than 10(usually indicates a problem or use of TRACE
 
 ---
 
+<br />
 
 ## wireshark
 
+<br />
+
 ### 设置数据抓取选项
+
+<br />
 
 点击常用按钮中的设置按钮，就会弹出如下图所示的选项对话框:
 
 ![catch-set](http://www.bo56.com/wp-content/uploads/2014/11/wireshark_catch_set.png)
 
+<br />
 
 这里面主要有两个设置，一个是设置混杂模式(promiscuous mode)，使能该模式就可以捕获局域网内所有的数据包，否则你只能捕获发往你主机或者从你主机出去的数据包。
 
 另一个设置项是捕获过滤条件(capture filter),注意它不同于后面将要提到的显示过滤条件。如果我们只想捕获http相关的数据包，我们就可以设置捕获过滤条件为"port 80"
 
+<br />
+
 ### 使用显示过滤器
+
+<br />
 
 在Filter对话框里面可以直接填写过滤条件，常见的如指定只想查看某个ip过来的所有数据包，如下图所示:
 
 ![filter](http://omp8s6jms.bkt.clouddn.com/image/git/filter_ip.PNG)
 
 
+<br />
+
 我们同时限定了源ip和目的ip。另外，当我们想将我们过滤好的数据包生成新的抓包文件时，如下图所示，点击`Export special pakcts as...`，进行保存即可。
 
 ![save_spe](http://omp8s6jms.bkt.clouddn.com/image/git/save_s.PNG)
 
-
+<br />
 
 
 点击显示表达式按钮(Expression),对应对话框如下:
 
 ![expression](http://www.bo56.com/wp-content/uploads/2014/11/wireshark_expression.jpg)
 
+<br />
 
 对话框中分为协议域(field name)，关系(relation)，条件值(value),预定义值(predefined value)。
 如上图，我们创建的表达式的作用是，只显示http协议包中包含关键字"bo56.com"的所有数据包。
+
+<br />
 
 **Field name说明**
 
 这个列表展示了所有支持的协议。点击前面的三角形标志后，可以列出本协议的可过滤字段。
 直接找需要的协议可能比较麻烦，可以输入协议中开头字符进行自动模糊查询自动跳转。
+
+<br />
 
 **Relation说明**
 
@@ -374,10 +392,13 @@ is present	|如果选择的协议域存在，则显示相关数据包
 contains	|判断一个协议，字段或者分片包含一个值
 matchs	|判断一个协议或者字符串匹配一个给定的perl表达式
 
+<br />
 
 **Predefined values说明**
 
 有些协议域包含了预定义的值，有点类似c语言中的枚举类型，如果你选择的协议域包含这样的值，你可以在这个列表中选择。
+
+<br />
 
 **Function函数说明**
 
@@ -391,18 +412,24 @@ lower(string-field) - 把字符串转换为小写
 upper(ncp.nds_stream_name) contains "BO56.COM"
 lower(mount.dump.hostnmae) == "BO56.COM"
 
+<br />
+
 ### 使用着色规则
+
+<br />
 
 点击"view"菜单，然后选择"coloring rules"选项就会弹出设置颜色规则设置对话框，如下图:
 
 ![color-rules](http://www.bo56.com/wp-content/uploads/2014/11/wireshark_color_rules.jpg)
 
+<br />
 
 对话框已经包含了很多已经存在的规则，如果要新建则点击"New",弹出对话框如下:
 
 
 ![color-set](http://www.bo56.com/wp-content/uploads/2014/11/wireshark_color_set.png)
 
+<br />
 
 name字段中填写规则名称，方便记忆。
 
@@ -410,8 +437,12 @@ string字段填写过滤规则，这里的语法和显示规则表达式一致�
 
 注意:wireshark在应用规则的时候，是自上而下的顺序去应用规则，因此刚添加的规则会优先应用。如果想调整顺序，可以选中规则，然后点击右边的"UP"和"Down"按钮。
 
+<br />
+
 
 ### 跟踪tcp流
+
+<br />
 
 这个功能是将接收到的数据排好顺序使之容易查看，而不需要一小块一小块地查看。这在查看http，ftp等纯文本应用层协议时非常有用的。
 
@@ -420,28 +451,44 @@ string字段填写过滤规则，这里的语法和显示规则表达式一致�
 
 ![tcp-follow](http://www.bo56.com/wp-content/uploads/2014/11/wireshark_tcp_follow.png)
 
-
+<br />
 
 ![tcp-follow-dialog](http://www.bo56.com/wp-content/uploads/2014/11/wireshark_tcp_follow_dialog.png)
 
-
+<br />
 
 上图中底部有个下拉框，默认是如图的`Entire conversation`，即上面的stream content是tcp两端对话的往返流，有时我们只需要分析单向的流数据，如下图，这时可以点击下拉框，选择我们想指定的一个数据流向。
 
 ![stream](http://omp8s6jms.bkt.clouddn.com/image/git/direction.PNG)
 
----
+<br />
+
+
+### 跟踪tcp回话过程
 
 <br />
 
-## 实战
+在定位某个基于tcp的协议功能问题时，使用tcp回话跟踪功能可以很方便直接的定位到问题点，比如根据谁发送了`FIN RST`来判断是服务端问题还是客户端问题。
+
+启用这个功能按如下步骤:
+
+
+![wireshark_filter](http://omp8s6jms.bkt.clouddn.com/image/git/wireshark_filter.PNG)
 
 <br />
 
-### samba共享服务
+
+### 搜索想要的数据包
 
 <br />
 
+* `frame contains "mozilla"` - 在数据报内所有地方搜索包含mozilla字样的字符串
+
+* `dns.resp.len > 0` - 搜索所有DNS的回应包
+
+* `ip.addr == 52.7.23.87` - 搜索源ip或者目的ip是52.7.23.87的包，当然也可以通过`ip.dst == xxx`或者`ip.src == xxx`来更加精确的搜索。
+
+<br />
 
 
 
