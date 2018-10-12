@@ -534,11 +534,11 @@ respawn	|代表后面的字段设置的命令可以重新启动
 
 今天遇到这么一个需求，两个文件记录了一些IP地址，其中一个文件是另外一个文件的乱序“子集”，如下图所示，tmp2文件中包含tmp文件中的所有IP，同时也有新增加的。
 
-![linuxapp_100](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp_100.png)
+![linuxapp_100](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp-100.png)
 
 <br />
 
-![linuxapp_101](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp_101.png)
+![linuxapp_101](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp-101.png)
 
 <br />
 
@@ -546,7 +546,7 @@ respawn	|代表后面的字段设置的命令可以重新启动
 
 执行`awk 'FILENAME=="tmp" {a[$2]=$2} FILENAME=="tmp2" {if(!a[$2]{print ￥2})}' tmp tmp2`,得到结果如下:
 
-![linuxapp_102](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp_102.png)
+![linuxapp_102](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp-102.png)
 
 <br />
 
