@@ -530,6 +530,34 @@ respawn	|代表后面的字段设置的命令可以重新启动
 
 <br />
 
+**使用文件过滤文件**
+
+今天遇到这么一个需求，两个文件记录了一些IP地址，其中一个文件是另外一个文件的乱序“子集”，如下图所示，tmp2文件中包含tmp文件中的所有IP，同时也有新增加的。
+
+![linuxapp_100](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp_100.png)
+
+<br />
+
+![linuxapp_101](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp_101.png)
+
+<br />
+
+现在我想知道，tmp2文件中的哪些IP是新增的。使用awk的内建变量和数组可以快速实现这个需求。
+
+执行`awk 'FILENAME=="tmp" {a[$2]=$2} FILENAME=="tmp2" {if(!a[$2]{print ￥2})}' tmp tmp2`,得到结果如下:
+
+![linuxapp_102](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp_102.png)
+
+<br />
+
+`FILENAME`是awk的内建变量，表示的是当前正在出来的文件名。
+
+awk中的数组其实和c++中的map类似，运用好，很强大。
+
+
+
+<br />
+
 **截取文本中的一个段落**
 
 如下图是xrandr的结果输出，我们的需求是获取某个端口支持的分辨率信息，也就是谁我们需要截取这个输出中的一个段落。
