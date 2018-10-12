@@ -544,7 +544,7 @@ respawn	|代表后面的字段设置的命令可以重新启动
 
 现在我想知道，tmp2文件中的哪些IP是新增的。使用awk的内建变量和数组可以快速实现这个需求。
 
-执行`awk 'FILENAME=="tmp" {a[$2]=$2} FILENAME=="tmp2" {if(!a[$2]{print ￥2})}' tmp tmp2`,得到结果如下:
+执行`awk 'FILENAME=="tmp" {a[$2]=$2} FILENAME=="tmp2" {if(!a[$2]{print $2})}' tmp tmp2`,得到结果如下:
 
 ![linuxapp_102](http://omp8s6jms.bkt.clouddn.com/image/git/linuxapp-102.png)
 
