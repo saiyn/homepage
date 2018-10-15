@@ -142,6 +142,53 @@ obj := $(obj) main.o
 
 <br />
 
+## patsubst函数
+
+<br />
+
+patsubst是模式字符串替换函数，它的语法是:
+
+	$(patsubst <pattern>, <replacement> , <text>)
+	
+
+功能是查找`<text>`中的单词是否符合模式`<pattern>`,如果匹配的话，则以`<replacement>`替换。这里，`<pattern>`中可以包括通配符"%",表示任意长度的
+字符串。如果`<replacement>`中也包含"%",那么，`<replacement>`中的这个"%"将是`<pattern>`中的那个"%"所代表的字符串。
+
+<br />
+
+**实际应用**
+
+一个常见的实际需求是，给目标文件或者依赖文件添加其所在目录信息，因为稍微复杂一点的工程，各种文件会位于不同的子目录下面。
+
+	IDIR =../include
+	CC=gcc
+	CFLAGS=-I$(IDIR)
+
+	ODIR=obj
+	LDIR =../lib
+
+	LIBS=-lm
+
+	_DEPS = hellomake.h
+	DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+
+	_OBJ = hellomake.o hellofunc.o 
+	OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+
+
+	$(ODIR)/%.o: %.c $(DEPS)
+		$(CC) -c -o $@ $< $(CFLAGS)
+
+	hellomake: $(OBJ)
+		$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+	.PHONY: clean
+
+	clean:
+		rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
+
+
+
 
 ## foreach 函数
 
@@ -154,6 +201,8 @@ foreach函数是用来做循环处理的，就想c语言中的for一样。它的
 这个函数的语法就是，把参数list中的单词逐一取出放到参数var所指定的变量中，然后再执行text所包含的表达式。每次text会
 返回一个字符串，循环过程中，所返回的字符串都以空格分隔，最后当整个循环结束时，text所返回的每个字符串所组成的整个字符串
 将会死foreach函数的返回值。
+
+<br />
 
 **实际应用**
 
