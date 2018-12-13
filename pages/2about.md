@@ -12,9 +12,9 @@ icon: glyphicon-heart
 
 2013年本科毕业，从事软件开发工作至今。
 
-2014 - 2016.3  就职汉桑(南京)科技有限公司
+2014 - 2016.3  就职于汉桑(南京)科技有限公司
 
-2016.3-2018.4  就职于全球安防监控行业[浙江大华股份科技有限公司](http://www.dahuatech.com)
+2016.3-2018.4  就职于[浙江大华股份科技有限公司](http://www.dahuatech.com)
 
 2018.4 -    就职于[趋势科技(中国)南京研发中心](https://www.trendmicro.com/en_hk/business.html)
 
