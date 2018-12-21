@@ -56,6 +56,28 @@ excerpt: linux
 `abc{2,5}` matches a string that has ab followed by 2到5个c
 
 
+<br />
+
+**描述字符类型的符号**
+
+`\d` matches a single character that is a digit
+
+`\w` matches a word character 
+
+`\s` matches a whitespace character includes tabs and line breaks
+
+`.` matches any character
+
+
+> 掌握上面两种基本符号的用法后，我们要学会组合使用它们，比如`.*`就可以表示任意的字符
+
+<br />
+
+
+**特殊符号 - `[]`、`()`**
+
+
+
 
 <br />
 
