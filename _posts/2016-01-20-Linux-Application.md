@@ -77,6 +77,28 @@ excerpt: linux
 **特殊符号 - `[]`、`()`**
 
 
+<br />
+
+## 进阶
+
+<br />
+
+**Greedy and Lazy match**
+
+`*`、`+`、`{}`这几个描述数量的符号是greedy operators, so they expand the match as far as they can through the provided text.
+
+比如,有这么一个字符串:
+
+`This is a <div>simple div</div> test.`
+
+我们想过滤掉所有`<>`及其中内容，如果使用正则表达式`<.+>`，那么发现匹配到的是`<div>simple div</div>`，也就是匹配了第一个`<`和最后一个`>`，
+显然不是我们希望的。
+
+为了匹配`<>`tag, 我们可以借助添加`?`使其变得lazy,也就是使用`<.+?>`去过滤，结果就是正确的`This is a simple div test.`
+
+
+
+
 
 
 <br />
