@@ -76,6 +76,11 @@ excerpt: linux
 
 **特殊符号 - `[]`、`()`**
 
+`()`作用是*Grouping*和*Capturing*，对于用于从字符串中提取关键信息非常有用。具体实例可以参见下面章节的内容。
+
+`[]`主要是匹配多个范围，需要特别注意的是所有的特殊符号在`[]`都失去原来的作用，比如backslash`\`不在具有escape的功能，`^`已不是代表匹配开头，而是used as negation of the expression。
+
+
 
 <br />
 
