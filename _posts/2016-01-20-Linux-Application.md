@@ -23,8 +23,11 @@ excerpt: linux
 
 正则表达式涉及到符号很多，乍看非常混乱，所以一个比较好的学习方法是先给涉及到的所有符号进行分类归纳。
 
+<br />
 
 **描述位置的符号 - `^ $`**
+
+<br />
 
 `^`表示以什么开头
 
@@ -34,6 +37,8 @@ excerpt: linux
 <br />
 
 **描述数量的符号 - `* + ? {}`**
+
+<br />
 
 `*`表示任意多个，包括0
 
@@ -70,26 +75,46 @@ excerpt: linux
 
 **描述字符类型的符号**
 
-`\d` matches a single character that is a digit
+<br />
 
-`\w` matches a word character 
+`\d` matches 一个数字
+
+`\w` matches 一个字母，包括下划线
 
 `\s` matches a whitespace character includes tabs and line breaks
 
 `.` matches any character
 
+比如，现在需要从下面两个字符串中提取类似的信息，
 
-> 掌握上面两种基本符号的用法后，我们要学会组合使用它们，比如`.*`就可以表示任意的字符
+`<wsdisco:Types>wsdp:Device wprt:PrintDeviceType wscn:ScanDeviceType</wsdisco:Types>`
+
+`<d:Types>dn:NetworkVideoTransmitter</d:Types>`
+
+我们想从上面两个字符串中提取types信息，怎么写正则表达式呢? 
+
+假设我们是用python，那么正则如下:
+
+`r'<\w+:Types>\w+:(.+?)</\w:Types>'`
+
+上面三处出现的`\w+`就是匹配掉`wsdisco`和`d`,`wsdp`和`dn`的差异的。
+
+另外值得注意的是，因为`\w`只能匹配字母，如果上面最后一处的`\w`前面的`/`不加的话，就会出现匹配不对的问题。
+
+
+> 掌握上面两种基本符号的用法后，我们要学会组合使用它们，比如`.*`就可以表示任意的字符。
+
 
 <br />
 
 
 **特殊符号 - `[]`、`()`**
 
+<br />
+
 `()`作用是*Grouping*和*Capturing*，对于用于从字符串中提取关键信息非常有用。具体实例可以参见下面章节的内容。
 
 `[]`主要是匹配多个范围，需要特别注意的是所有的特殊符号在`[]`都失去原来的作用，比如backslash`\`不在具有escape的功能，`^`已不是代表匹配开头，而是used as negation of the expression。
-
 
 
 <br />
@@ -99,6 +124,8 @@ excerpt: linux
 <br />
 
 **Greedy and Lazy match**
+
+<br />
 
 `*`、`+`、`{}`这几个描述数量的符号是greedy operators, so they expand the match as far as they can through the provided text.
 
