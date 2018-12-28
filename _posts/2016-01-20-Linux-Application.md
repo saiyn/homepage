@@ -116,6 +116,13 @@ excerpt: linux
 
 `[]`主要是匹配多个范围，需要特别注意的是所有的特殊符号在`[]`都失去原来的作用，比如backslash`\`不在具有escape的功能，`^`已不是代表匹配开头，而是used as negation of the expression。
 
+wsdd协议中的response是一个xml描述的“信封”,假设现在我们要提取xml中`<a:MessageID>urn:uuid:xxx</a:MessageID>`这个elemnt中的uuid信息。因为elemnt的key可能是`<xxx:MessageID>`，所以匹配的正则稍微复杂一点:
+
+`<[^:]*:MessageID>urn:uuid:([^<]*)</[^:]*:MessageID>`
+
+上面这个例子很好的诠释了`[]`和`()`组合使用的强大功能。`[]`加上`^`负责过滤掉无用信息，`()`负责提取有用信息。
+
+
 
 <br />
 
