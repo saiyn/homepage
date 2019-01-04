@@ -6,10 +6,12 @@ categories: other
 excerpt: fit up , fixtures
 ---
 
+If you're not learning you're standing still.
+
 * content
 {:toc}
 
-If you're not learning you're standing still.
+
 
 
 # Two Types of Knowledge
