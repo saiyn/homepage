@@ -131,7 +131,13 @@ kernel的动态内存分配主要通过以下几种接口：
 
 通过slab分配的内存被统计在以下三个值中:
 
-* SReclaimable
+* SReclaimable: slab中可回收的部分。在调用kmem_getpages()时加上SLAB_RECLAIM_ACCOUNT标记，表明是可回收的，计入SReclaimable，否则计入SUnreclaim。
+
+* SUnreclaim: slab中不可回收的部分。
+
+* Slab: slab中所有的内存，等于以上两者之和。
+
+<br />
 
 ---
 
@@ -156,9 +162,9 @@ tmpfs就是临时文件系统，它将内存的一部分空间拿来当做文件
 
 **buffers/cached**
 
-在Linux的内存管理中，这里的buffers指Linux内存的: `Buffer cache`；这里的cache值Linux内存中的: `Page cache`。
-在当前的内核中，page cache顾名思义就是针对内存页的缓存，也就是说，如果内存中有以page进行分配管理的，都可以使用page cache作为其缓存管理使用。
-除了页，内存中存在使用块(block)进行管理的，这部分内存如果要使用cache功能的话，就使用buffer cache。
+buffers是对原始磁盘块的临时存储，也就是用来缓存**磁盘的数据**，通常不会太大(200M左右)。这样，内核就可以把分散的写集中起来，统一优化磁盘的写入。
+
+cached是从磁盘读取文件的页缓存，也就是用来**缓存从文件读取的数据**。这样，下次访问这些文件数据时，就可以直接从内存中快速获取，而不需要再次访问缓慢的磁盘。
 
 cached = page cache + shmem
 
