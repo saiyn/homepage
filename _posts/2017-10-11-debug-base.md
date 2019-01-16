@@ -14,7 +14,26 @@ excerpt: linux debug debuginfo
 
 
 <br />
+
 ---
+
+# 调试工具
+
+## 内存方面
+
+### free
+
+<br />
+
+free结果中比较难以理解的是buffers,cache这两项。
+
+* buffers是内核缓冲区用到的内存，对应的是/proc/meminfo中的Buffers值。
+
+* cache是内核页缓存和slab用到的内存，对应的是/proc/meminfo中的cached与SReclaimable之和。
+
+至于/proc/meminfo中的各项含义，见[这里](http://saiyn.github.io/homepage/2017/08/11/Linux-Memory/#procmeminfo)
+
+
 # DWARF
 
 DWARF的全称是"Debug With Attributed Record Formats",现在已经有dwarf1,dwarf2,dwarf三个版本，关于DWARF格式的详细说明
