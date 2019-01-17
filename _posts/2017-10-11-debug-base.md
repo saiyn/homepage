@@ -33,6 +33,28 @@ free结果中比较难以理解的是buffers,cache这两项。
 
 至于/proc/meminfo中的各项含义，见[这里](http://saiyn.github.io/homepage/2017/08/11/Linux-Memory/#procmeminfo)
 
+<br />
+
+### /proc
+
+各种调试工具如free,top等最终其实都是依赖于`/proc`系统中的各种信息，自己编写脚本去统计/proc系统文件中的信息也是重要的调试方法。
+
+下面是一个可以实时(每隔一秒)打印感兴趣进程实际占用内存的脚本,这里以nmap进程为例:
+
+    #!/bin/sh
+    
+    while [ true ]; do
+      for pid in $(ps -elf | grep nmap | grep -v grep | awk '{print $1}'); do
+        if [ -f /proc/$pid/smaps ]; then
+          echo "--Pss:"
+          cat /proc/$pid/smaps | grep ^Pss | awk '{total+=$2} END {printf "%d kB", total}'
+          
+         fi
+         
+        done
+        
+        sleep(1)
+      done
 
 ---
 
