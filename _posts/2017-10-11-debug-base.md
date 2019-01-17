@@ -34,6 +34,33 @@ free结果中比较难以理解的是buffers,cache这两项。
 至于/proc/meminfo中的各项含义，见[这里](http://saiyn.github.io/homepage/2017/08/11/Linux-Memory/#procmeminfo)
 
 
+---
+
+<br />
+
+# Load Average
+
+<br />
+
+top命令或者uptime命令都会输出系统平均负载(Load Average)情况，那么这个指标是什么意思，代表着什么，通过这个指标怎么如何判断系统性能情况？
+
+**平均负载的定义**
+
+简单的说，Load Average是指单位时间内，系统处于**可运行状态**和**不可中断状态**的平均进程数，也就是平均活跃进程数。因为其中包含了不可中断的进程，所以说这个指标和CPU使用率没有直接关系。
+
+不可中断状态的进程的典型的是等待硬件设备I/O响应的进程，也就是PS命令中D状态(Uninterruptible Sleep)。
+
+<br />
+
+**平均负载多少时合理**
+
+当平均负载高于CPU数量70%的时候，就应该分析排查负载高的问题了。因为一旦负载过高，就可能导致进程响应变慢。
+
+---
+
+<br />
+
+
 # DWARF
 
 DWARF的全称是"Debug With Attributed Record Formats",现在已经有dwarf1,dwarf2,dwarf三个版本，关于DWARF格式的详细说明
