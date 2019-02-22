@@ -748,6 +748,12 @@ string字段填写过滤规则，这里的语法和显示规则表达式一致�
 
 <br />
 
+**图形化显示**
+
+跟踪好tcp流之后，关掉弹出窗口，点击`statistcs -> Flow graph`生成图形化显示，同时勾选左下角的`limit to display filter`已经选择中间栏中的`TCP Flow`就可以显示所跟踪的tcp连接的图形化了。
+
+
+
 
 ### 跟踪tcp回话过程
 
