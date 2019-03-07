@@ -84,7 +84,7 @@ buddyinfo记录的信息是Linux系统下Buddy memory allocation机制下内存�
 
 cat /proc/buddyinfo的输出结果大致如下:
 
-![lmem_1](http://omp8s6jms.bkt.clouddn.com/image/git/lmem_1.png)
+![lmem_1](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/lmem_1.png)
 
 <br />
 
@@ -92,11 +92,11 @@ cat /proc/buddyinfo的输出结果大致如下:
 
 判断当前系统内存碎片严重程度有个计算公式:
 
-![lmem_2](http://omp8s6jms.bkt.clouddn.com/image/git/lmem_2.png)
+![lmem_2](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/lmem_2.png)
 
 下面通过一个实例计算来说明这个公式的使用方法:
 
-![lmem_3](http://omp8s6jms.bkt.clouddn.com/image/git/lmem_3.png)
+![lmem_3](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/lmem_3.png)
 
 <br />
 
