@@ -192,7 +192,7 @@ dma_buf_fd()函数的实现很简单，就是根据传入的dma_buf对象，生�
 
 <br />
 
-![dmab_0](http://omp8s6jms.bkt.clouddn.com/image/git/dmab_0.png)
+![dmab_0](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/dmab_0.png)
 
 <br />
 
@@ -291,7 +291,7 @@ Linux内核中的DRM子系统中实现了importer功能，这样我们可以通�
 dma_buf_map_attachment()方法。其实i915驱动是将dma_buf_map_attachment()函数的调用lazy到了obj->ops中去了，即上面代码中[2]处
 注册的方法集i915_gem_object_dmabuf_ops。i915驱动中调用obj->ops中方法的流程如下：
 
-![dmab_1](http://omp8s6jms.bkt.clouddn.com/image/git/dmab_1.png)
+![dmab_1](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/dmab_1.png)
 
 <br />
 
