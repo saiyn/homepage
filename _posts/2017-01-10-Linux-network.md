@@ -60,7 +60,7 @@ excerpt: linux
 
 几年后，IEEE802委员会公布了一个稍有不同的标准集，其中802.3针对整个CSMA/CD网络，802.4针对令牌总线网络，802.5针对了令牌环网。这三种的个性特征由802.2标准定义，那就是802网络共有的逻辑链路控制(LLC)。不幸的是，802.2和802.3定义了一个与以太网不同的帧格式，如下图:
 
-![linux_net_3](http://omp8s6jms.bkt.clouddn.com/image/git/linux_net_3.png)
+![linux_net_3](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_net_3.png)
 
 <br />
 
@@ -146,8 +146,7 @@ IPv4的D类地址(从224.0.0.0到239.255.225.225)是IPv4多播地址，D类地�
 
 为了节省mac地址，已经考虑到多播的实际应用场景的特殊性，多播地址和mac地址存在一个`非一对一`的映射关系，
 
-
-![linux_net_5](http://omp8s6jms.bkt.clouddn.com/image/git/linux_net_5.png)
+![linux_net_5](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_net_5.png)
 
 <br />
 
@@ -407,7 +406,8 @@ traceroute使用IPv4的TTL字段或者IPv6的跳限字段以及两种ICMP消息�
 
 traceroute代码实现中比较复杂部分是解析收到的ICMP报文，traceroute中需要处理的ICMP报文格式如下:
 
-![linux_net_2](http://omp8s6jms.bkt.clouddn.com/image/git/linux_net_2.png)
+
+![linux_net_2](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_net_2.png)
 
 如果所读入的ICMP消息是一个"time exceeded in transmit"出错消息，那么它可能是响应本进程某个探测分组的应答。hip指向在这个ICMP消息中返回的IPv4首部。udp指向跟在这个IPv4首部之后的UDP首部。如果该ICMP消息是由某个UDP数据报引起的，而且这个UDP数据报的源端口和目的端口确实是本进程发送的值，那么它是来自某个中间路由器的响应我们的探测分组的一个应答。
 
@@ -766,7 +766,7 @@ string字段填写过滤规则，这里的语法和显示规则表达式一致�
 启用这个功能按如下步骤:
 
 
-![wireshark_filter](http://omp8s6jms.bkt.clouddn.com/image/git/wireshark_filter.PNG)
+![wireshark_filter](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/wireshark_filter.png)
 
 <br />
 
