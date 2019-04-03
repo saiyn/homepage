@@ -64,14 +64,15 @@ zmap中ip散列分布扫描的算法基于[Primitive root modulo n](https://en.w
 IPv4的地址空间范围是0~2^32，为了实例简单易懂，我们假设我们需要扫描的范围是(0,7)，那么n就是7,7的primitive root有3和5，下面的表说明为什么3是7的
 本源根:
 
-![zmap_5](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_5.png)
+
+![zmap_5](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/zmap_5.png)
 
 <br />
 
 和3类似，5也可以通过上面计算验证为是7的本源根，下面通过一张示意图来说明如何本源根的特性:
 
+![zmap_6](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/zmap_6.png)
 
-![zmap_6](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_6.png)
 
 <br />
 
@@ -137,13 +138,15 @@ zmap中n值是(2^32 + 15 = 4,294,967,311)，即比2^32大的最小质数，这�
 icmp报文的格式如下:
 
 
-![zmap_3](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_3.png)
+
+![zmap_3](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/zmap_3.png)
 
 <br />
 
 具体到icmp echo报文，格式如下:
 
-![zmap_4](http://omp8s6jms.bkt.clouddn.com/image/git/zmap_4.png)
+
+![zmap_4](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/zmap_4.png)
 
 <br />
 
