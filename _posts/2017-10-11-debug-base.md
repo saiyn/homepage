@@ -49,12 +49,12 @@ free结果中比较难以理解的是buffers,cache这两项。
           echo "--Pss:"
           cat /proc/$pid/smaps | grep ^Pss | awk '{total+=$2} END {printf "%d kB", total}'
           
-         fi
+        fi
          
-        done
+       done
         
-        sleep(1)
-      done
+        sleep 1
+     done
 
 ---
 
