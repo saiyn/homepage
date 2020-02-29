@@ -13,6 +13,28 @@ excerpt: linux
 
 ---
 
+# GCC编译选项
+
+<br />
+
+* `LDFLAGS=-Wl,--gc-sections` `CFLAGS=-ffunction-sections`
+
+在链接第三方库时，由于其存在很多功能代码在本项目中可能用不到，所以为了节省内存，可以在编译阶段指定`-ffunction-sections`，在链接阶段指定`--gc-sections`来实现程序在链接阶段指包含必要的第三方代码。
+
+该功能需要GCC版本大于4.8。
+
+* `LDFLAGS += -Wl,-rpath,'$$ORIGIN/../lib'`
+
+`-rpath`和`-L`都是指定动态链接的搜索位置，`-L`在编译阶段指示ld链接器搜索链接库的位置，`-rpath`是在程序运行阶段指定链接库搜索位置。一般情况下ELF会放置在bin目录下，链接库会放置在lib目录下，所以为了程序部署到不同环境下保持兼容性，使用`$ORIGIN`变量代表程序的安装目录，在运行时，`$ORIGIN`被替换为安装路径。
+
+
+
+
+
+
+
+<br />
+
 # 正则表达式
 
 <br />
