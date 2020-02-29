@@ -17,9 +17,9 @@ excerpt: linux
 
 <br />
 
-* `LDFLAGS=-Wl,--gc-sections` `CFLAGS=-ffunction-sections`
+* `LDFLAGS=-Wl,--gc-sections` `CFLAGS=-ffunction-sections` `-ffdata-sections`
 
-在链接第三方库时，由于其存在很多功能代码在本项目中可能用不到，所以为了节省内存，可以在编译阶段指定`-ffunction-sections`，在链接阶段指定`--gc-sections`来实现程序在链接阶段指包含必要的第三方代码。
+在链接第三方库时，由于其存在很多功能代码和变量在本项目中可能用不到，所以为了节省内存，可以在编译阶段指定`-ffunction-sections`和`-ffdata-sections`，在链接阶段指定`--gc-sections`来实现程序在链接阶段指包含必要的第三方代码和变量。
 
 该功能需要GCC版本大于4.8。
 
@@ -28,7 +28,14 @@ excerpt: linux
 `-rpath`和`-L`都是指定动态链接的搜索位置，`-L`在编译阶段指示ld链接器搜索链接库的位置，`-rpath`是在程序运行阶段指定链接库搜索位置。一般情况下ELF会放置在bin目录下，链接库会放置在lib目录下，所以为了程序部署到不同环境下保持兼容性，使用`$ORIGIN`变量代表程序的安装目录，在运行时，`$ORIGIN`被替换为安装路径。
 
 
+* `-fPIC/-fPIE`
 
+PIC用于生成位置无关的动态链接库，而PIE用于生产位置无关的ELF。
+
+* `-fstack-protector/-fstack-protector-all`
+
+stack overflow是c语言常见而有致命的问题，漏洞攻击往往都是利用stack overflow后注入非法代码，为了及时检测到stack被篡改的情况，gcc提供了上面两个选项。其基本思想都是在stack中push完一个返回值后，立马再push一个随机整数，而当pop返回值时会检测该随机数，如果发现不相等，就abort程序。
+因为实现这样的保护措施会有额外的性能损失，所以gcc提供了上面两个选项，前者只在stack上申请了8个字节以上的数组的函数编译时才会加上这个机制，而后者对所有函数都使用这个保护机制。
 
 
 
