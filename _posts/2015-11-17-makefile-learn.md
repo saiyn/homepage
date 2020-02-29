@@ -225,6 +225,17 @@ foreach函数是用来做循环处理的，就想c语言中的for一样。它的
 
 <br />
 
+## 字符串模糊匹配
+
+<br />
+
+* `ifneq ($(findstring $(ARCH), diamond), $(ARCH))`
+
+如上，如果`$(ARCH)`中包含diamond字符串，那么`$(findstring($ARCH), diamond)`返回`$(ARCH)`，否则返回空。
+这样就实现了字符串的模糊匹配功能。
+
+
+
 
 
 
