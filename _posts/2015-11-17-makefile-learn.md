@@ -216,6 +216,19 @@ foreach函数是用来做循环处理的，就想c语言中的for一样。它的
 	
 这样LIB_PATH指定的多个目录下的所有.a文件都被包含了。
 
+<br />
+
+## findstring函数
+
+<br />
+
+**实际应用**
+
+* `ifneq ($(findstring $(ARCH), diamond), $(ARCH))`
+
+如上，如果`$(ARCH)`中包含diamond字符串，那么`$(findstring($ARCH), diamond)`返回`$(ARCH)`，否则返回空。
+这样就实现了字符串的模糊匹配功能。
+
 
 ---
 
@@ -225,14 +238,45 @@ foreach函数是用来做循环处理的，就想c语言中的for一样。它的
 
 <br />
 
-## 字符串模糊匹配
+## order-only prerequisite的应用
+
+makefile中的依赖有两种，一种是如下我们常见的`normatl-prerequisite`, 另外一种就是跟在`|`符号后面的`order-only prerequisite`。
+
+	target: normal-prerequisite | order-only prerequisite
+		recipe
+		
+我们知道，对于normal-prerequisite, 只要target所依赖的时间戳比自己新，或者依赖不存在，make都会执行recipe, 但是有些情况下，我们只希望依赖比target提前存在即可，而不需要每次因为时间戳而执行recipe。这时就可以使用order-only prerequisite。
 
 <br />
 
-* `ifneq ($(findstring $(ARCH), diamond), $(ARCH))`
+* 应用1 - 将目标文件放置到特定目录
 
-如上，如果`$(ARCH)`中包含diamond字符串，那么`$(findstring($ARCH), diamond)`返回`$(ARCH)`，否则返回空。
-这样就实现了字符串的模糊匹配功能。
+<br />
+
+	OBJ_DIR = ./build/obj
+	OBJS := $(addprefix $(OBJ_DIR)/, foo.o bar.o)
+	
+	$(OBJ_DIR)/%.o: %.c | $(OBJ_DIR) [1]
+		$(CC) -c $< -o $@ $(CFLAGS)		
+
+	all: $(OBJS)
+
+
+	$(OBJ_DIR):
+		mkdir -p $(OBJ_DIR)
+
+
+
+如上，如果[1]处的依赖不是order-only prerequisite，那么因为每编译生成一个.o文件，OBJ_DIR目录的时间戳都会更新一次，导致`mkdir -p $(OBJ_DIR)`这个recipe被多次执行
+
+
+
+<br />
+
+
+
+
+
 
 
 
