@@ -9,7 +9,10 @@ excerpt: linux makefile
 * content
 {:toc}
 
-记录开发中实际涉及的Makefile知识
+记录开发中实际涉及的Makefile知识.
+参考链接：
+
+* [GNU MAKK](https://www.gnu.org/software/make/manual/make.html#Prerequisite-Types)
 
 ---
 
