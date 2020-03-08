@@ -16,6 +16,21 @@ excerpt:  linux memory
 
 <br />
 
+# 实战技术
+
+<br />
+
+## 列出系统中top10占用内存(RSS)最多的进程
+
+<br />
+
+    ps -e -orss,pid=,user=,args=, | sort -b -k1,1n | pr -TW$COLUMNS| tail -10
+
+
+第一列为RSS大小，单位KB, 第二列为PID
+
+<br />
+
 # 了解内存以及内存的状态
 
 <br />
