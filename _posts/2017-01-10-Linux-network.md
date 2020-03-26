@@ -13,6 +13,18 @@ excerpt: linux
 
 ---
 
+## 网络调试工具使用
+
+<br />
+
+### netstat
+
+<br />
+
+* `netstat -tulpn --raw` 
+
+
+
 ## 基础知识
 
 <br />
