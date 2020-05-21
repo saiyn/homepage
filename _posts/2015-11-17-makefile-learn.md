@@ -110,7 +110,8 @@ x := foo
 <pre><code>obj = main.o foo.o
 obj += another.o 
 </code></pre>
- 于是， 我们的$(obj)值变成："main.o foo.o another.o"
+
+于是， 我们的$(obj)值变成："main.o foo.o another.o"
  值得注意的是，如果变量没有定义过，"+="会自动变成"="，如果前面有变量定义，那么"+=“
  会继承于前面操作的赋值符。例如：
 <pre><code>obj := main.o
@@ -139,6 +140,8 @@ obj := $(obj) main.o
 
 所有的依赖目标的集合。以空格分隔。如果在依赖目标中有多个重复的，那么这个变量会去除重复的依赖目标，只保留一份。
 
+
+其他更详细的自动化变量的定义参加[GNU_doc](https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html)
 
 
 ---
