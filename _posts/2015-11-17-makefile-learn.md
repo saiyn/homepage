@@ -23,6 +23,18 @@ excerpt: linux makefile
 
 <br />
 
+## Secondary Expansion
+
+<br />
+
+makefile中可以使用`.SECONDEXPANSION:`和`$$()`的搭配可以运用make的两种工作阶段的特性实现一些特别的需求。
+
+所谓的make的两种工作阶段和secondary expansion的具体细节参加[make doc 3.9](https://www.gnu.org/software/make/manual/html_node/Secondary-Expansion.html)
+
+
+
+<br />
+
 ## if 函数
 
 <br />
