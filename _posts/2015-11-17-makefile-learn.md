@@ -80,6 +80,8 @@ excerpt: linux makefile
 
 <br />
 
+
+
 ### 变量的定义与引用
 
 <br />
@@ -139,6 +141,13 @@ obj := $(obj) main.o
 **$^**
 
 所有的依赖目标的集合。以空格分隔。如果在依赖目标中有多个重复的，那么这个变量会去除重复的依赖目标，只保留一份。
+
+
+**$(@F)**
+
+目标文件路径名的部分。比如`$@`的是`dir/foo.o`，那么`$(@F)`就等于foo.o。
+
+
 
 
 其他更详细的自动化变量的定义参加[GNU_doc](https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html)
