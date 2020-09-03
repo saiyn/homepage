@@ -368,6 +368,35 @@ upnp的多播地址239.255.255.250正是处于这一区间内，所以在公网�
 
 <br />
 
+原始套接字让应用层程序拥有任意创建和修改数据包的功能，传统UNIX系统如4.xBSD只提供了AF_INET域，而Linux添加了PF_PACKET域，调用socket函数传入不同的域，使得应用程序获得不同程度操作数据包的功能。
+比如`socket(AF_INET, SOCK_RAW, htons(ETH_P_ALL))`创建的socket，通过setsockopt()设置IP_HDRINCL选项可以让应用程序创建ip层数据，而无法修改链路层的数据。
+而`socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL))`创建的socket, 可以让应用层直接定义链路层数据。
+
+除了域的不同影响原始套接字的输出行为， 另外protocol参数也起类似作用，比如`socket(PF_PAKCET, SOCK_DGRAM, htons(ETH_P_ALL))`， 这时，内核负责创建链路层数据，在调用sendto函数时只能传入IP层开始的数据。
+
+如果我们调用`socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL))`创建socket进行数据包发送，那么我们在调用sendto函数时只能设置`struct sockaddr_ll`类型的地址，该地址主要是告诉内核，应该向哪个网卡输出这个数据包。
+
+	int sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+	if (sock < 0)
+	{
+		return;
+	}
+
+	struct sockaddr_ll saddr_ll = { 0 };
+
+	struct ifreq ifr;
+	strcpy(ifr.ifr_name, "eth0");
+	ioctl(sock, SIOCGIFINDEX, &ifr);
+
+	saddr_ll.sll_ifindex = ifr.ifr_ifindex;
+	saddr_ll.sll_family = AF_PACKET;
+
+	sendto(sock, p, size, 0, (struct sockaddr *)&saddr_ll, sizeof(struct sockaddr_ll));
+	
+
+
+<br />
+
 ### struct ip VS struct iphdr
 
 <br />
