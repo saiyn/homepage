@@ -19,6 +19,28 @@ excerpt: linux debug debuginfo
 
 # 调试工具
 
+<br />
+
+## 网络方面
+
+<br />
+
+### 搭建speedtest测试环境
+
+<br />
+
+这里介绍的是基于Ookla旧版的测试引擎(HTTP Legacy Fallback files),搭建本地的speedtest服务。方法很简单，一句话概括就是，使用github上开源的speedtest-cli去下载本地server的一些文件。
+
+
+*）因为测试方法依赖php，所以先`sudo apt-get install php7.x php7.x-fpm`安装php.
+*) 安装nginx，通过修改`/etc/nginx/sites-available/default`文件使能php服务。
+*) [下载](http://install.speedtest.net/httplegacy/http_legacy_fallback.zip)测试需要的相关文件。
+*) 将文件解压放到/var/www/html/目录下，其中因为搭建的是本地server, 所以corssdomain.xml不需要。
+*) 在另外一台机器上从[github仓库](https://github.com/sivel/speedtest-cli)下载speedtest-cli, 然后执行`speedtest --mini http://xx.xx.xx.xx`即可， 其他xx就是你本地server的ip
+
+
+<br />
+
 ## 内存方面
 
 ### free
