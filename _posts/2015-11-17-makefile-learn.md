@@ -20,6 +20,11 @@ excerpt: linux makefile
 
 <br />
 
+[参考文档](https://internalpointers.com/post/modern-cmake-beginner-introduction)
+
+
+<br />
+
 ## 项目实例
 
 <br />
