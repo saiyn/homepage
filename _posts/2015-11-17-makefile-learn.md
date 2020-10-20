@@ -16,6 +16,34 @@ excerpt: linux makefile
 
 ---
 
+# CMAKE
+
+<br />
+
+## 项目实例
+
+<br />
+
+在部署jenkins的ci时，需要将jenkins的任务序号编入程序的版本号，这时需要向cmake传递参数到代码中的宏。
+实现方法是使用target_compile_definitions()方法。CMakeLists.txt中的用法如下:
+
+	set(SDK_TARGET_LIB_NAME "DRScanner")
+	add_library(${SDK_TARGET_LIB_NAME} SHARED ${SOURCE_FILES_SDK})
+	...
+	
+	target_compile_definitions(${SDK_TARGET_LIB_NAME} PUBLIC PROGVER=${PROGVER})
+	
+	...
+	
+target_compile_definitions()的具体用法可以参照[这里](https://cmake.org/cmake/help/latest/command/target_compile_definitions.html)
+
+执行`cmake -D PROGVER=\"1.6.131\" ..` 传入参数。
+
+这时会在`CMakefiles/xxx/flags.make`中生成`CXX_DEFINES = -DPROGVER=\"1.6.131\"`。
+
+
+
+<br />
 
 # 基础知识
 
