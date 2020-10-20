@@ -23,6 +23,15 @@ excerpt: linux makefile
 [参考文档](https://internalpointers.com/post/modern-cmake-beginner-introduction)
 
 
+## ctest
+
+<br />
+
+cmake自带的unit test框架
+
+[参考文档](https://bertvandenbroucke.netlify.app/2019/12/12/unit-testing-with-ctest/)
+
+
 <br />
 
 ## 项目实例
