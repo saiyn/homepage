@@ -38,6 +38,10 @@ cmake自带的unit test框架
 
 <br />
 
+### 入参
+
+<br />
+
 在部署jenkins的ci时，需要将jenkins的任务序号编入程序的版本号，这时需要向cmake传递参数到代码中的宏。
 实现方法是使用target_compile_definitions()方法。CMakeLists.txt中的用法如下:
 
@@ -54,6 +58,75 @@ target_compile_definitions()的具体用法可以参照[这里](https://cmake.or
 执行`cmake -D PROGVER=\"1.6.131\" ..` 传入参数。
 
 这时会在`CMakefiles/xxx/flags.make`中生成`CXX_DEFINES = -DPROGVER=\"1.6.131\"`。
+
+
+<br />
+
+### cmake 交叉编译
+
+<br />
+
+cmake进行本机编译时，如果依赖库都在系统中常见的目录下，那么设置依赖库很简单，就:
+	target_link_libraries(${PROJECT_NAME} pthread ssl rt)
+	
+这样既可完成对pthread,ssl,rt等库的加载.
+
+对于交叉编译就复杂很多，首先交叉编译时存在如下几点不同:
+
+* 需要指定编译器(gcc)的路径
+* 需要指定依赖库的路径
+* 需要指定依赖库头文件的路径
+
+下面以boost库为例，描述cmake中怎么样设置交叉编译.
+
+第一步是设置编译器、依赖库的路径,我们通过设置CMAKE_TOOLCHAIN_FILE来完成交叉编译toolchain的设置。
+
+	#cmake_cross_config.cmake
+	
+	SET(CMAKE_SYSTEM_NAME Linux)
+	SET(CMAKE_C_COMPILE /path/to/cross-compile/xxx-gcc)
+	SET(CMAKE_CXX_COMPILE /path/to/cross-comppile/xxx-g++)
+	SET(CMAKE_FIND_ROOT_PATH /path/to/ROOTFs)
+	SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+	SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+	SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+	
+执行: 
+	cmake -DCMAKE_TOOLCHINA_FILE=./cmake_cross_config.cmake ..
+	
+注意有一点要非常注意:
+
+* CMAKE_TOOLCHAIN_FILE只有在第一次运行cmake时起作用，如果运行过cmake之后再设置就不起效果，所以可以mkdir build和mkdir cross_build两个目录进行本机编译和交叉编译
+
+
+
+
+首先对于指定依赖库的路径，虽然可以cmake提供了link_directories函数，但是cmake官方并不推荐使用，而是使用find_library和find_package函数.
+
+> Note that this command[link_directories] is rarely necessary.Library locations returned by find_package() and find_library() are absolute paths. Pass
+> these absolute library file paths directly to the target_link_libararies() commond. Cmake will ensure the linker finds them.
+
+所以，首先我们在CMakeList.txt中添加如下:
+	find_package(Boost 1.55.0 REQUIRED COMPONENTS system regex)
+	
+这里面要注意几点:
+
+* boost必须是首字母大写，否则找不到.
+* 因为Boost库包含了很多system regex这样的子模块，所以需要具体到子模块,这样在后面引用子模块的时候才不会出错.
+
+然后，设置一下boost库的头文件路径:
+	include_directories(${Boost_INCLUDE_DIRS})
+	
+这里也要注意两点:
+
+* Boost_include_dirs这个变量名是自动生成的而且不区分大小写。
+
+* 注意DIRS后面这个S不能少。
+
+最后:
+	target_link_libraries(${PROJECT_NAME} Boost::system Boost::regex)
+	
+
 
 
 
