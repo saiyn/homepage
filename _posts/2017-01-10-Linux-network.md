@@ -21,7 +21,7 @@ excerpt: linux
 
 <br />
 
-![linux_tls_0](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_tls_0.png)
+![linux_tls_0](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_tls_0.jpg)
 
 
 
