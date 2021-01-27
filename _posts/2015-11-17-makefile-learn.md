@@ -22,6 +22,33 @@ excerpt: linux makefile
 
 [参考文档](https://internalpointers.com/post/modern-cmake-beginner-introduction)
 
+<br />
+
+## Basic
+
+<br />
+
+### project、CMAKE_SOURCE_DIR、PROJECT_SOURCE_DIR以及多级目录
+
+<br />
+
+在代码树的每一级目录中的的CMakeList.txt中调用的第一个函数可能都是project(), 调用这个函数的主要作用其实就是通过设置几个变量来定义scope。
+
+CMAKE_SOURCE_DIR变量被自动设置为顶层CMakeList.txt所在的目录，PROJECT_SOURCE_DIR变量被自动设置为最近一次调用project()函数的CMakeList.txt所在目录。
+
+比如：
+
+	project(main)
+	add_subdirectory(inner)
+
+在inner目录下的CMakeList.txt中，PROJECT_SOURCE_DIR就被定义为inner所在的目录。
+
+
+
+
+
+
+<br />
 
 ## ctest
 
