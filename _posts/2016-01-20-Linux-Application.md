@@ -13,6 +13,25 @@ excerpt: linux
 
 ---
 
+
+# 用户管理
+
+<br />
+
+## 添加user并添加sudo权限
+
+<br />
+
+	$ sudo useradd new_user
+	$ sudo usermod -aG new_user sudo
+	
+
+
+
+
+<br />
+
+
 # GCC编译选项
 
 <br />
