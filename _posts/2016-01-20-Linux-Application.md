@@ -22,7 +22,38 @@ excerpt: linux
 <br />
 
 * 除非调用exec的进程将某些信号设置为SIGIGN, 否则exec会将原先设置为捕捉的信号都更改为信号的默认动作，原因是在新的进程中，原来的信号处理函数地址变得无效。所以在fork()后，子进程中调用exec后，子进程的所有信号除了之前被忽略的，其他都会恢复到默认动作。
-* 
+
+
+## SIGCHLD
+
+<br />
+
+* 使用sigaction函数可以捕捉发送SIGCHLD的进程pid
+
+	#include <signal.h>
+	
+	int sigaction(int signo, const struct sigaction *restrict act, struct sigaction *restrict oact);
+
+	struct sigaction{
+		void (*sa_handler)(int);
+		sigset_t sa_mask;
+		int sa_flags;
+		void (*sa_sigaction)(int, siginfo_t *, void *);
+	};
+
+当将sa_flags设置为SA_SIGINFO时，信号处理会调用sa_sigaction字段的函数。
+
+	struct siginfo{
+		int si_signo;
+		...
+		pid_t si_pid;
+		uid_t si_uid;
+		...
+		int si_status;
+		...
+	};
+	
+如果信号时SIGCHLD,则将设置si_pid,si_status和si_uid字段。
 
 
 <br />
