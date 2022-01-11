@@ -487,10 +487,44 @@ upnp的多播地址239.255.255.250正是处于这一区间内，所以在公网�
 
 struct ip和struct iphdr都是描述ip数据报头的结构体，观察其内部元素也基本一致，他们主要的区别可以从它们所属的目录看出来，struct iphdr位于`linux`子目录下，说明该头文件只能用于linux系统下的程序，而struct ip则在类unix的所有系统下通用。
 
+<br />
 
 ---
 
 ## 网络工具
+
+<br />
+
+### Iptables
+
+<br />
+
+#### basic
+
+
+<br />
+
+### 实战
+
+<br />
+
+**配置Tun0网卡访问外网**
+
+使用虚拟网卡tun是实现vpn相关功能的基础，如何使写入tun网卡的数据可以出去呢？进行ip forward加上snat即可。
+
+* 执行sudo sysctl -w net.ipv4.ip_forward=1 使能系统ip forward功能，这样写入tun网卡的数据可以被内核送到forward chain上。
+* 执行sudo iptables -t nat -A POSTROUTING -s 100.64.0.0/16 ! -d 100.64.0.0/16 -j SNAT --to $ip 
+   > 其中的$ip是连接网络的网卡ip， 这条命令有个问题是如果设备的网卡ip发送变化就会snat失败，
+   > 所以可以使用MASQUERADE进行snat配置，`sudo iptables -t nat -A POSTROUTING -s 100.64.0.0/16 -o $eth -j MASQUERADE`
+   > 这条命令是指定了snat的网卡，而且无论这个网卡ip怎么变化，都可以自动进行snat
+
+* 执行sudo iptables -i FORWARD -s 100.64.0.0/16 -j ACCEPT
+* 执行sudo iptables -i FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+  > 最后这条命令很重要，否则一些数据包无法被forward, 比如实测中发现当server返回的SYN包flags设置了[ECN](https://en.wikipedia.org/wiki/Explicit_Congestion_Notification), 如果
+  > 没有设置这条rule，那么数据会被丢弃
+
+
+
 
 <br />
 
