@@ -634,9 +634,25 @@ SOCK_RAW套接字提供一个数据报接口用于直接访问下面的网络层
 
 ---
 
-##	tcpdump
+## tcpdump
+
+<br />
 
 tcpdump根据使用者的定义对网络上的数据包进行截获分析，它可以将网络中传送的数据包头完整截获下来提供分析。它支持针对网络层，协议，主机，网络或者端口的过滤。
+
+<br />
+
+### filter example
+
+<br />
+
+* 通过标志位方法抓取 SYN 包：`tcpdump -i any 'tcp[tcpflags]&tcp-syn !=0'`
+
+
+
+
+
+<br />
 
 > ### Options
 
