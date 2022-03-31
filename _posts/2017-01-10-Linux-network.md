@@ -782,6 +782,18 @@ find packets with a TTL less than 10(usually indicates a problem or use of TRACE
 
 <br />
 
+### 实战操作
+
+<br />
+
+计算Out-of-order报文的比例
+
+1. 计算全部报文数量：capinfos file.pcap | grep packets
+
+2. 计算乱序报文数量：tshark -n -q -r file.pcap -z "io,stat,0,tcp.analysis.out_of_order"
+
+
+
 ### 设置数据抓取选项
 
 <br />
