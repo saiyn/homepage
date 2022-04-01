@@ -47,6 +47,8 @@ excerpt: linux
 
 * window scale 作为tcp option中的设置，只出现在TCP握手阶段，它表示将原始窗口值扩大多少倍。
 
+* 发送窗口等于拥塞窗口和对方接受窗口中的较小值。
+
 
 ### 头文件
 
