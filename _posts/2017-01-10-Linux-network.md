@@ -43,6 +43,11 @@ excerpt: linux
 
 <br />
 
+* MTU是ip层(三层)的定义，MSS是tcp层(四层)的定义，`MTU(1500bytes) = ip头部(20bytes) + TCP头部(20bytes) + MSS(1460bytes)`
+
+* window scale 作为tcp option中的设置，只出现在TCP握手阶段，它表示将原始窗口值扩大多少倍。
+
+
 ### 头文件
 
 <br />
@@ -500,6 +505,17 @@ struct ip和struct iphdr都是描述ip数据报头的结构体，观察其内部
 <br />
 
 #### basic
+
+<br />
+
+**修改TCP握手报文的MSS**
+
+`iptables -A FORWARD -p tcp --tcp-flags SYN SYN -j TCPMSS --set-mss 1400`
+
+
+
+
+
 
 
 <br />
