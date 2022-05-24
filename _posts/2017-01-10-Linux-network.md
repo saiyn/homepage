@@ -21,7 +21,15 @@ excerpt: linux
 
 <br />
 
-![linux_tls_0](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_tls_0.jpg)
+* ECDHE握手过程
+
+（1）：客户端随机生成随机值Ra，计算Pa(x, y) = Ra * Q(x, y)，Q(x, y)为全世界公认的某个椭圆曲线算法的基点。将Pa(x, y)发送至服务器。
+
+（2）：服务器随机生成随机值Rb，计算Pb(x,y) = Rb * Q(x, y)。将Pb(x, y)发送至客户端。
+
+（3）：客户端计算Sa(x, y) = Ra * Pb(x, y)；服务器计算Sb(x, y) = Rb *Pa(x, y)
+
+（4）：算法保证了Sa = Sb = S，提取其中的S的x向量作为密钥（预主密钥）。
 
 
 * 主流基于ECDHE密钥交换算法
