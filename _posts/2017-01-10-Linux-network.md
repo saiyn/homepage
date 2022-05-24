@@ -26,7 +26,7 @@ excerpt: linux
 
 
 
-![linux_tls_1](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_tls_1.jpg)
+![linux_tls_1](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_tls_1.png)
 
 
 <br />
