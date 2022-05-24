@@ -24,10 +24,16 @@ excerpt: linux
 ![linux_tls_0](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_tls_0.jpg)
 
 
-
+* 主流基于ECDHE密钥交换算法
 
 ![linux_tls_1](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_tls_1.png)
 
+<br />
+
+* 传统基于RSA密钥交换算法
+
+
+![linux_tls_1](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/linux_tls_2.png)
 
 <br />
 
