@@ -10,6 +10,14 @@ excerpt: iot thingsboard platform
 {:toc}
 
 
+# Run docker with image build from source code
+
+## Notes when rebuild and deploy a new docker image
+
+
+
+
+
 # code flow
 
 <br />
