@@ -14,6 +14,25 @@ excerpt: iot thingsboard platform
 
 <br />
 
+## steps
+
+* `sudo mvn  install -DskipTests -Ddockerfile.skip=false` to build docker image
+* `sudo docker tag thingsboard/tb-postgres saiyn/thingsboard` to update the image which will be replaced in tht running container
+* `sudo docker-compose stop` to stop container
+* `sudo cat ~/mytb-data/db/postmaster.pid` to check the process of postgres int the container
+* wait for a moment to let the stop done, and then `sudo docker run -it -v ~/.mytb-data:/data --rm saiyn/thingsboard upgrade-tb.sh`
+
+if everythings goes fine, then we should see logs like below:
+
+![tb-db_0](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/tb-db_0.png)
+
+* `sudo ls ~/.mytb-data/db` to check postmaster.pid exist or not, it should be gone otherwise we will get troblue later
+* `sudo docker-compose rm mytb` to remove the old container
+* `sudo docker-compose up -d ` to bring everything up to work and all process done
+
+
+<br />
+
 ## Notes when rebuild and deploy a new docker image
 
 <br />
