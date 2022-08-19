@@ -66,3 +66,49 @@ tb-postgres的image内部嵌入了postgres server, 启动逻辑是如果检测�
     -> save()
     
 ```   
+
+
+# backup 
+
+## script rule node
+
+### parse Gps
+
+```
+var new_meta = JSON.stringify(metadata, function(key, value){
+    switch (key) {
+        case 'ts':
+            return new Date().getTime(); 
+        
+        default:
+            return value;
+    }
+});
+
+var longit = msg.gps.longit;
+var latitu = msg.gps.latitu;
+
+
+var du = Math.floor((Math.floor(longit) / 100));
+var fen = parseInt((Math.floor(longit) / 100 + "").split(".")[1]);
+var miao = parseInt((longit + "").split(".")[1]) * 60 / 1000000;
+
+
+var longit_new = parseFloat((du + fen / 60 + miao / 60 / 60).toFixed(6));
+
+var new_msg = {
+    longit : longit_new,
+    latitu : latitu,
+    
+};
+
+```
+
+
+
+
+
+
+
+
+
