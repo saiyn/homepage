@@ -44,7 +44,21 @@ CMAKE_SOURCE_DIR变量被自动设置为顶层CMakeList.txt所在的目录，PRO
 在inner目录下的CMakeList.txt中，PROJECT_SOURCE_DIR就被定义为inner所在的目录。
 
 
+<br />
 
+### 头文件依赖的自动添加
+
+<br />
+
+```
+TARGET_INCLUDE_DIRECTORIES(a PUBLIC /xxx/include)
+
+TARGET_LINK_LIBRARIES(b a)
+
+```
+
+使用include_directories只能使当前cmakelist文件中的目标可以将指定路径添加到头文件搜索中，
+而target_include_directories添加PUBLIC属性后，可以使任意地方的目标将其路径添加到自己的头文件搜索中
 
 
 
