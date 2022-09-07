@@ -17,6 +17,9 @@ excerpt: linux
 
 ### netstat工具
 
+
+* 查看TCP连接状态分布
+
 <br />
 
 ```
