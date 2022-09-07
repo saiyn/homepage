@@ -13,6 +13,25 @@ excerpt: linux
 
 ---
 
+## 网络诊断
+
+### netstat工具
+
+<br />
+
+```
+	netstat -ant|awk '/^tcp/ {++S[$NF]} END {for(a in S) print (a,S[a])}'
+	
+	TIME_WAIT 	34
+	SYN_SENT  	1
+	LISTEN    	32
+	ESTABLISHED 	6
+	
+```
+
+
+
+
 ## 应用协议
 
 <br />
