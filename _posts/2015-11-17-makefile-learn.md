@@ -46,6 +46,15 @@ CMAKE_SOURCE_DIR变量被自动设置为顶层CMakeList.txt所在的目录，PRO
 
 <br />
 
+### add_subdirectory
+
+<br />
+
+add_subdirectory behaves in terms of scope exactly like a macro, and it does not have its own scope. 所以上节内容提到的一些顶层cMakeList.txt中定义的变量会传递给子目录中的CMakeList.txt
+
+
+<br />
+
 ### 头文件依赖的自动添加
 
 <br />
