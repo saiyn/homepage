@@ -41,3 +41,35 @@ l_onoff |l_linger   |close行为  |发送队列   |底层行为
 通过设置`l_onoff=1;l_linger=0`使得调用close后直接发送RST实现快速复位，进行下一个扫描。
 
 
+### SYN
+
+要实现SYN扫描，必须得有创建raw socket的权限，正常情况下SYN的发送都是系统API的内部行为，比如connect()系统调用会触发三次握手中的SYN包。
+
+SYN扫描逻辑是，主动发送SYN报文，通过观察peer回复ACK的情况来判断端口是否开启。
+
+* 如果收到了对方的SYN+ACK，说明对方端口肯定是开启的。
+* 如果收到了对方的RST，说明对方端口是关闭的。
+* 如果没有收到任何回应或者是收到了ICMP错误报文，则无法判断准确的状态。
+
+SYN扫描的最大好处就是速度很快，首先扫描只需要发送一个SYN包，而且因为我们是通过raw socket创建发送的SYN包，没有经过TCP/IP协议栈，所以内核完全是不知道连接状态的，这样的好处就是，当peer回复ACK时，内核层会直接发送RST进行回应，自动清理了这次扫描尝试的连接状态。也是因为这一点决定了我们在处理peer的rsp报文时必须得使用pcap技术，比如libpcap等等。
+
+**SYN cookies**
+
+SYN扫描只是nmap端口探测的一种可选项，但是却是zmap和masscan(都号称几分钟扫描完整个公网)的主要或者说是唯一方式。为什么zmap和masscan也是使用SYN扫描，速度却是nmap的很多倍呢，因为他们都使用了(SYN cookies)[http://cr.yp.to/syncookies.html]技术实现了无状态扫描，不同与nmap需要维护每一个SYN probe的状态以此来判断端口是否开启。
+
+SYN cookies技术就是借助与tcp报文头部的seq字段是可以自定义的这一点，通过将关键信息编码进seq字段，然后在收到SYN+ACK报文中的acknowledgment number字段减去1后进行解码，得到关键数据，从而判断是哪个peer发送的ack。
+
+![network_scan_0.png](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/network_scan_0.png)
+
+上图是zmap编码后设置tcp header中seq的代码。
+
+
+
+除了运用与网络扫描，SYN cookies也可以一定程度上抵挡SYN FLOOD类型的DDoS攻击。比如通过`echo 1 > /proc/sys/net/ipv4/tcp_syncookies`可以使能linux内核中的syn cookies功能，这样服务器在接受到SYN报文时，如果SYN报文的接受数量超过了backlog设定值，那么对于后续的SYN会启动cookies机制，就是发送出去的syn+ack是加入编码数据的，同时不会再为半连接状态分配资源，直到收到对应的ack报文才会分配资源加入到accept队列中。
+
+
+
+
+
+
+
