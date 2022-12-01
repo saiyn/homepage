@@ -64,6 +64,22 @@ SYN cookies技术就是借助与tcp报文头部的seq字段是可以自定义的
 上图是zmap编码后设置tcp header中seq的代码。
 
 
+```
+    uint32_t src_ip = get_src_ip(current_ip, i);
+    uint32_t validation[VALIDATE_BYTES /
+                sizeof(uint32_t)];
+    validate_gen(src_ip, current_ip,
+                (uint8_t *)validation);
+    uint8_t ttl = zconf.probe_ttl;
+    size_t length = 0;
+    zconf.probe_module->make_packet(
+        buf, &length, src_ip, current_ip, ttl,
+        validation, i, probe_data);
+```                    
+
+从调用make_packet()接口的代码段可以看到，zmap是将当前源ip地址(src_ip)和目标ip地址(current_ip)编码进了header。
+
+
 
 除了运用与网络扫描，SYN cookies也可以一定程度上抵挡SYN FLOOD类型的DDoS攻击。比如通过`echo 1 > /proc/sys/net/ipv4/tcp_syncookies`可以使能linux内核中的syn cookies功能，这样服务器在接受到SYN报文时，如果SYN报文的接受数量超过了backlog设定值，那么对于后续的SYN会启动cookies机制，就是发送出去的syn+ack是加入编码数据的，同时不会再为半连接状态分配资源，直到收到对应的ack报文才会分配资源加入到accept队列中。
 
