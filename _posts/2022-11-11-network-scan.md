@@ -2,7 +2,7 @@
 layout: post
 title:  "Network Scan"
 date:   2022-11-11 15:15:54
-categories: IOT Security
+categories: IOT_Security
 excerpt: iot nmap linux network scan
 ---
 
