@@ -134,6 +134,7 @@ cmake进行本机编译时，如果依赖库都在系统中常见的目录下，
 	#cmake_cross_config.cmake
 	
 	SET(CMAKE_SYSTEM_NAME Linux)
+	SET(CMAKE_SYSROOT /opt/toolchain/xxx/rootfs)
 	SET(CMAKE_C_COMPILE /path/to/cross-compile/xxx-gcc)
 	SET(CMAKE_CXX_COMPILE /path/to/cross-comppile/xxx-g++)
 	SET(CMAKE_FIND_ROOT_PATH /path/to/ROOTFs)
@@ -142,7 +143,7 @@ cmake进行本机编译时，如果依赖库都在系统中常见的目录下，
 	SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 	
 执行: 
-	cmake -DCMAKE_TOOLCHINA_FILE=./cmake_cross_config.cmake ..
+	cmake -DZLIB_INCLUDE_DIR=$(CURRENT_DIR)/zlib/include -DZLIB_LIBRARY=$(CURRENT_DIR)/zlib/lib -DCMAKE_TOOLCHINA_FILE=./cmake_cross_config.cmake ..
 	
 注意有一点要非常注意:
 
