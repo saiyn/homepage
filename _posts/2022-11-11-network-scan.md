@@ -85,6 +85,12 @@ SYN cookies技术就是借助与tcp报文头部的seq字段是可以自定义的
 
 
 
+### SYN SCAN VS connect SCAN
+
+type    |权限   |发送探测   |接受回应   |实现难易   |准确性
+--- |---    |---    |---    |---    |---
+SYN |root   |SOCK_RAW,IPPROTO_RAW，sethdrinclude发送自建的ip层到tcp层的数据包   |通过pcap在数据链路层拿数据，虽然也可以SOCK_RAW,IPPROTO_TCP监听所有tcp返回包    |困难   |一般
+connect |user   |SOCK_STREAM,IPPROTO_TCP, connect() |select(), getsockopt(, SOL_SOCKET, SO_ERROR,)  |简单   |较高
 
 
 
