@@ -2,7 +2,7 @@
 layout: post
 title:  "Linux内存笔记"
 date:   2017-08-11 15:15:54
-categories: Linux
+categories: Linux-Kernel
 excerpt:  linux memory
 ---
 

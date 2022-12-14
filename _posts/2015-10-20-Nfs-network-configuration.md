@@ -2,7 +2,7 @@
 layout: post
 title:  "ARM开发板 NFS 网络设置"
 date:   2015-10-20 11:48:54
-categories: Linux
+categories: Linux-Network
 excerpt: 虚拟机:Vmware，系统：Ubuntu14.04。
 ---
 

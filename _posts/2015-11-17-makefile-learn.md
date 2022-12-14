@@ -2,7 +2,7 @@
 layout: post
 title:  "Makefile 笔记"
 date:   2015-11-17 15:15:54
-categories: Linux-Application
+categories: Tools
 excerpt: linux makefile
 ---
 

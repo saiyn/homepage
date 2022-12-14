@@ -2,7 +2,7 @@
 layout: post
 title:  "调试技术之基础知识笔记"
 date:   2017-10-11 15:15:54
-categories: debug
+categories: Linux-Debug
 excerpt: linux debug debuginfo
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "thingsboard 笔记"
 date:   2022-03-23 15:15:54
-categories: Linux
+categories: other
 excerpt: iot thingsboard platform
 ---
 

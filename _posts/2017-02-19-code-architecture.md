@@ -2,7 +2,7 @@
 layout: post
 title:  "软件架构师之路"
 date:   2017-02-19 15:15:54
-categories: architecture
+categories: Language
 excerpt: c architecture
 ---
 

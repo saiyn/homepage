@@ -2,7 +2,7 @@
 layout: post
 title:  "Linux input subsystem 浅析"
 date:   2015-11-16 11:48:54
-categories: Linux
+categories: Linux-kernel
 excerpt: Linux input driver
 ---
 

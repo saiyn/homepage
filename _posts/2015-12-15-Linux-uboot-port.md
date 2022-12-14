@@ -2,7 +2,7 @@
 layout: post
 title:  "Linux u-boot 移植学习笔记"
 date:   2015-12-15 15:15:54
-categories: Linux
+categories: Linux-Kernel
 excerpt: linux u-boot port mini2440
 ---
 

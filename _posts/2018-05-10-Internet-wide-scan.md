@@ -2,7 +2,7 @@
 layout: post
 title:  "Internet-wide scan"
 date:   2018-05-10 15:15:54
-categories: IOT_Security
+categories: IOT-Security Linux-Network 
 excerpt: Internet network zmap Internet-wide scan
 ---
 
