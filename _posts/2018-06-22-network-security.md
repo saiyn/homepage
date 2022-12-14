@@ -2,7 +2,7 @@
 layout: post
 title:  "Network Security"
 date:   2018-06-22 15:15:54
-categories: Linux-Network IOT-security
+categories: Linux-Network IOT-Security
 excerpt: Internet network security
 ---
 

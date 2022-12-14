@@ -2,7 +2,7 @@
 layout: post
 title:  "MPlayer 学习应用笔记(一)"
 date:   2016-2-1 15:15:54
-categories: MPlayer
+categories: AV
 excerpt: MPlayer linux
 ---
 
