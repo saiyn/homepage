@@ -9,7 +9,8 @@ excerpt: linux
 * content
 {:toc}
 
-记录开发中实际涉及的Linux网络知识
+
+> 更新于2023-01-01
 
 ---
 
@@ -544,7 +545,7 @@ struct ip和struct iphdr都是描述ip数据报头的结构体，观察其内部
 
 <br />
 
-### Iptables
+### iptables
 
 <br />
 
@@ -552,21 +553,46 @@ struct ip和struct iphdr都是描述ip数据报头的结构体，观察其内部
 
 <br />
 
+
+![iptables_0](https://raw.githubusercontent.com/saiyn/homepage/gh-pages/images/iptables_0.png)
+
+
+iptables主要包含三大组成部分，tables, chains, targets。
+
+
+* tables
+
+	* `filter` 是默认的table,起到firewall给过滤package功能
+	* `nat` 是负责网络地址的转换，在ipv4网络中至关重要的一个功能
+	* `mangle` 主要是用来更改数据包的内容
+	* `security` 用于强制访问控制网络安全
+	* `raw` 主要是用于配置package免于connection tracking
+
+* chains
+
+	从上图可以很清晰直观的看出prerouting, input, forward, output & postrouting这5个chain所处的位置和作用。
+
+* targets
+  * 内建的3个主要targets, `DROP`, `ACCEPT`, `RETURN`
+  * 扩展模块支持的39个其他targets, 比如`DNAT`, `MASQUERADE`, `REJECT`等等
+
+
+
+
+
+
+<br />
+
+#### 实战
+
+<br />
+
+
 **修改TCP握手报文的MSS**
 
 `iptables -A FORWARD -p tcp --tcp-flags SYN SYN -j TCPMSS --set-mss 1400`
 
 
-
-
-
-
-
-<br />
-
-### 实战
-
-<br />
 
 **配置Tun0网卡访问外网**
 
