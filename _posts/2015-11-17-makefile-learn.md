@@ -9,7 +9,9 @@ excerpt: linux makefile
 * content
 {:toc}
 
-记录开发中实际涉及的Makefile知识.
+>update on 2013/1/17
+
+
 参考链接：
 
 * [GNU MAKK](https://www.gnu.org/software/make/manual/make.html#Prerequisite-Types)
@@ -185,7 +187,12 @@ cmake进行本机编译时，如果依赖库都在系统中常见的目录下，
 
 # Makefile
 
-掌握makefile中的基本语法和常用函数是构建make编译环境最基本的要求，但是对于构建复杂一点的工程，仅掌握这些也是不够的。
+> GNU `make` does its work in two distinct phases.
+> During the first phase it reads all the makefiles,included makefiles, etc.
+> and internalizes all the variables and their values and implicit and explicit rules,
+> and builds a dependency graph of all the targets and their prerequisites.
+> During the second phase, `make` uses this internalized data to determine which targets need to be updated
+> and run the recipes necessary to update them. 
 
 <br />
 
