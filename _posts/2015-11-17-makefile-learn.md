@@ -208,22 +208,7 @@ makefile中可以使用`.SECONDEXPANSION:`和`$$()`的搭配可以运用make的�
 
 <br />
 
-## if 函数
 
-<br />
-
-
-之前一直混淆`if`函数和条件语句`ifeq`,if函数的语法是：
-
-	$(if <condition>, <then-part>)
-	
-或者是：
-
-	$(if <condition>, <then-part>, <else-part>)
-
-如果\<condition\>为真则返回\<then-part\>否则返回\<else-part\>.
-
----
 
 ## 伪目标
 
@@ -342,7 +327,27 @@ obj := $(obj) main.o
 
 <br />
 
-## patsubst函数
+## 使用内建函数
+
+
+### if 函数
+
+<br />
+
+
+之前一直混淆`if`函数和条件语句`ifeq`,if函数的语法是：
+
+	$(if <condition>, <then-part>)
+	
+或者是：
+
+	$(if <condition>, <then-part>, <else-part>)
+
+如果\<condition\>为真则返回\<then-part\>否则返回\<else-part\>.
+
+---
+
+### patsubst函数
 
 <br />
 
@@ -390,7 +395,7 @@ patsubst是模式字符串替换函数，它的语法是:
 
 
 
-## foreach 函数
+### foreach 函数
 
 <br />
 
@@ -418,7 +423,7 @@ foreach函数是用来做循环处理的，就想c语言中的for一样。它的
 
 <br />
 
-## findstring函数
+### findstring函数
 
 <br />
 
@@ -438,7 +443,9 @@ foreach函数是用来做循环处理的，就想c语言中的for一样。它的
 
 <br />
 
-## order-only prerequisite的应用
+### order-only prerequisite的应用
+
+---
 
 makefile中的依赖有两种，一种是如下我们常见的`normatl-prerequisite`, 另外一种就是跟在`|`符号后面的`order-only prerequisite`。
 
